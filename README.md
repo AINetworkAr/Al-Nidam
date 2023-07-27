@@ -5,7 +5,6 @@
 _يمكنك أيضًا الحصول على هذه الدورة على موقعي الإلكتروني [هنا](https://karanpratapsingh.com/courses/system-design) وكذلك ككتاب إلكتروني على [leanpub](https://leanpub.com/systemdesign). يُرجى تقييم الدورة بنجمة واحدة كتحفيز إذا كانت مفيدة لك!_
 
 
-<div dir='rtl'>
 
 # جدول المحتويات
 
@@ -88,7 +87,6 @@ _يمكنك أيضًا الحصول على هذه الدورة على موقعي
   - [الخطوات التالية](#next-steps)
   - [المراجع](#references)
 
-</div>
 
 # ما هو تصميم النظم؟
 
@@ -207,38 +205,40 @@ _مثال: عادةً ما تُستخدم بشكل أكثر شيوعًا للأ�
 ### الطبقة المادية (Physical)
 
 تشمل هذه الطبقة المعدات المادية المشاركة في نقل البيانات، مثل الكابلات والمفاتيح (السويتشات). هذه أيضًا الطبقة التي يتم فيها تحويل البيانات إلى تسلسل بتي، وهو سلسلة من الأصفار والواحدات. يجب أن تتفق طبقة المادية في كلا الجهازين على اتفاق إشارة بحيث يمكن تمييز الأصفار عن الواحدات على كلا الجهازين.
-# TCP and UDP
+# TCP و UDP
 
 ## TCP
 
-Transmission Control Protocol (TCP) is connection-oriented, meaning once a connection has been established, data can be transmitted in both directions. TCP has built-in systems to check for errors and to guarantee data will be delivered in the order it was sent, making it the perfect protocol for transferring information like still images, data files, and web pages.
+بروتوكول التحكم في النقل (TCP) هو بروتوكول موجه للاتصالات، مما يعني أنه بمجرد تأسيس الاتصال، يمكن نقل البيانات في كلا الاتجاهين. يحتوي TCP على أنظمة مدمجة لفحص الأخطاء وضمان توصيل البيانات في نفس الترتيب الذي تم إرسالها، مما يجعله البروتوكول المثالي لنقل المعلومات مثل الصور الثابتة، وملفات البيانات، وصفحات الويب.
 
 ![tcp](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/tcp-and-udp/tcp.png)
 
-But while TCP is instinctively reliable, its feedback mechanisms also result in a larger overhead, translating to greater use of the available bandwidth on the network.
+ولكن على الرغم من أن TCP موثوق تلقائيًا، فإن آليات ردود الفعل الخاصة به تؤدي أيضًا إلى زيادة العبء التشغيلي، مما يترجم إلى استخدام أكبر لعرض النطاق الترددي المتاح على الشبكة.
 
 ## UDP
 
-User Datagram Protocol (UDP) is a simpler, connectionless internet protocol in which error-checking and recovery services are not required. With UDP, there is no overhead for opening a connection, maintaining a connection, or terminating a connection. Data is continuously sent to the recipient, whether or not they receive it.
+بروتوكول مستخدم الحزم (UDP) هو بروتوكول بسيط أكثر وغير متصل بالشبكة حيث لا تُطلب خدمات فحص الأخطاء واستعادة البيانات. مع UDP، لا يوجد عبء لفتح اتصال، والحفاظ على اتصال، أو إنهاء اتصال. يتم إرسال البيانات باستمرار إلى المستلم، سواء كان قد استلمها أم لا.
 
 ![udp](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/tcp-and-udp/udp.png)
 
-It is largely preferred for real-time communications like broadcast or multicast network transmission. We should use UDP over TCP when we need the lowest latency and late data is worse than the loss of data.
+يفضل بشكل كبير في حالات الاتصالات في الوقت الحقيقي مثل البث أو النقل المتعدد الاتجاهات. ينبغي أن نستخدم UDP على TCP عندما نحتاج إلى أدنى تأخير ويكون فقدان البيانات أسوأ من فقدان البيانات.
 
-## TCP vs UDP
+## TCP مقابل UDP
 
-TCP is a connection-oriented protocol, whereas UDP is a connectionless protocol. A key difference between TCP and UDP is speed, as TCP is comparatively slower than UDP. Overall, UDP is a much faster, simpler, and more efficient protocol, however, retransmission of lost data packets is only possible with TCP.
+TCP هو بروتوكول موجه للاتصال، بينما UDP هو بروتوكول غير متصل بالشبكة. الفرق الرئيسي بين TCP و UDP هو السرعة، حيث يكون TCP أبطأ نسبيًا من UDP. بشكل عام، يعتبر UDP بروتوكولًا أسرع وأبسط وأكثر كفاءة، ولكن يمكن فقط إعادة نقل الحزم المفقودة باستخدام TCP.
 
-TCP provides ordered delivery of data from user to server (and vice versa), whereas UDP is not dedicated to end-to-end communications, nor does it check the readiness of the receiver.
+يوفر TCP تسليم البيانات بترتيب من المستخدم إلى الخادم (والعكس بالعكس)، بينما لا تُكرّس UDP للاتصالات من طرف إلى طرف، ولا يفحص جاهزية المستقبل.
 
-| Feature             | TCP                                         | UDP                                |
-| ------------------- | ------------------------------------------- | ---------------------------------- |
-| Connection          | Requires an established connection          | Connectionless protocol            |
-| Guaranteed delivery | Can guarantee delivery of data              | Cannot guarantee delivery of data  |
-| Re-transmission     | Re-transmission of lost packets is possible | No re-transmission of lost packets |
-| Speed               | Slower than UDP                             | Faster than TCP                    |
-| Broadcasting        | Does not support broadcasting               | Supports broadcasting              |
-| Use cases           | HTTPS, HTTP, SMTP, POP, FTP, etc            | Video streaming, DNS, VoIP, etc    |
+| الميزة              | TCP                                            | UDP                              |
+| -------------------- | --------------------------------------------- | -------------------------------- |
+| الاتصال             | يتطلب اتصال مؤسس                             | بروتوكول بدون اتصال            |
+| توصيل مضمون        | يمكن ضمان توصيل البيانات                  | لا يمكن ضمان توصيل البيان
+
+ات   |
+| إعادة النقل        | يمكن إعادة نقل الحزم المفقودة             | لا توجد إعادة نقل للحزم المفقودة |
+| السرعة              | أبطأ من UDP                                  | أسرع من TCP                    |
+| البث المتعدد       | لا يدعم البث المتعدد                        | يدعم البث المتعدد              |
+| حالات الاستخدام    | HTTPS، HTTP، SMTP، POP، FTP، وغيرها         | بث الفيديو، DNS، VoIP، وغيرها  |
 
 # Domain Name System (DNS)
 
