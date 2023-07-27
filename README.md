@@ -150,57 +150,58 @@ _مثال: عادةً ما تُستخدم للأمور المهمة مثل خد�
 
 _مثال: عادةً ما تُستخدم بشكل أكثر شيوعًا للأجهزة الاستهلاكية والاستخدام الشخصي._
 
-# OSI Model
+# نموذج OSI
 
-The OSI Model is a logical and conceptual model that defines network communication used by systems open to interconnection and communication with other systems. The Open System Interconnection (OSI Model) also defines a logical network and effectively describes computer packet transfer by using various layers of protocols.
+نموذج OSI هو نموذج منطقي ومفهومي يحدد اتصالات الشبكة المستخدمة في الأنظمة المفتوحة للتواصل والتفاعل مع الأنظمة الأخرى. يحدد نموذج النظام المفتوح (نموذج OSI) أيضًا شبكة منطقية ويصف بفعالية نقل حزم الكمبيوتر باستخدام طبقات متعددة من البروتوكولات.
 
-The OSI Model can be seen as a universal language for computer networking. It's based on the concept of splitting up a communication system into seven abstract layers, each one stacked upon the last.
+يمكن اعتبار نموذج OSI لغة عالمية لشبكات الكمبيوتر. يستند إلى مفهوم تقسيم نظام الاتصال إلى سبع طبقات مجردة، يتم تراكم كل طبقة منها فوق الطبقة السابقة.
 
-## Why does the OSI model matter?
+## لماذا يهم نموذج OSI؟
 
-The Open System Interconnection (OSI) model has defined the common terminology used in networking discussions and documentation. This allows us to take a very complex communications process apart and evaluate its components.
+نموذج النظام المفتوح (OSI) قد حدد المصطلحات الشائعة المستخدمة في مناقشات الشبكات والوثائق. يسمح لنا ذلك بتفكيك عملية الاتصال المعقدة وتقييم مكوناتها.
 
-While this model is not directly implemented in the TCP/IP networks that are most common today, it can still help us do so much more, such as:
+على الرغم من أن هذا النموذج لا يُطبق مباشرة في شبكات TCP/IP الأكثر شيوعًا اليوم، إلا أنه ما زال يمكننا من فعل الكثير من الأشياء، مثل:
 
-- Make troubleshooting easier and help identify threats across the entire stack.
-- Encourage hardware manufacturers to create networking products that can communicate with each other over the network.
-- Essential for developing a security-first mindset.
-- Separate a complex function into simpler components.
+- جعل عملية إصلاح الأخطاء أسهل والتعرف على التهديدات عبر جميع الطبقات.
+- تشجيع مصنعي الأجهزة على إنشاء منتجات شبكية يمكنها التواصل مع بعضها البعض عبر الشبكة.
+- ضروري لتطوير عقلية أمان متقدمة.
+- تقسيم وظيفة معقدة إلى مكونات أبسط.
 
-## Layers
+## الطبقات
 
-The seven abstraction layers of the OSI model can be defined as follows, from top to bottom:
+يمكن تعريف الطبقات السبع المجردة لنموذج OSI على النحو التالي، من الأعلى إلى الأسفل:
 
 ![osi-model](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/osi-model/osi-model.png)
 
-### Application
+### التطبيق (Application)
 
-This is the only layer that directly interacts with data from the user. Software applications like web browsers and email clients rely on the application layer to initiate communication. But it should be made clear that client software applications are not part of the application layer, rather the application layer is responsible for the protocols and data manipulation that the software relies on to present meaningful data to the user. Application layer protocols include HTTP as well as SMTP.
+هذه هي الطبقة الوحيدة التي تتفاعل مباشرة مع بيانات المستخدم. تعتمد تطبيقات البرامج مثل متصفحات الويب وعملاء البريد الإلكتروني على طبقة التطبيق لبدء الاتصال. ولكن ينبغي أن يكون من الواضح أن تطبيقات البرامج العميل ليست جزءًا من طبقة التطبيق، بل تقوم طبقة التطبيق بالمسؤولية عن البروتوكولات وتلاعب البيانات التي يعتمد عليها البرنامج لتقديم بيانات معنوية للمستخدم. تتضمن بروتوكولات طبقة التطبيق HTTP وكذلك SMTP.
 
-### Presentation
+### العرض (Presentation)
 
-The presentation layer is also called the Translation layer. The data from the application layer is extracted here and manipulated as per the required format to transmit over the network. The functions of the presentation layer are translation, encryption/decryption, and compression.
+طبقة العرض تُسمى أيضًا طبقة الترجمة. تُستخرج البيانات من طبقة التطبيق هنا ويتم تعديلها حسب التنسيق المطلوب لنقلها عبر الشبكة. تتضمن وظائف طبقة العرض الترجمة والتشفير/فك التشفير والضغط.
 
-### Session
+### الجلسة (Session)
 
-This is the layer responsible for opening and closing communication between the two devices. The time between when the communication is opened and closed is known as the session. The session layer ensures that the session stays open long enough to transfer all the data being exchanged, and then promptly closes the session in order to avoid wasting resources. The session layer also synchronizes data transfer with checkpoints.
+هذه هي الطبقة المسؤولة عن فتح وإغلاق الاتصال بين الجهازين. الوقت الذي يستغرقه الاتصال منذ فتحه حتى إغلاقه يُعرف بالجلسة. تضمن طبقة الجلسة أن تظل الجلسة مفتوحة بما فيه الكفاية لنقل جميع البيانات المتبادلة، ثم تغلق الجلسة على الفور لتجنب إهدار الموارد. تزامن طبقة الجلسة أيضًا نقل البيانات مع نقاط التحقق.
 
-### Transport
+### النقل (Transport)
 
-The transport layer (also known as layer 4) is responsible for end-to-end communication between the two devices. This includes taking data from the session layer and breaking it up into chunks called segments before sending it to the Network layer (layer 3). It is also responsible for reassembling the segments on the receiving device into data the session layer can consume.
+طبقة النقل (المعروفة أيضًا بالطبقة 4) مسؤولة عن الاتصال من نهاية إلى أخرى بين الجهازين. يشمل ذلك أخذ البيانات من طبقة الجلسة وتجزئتها إلى قطع تسمى الشرائح ق
 
-### Network
+بل إرسالها إلى طبقة الشبكة (الطبقة 3). كما أنها مسؤولة عن إعادة تجميع الشرائح على الجهاز الاستقبالي إلى بيانات يمكن لطبقة الجلسة استهلاكها.
 
-The network layer is responsible for facilitating data transfer between two different networks. The network layer breaks up segments from the transport layer into smaller units, called packets, on the sender's device, and reassembles these packets on the receiving device. The network layer also finds the best physical path for the data to reach its destination this is known as routing. If the two devices communicating are on the same network, then the network layer is unnecessary.
+### الشبكة (Network)
 
-### Data Link
+طبقة الشبكة مسؤولة عن تس faciliti faciliting نقل البيانات بين شبكتين مختلفتين. تقوم طبقة الشبكة بتجزئة الشرائح من طبقة النقل إلى وحدات أصغر، تُسمى الحزم، على الجهاز الإرسالي، وإعادة تجميع هذه الحزم على الجهاز الاستقبالي. تبحث طبقة الشبكة أيضًا عن أفضل مسار مادي للبيانات للوصول إلى وجهتها، وهذا ما يُعرف بالتوجيه. إذا كان الجهازين المتصلين على نفس الشبكة، فإن طبقة الشبكة غير ضرورية.
 
-The data link layer is very similar to the network layer, except the data link layer facilitates data transfer between two devices on the same network. The data link layer takes packets from the network layer and breaks them into smaller pieces called frames.
+### الرابط البيانات (Data Link)
 
-### Physical
+طبقة الرابط البيانات مشابهة جدًا لطبقة الشبكة، باستثناء أن طبقة الرابط البيانات تس faciliti faciliting نقل البيانات بين جهازين على نفس الشبكة. تأخذ طبقة الرابط البيانات الحزم من طبقة الشبكة وتقسمها إلى أجزاء أصغر تُسمى الإطارات.
 
-This layer includes the physical equipment involved in the data transfer, such as the cables and switches. This is also the layer where the data gets converted into a bit stream, which is a string of 1s and 0s. The physical layer of both devices must also agree on a signal convention so that the 1s can be distinguished from the 0s on both devices.
+### الطبقة المادية (Physical)
 
+تشمل هذه الطبقة المعدات المادية المشاركة في نقل البيانات، مثل الكابلات والمفاتيح (السويتشات). هذه أيضًا الطبقة التي يتم فيها تحويل البيانات إلى تسلسل بتي، وهو سلسلة من الأصفار والواحدات. يجب أن تتفق طبقة المادية في كلا الجهازين على اتفاق إشارة بحيث يمكن تمييز الأصفار عن الواحدات على كلا الجهازين.
 # TCP and UDP
 
 ## TCP
