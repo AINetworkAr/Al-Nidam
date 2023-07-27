@@ -334,112 +334,116 @@ ycast](https://en.wikipedia.org/wiki/Anycast) لتوفير استجابة سري
 - [Azure DNS](https://azure.microsoft.com/en-in/services/dns)
 - [NS1](https://ns1.com/products/managed-dns)
 
-# Load Balancing
+# توزيع الحمل
 
-Load balancing lets us distribute incoming network traffic across multiple resources ensuring high availability and reliability by sending requests only to resources that are online. This provides the flexibility to add or subtract resources as demand dictates.
+توزيع الحمل يسمح لنا بتوزيع حركة المرور الشبكية الواردة عبر مصادر متعددة لضمان التوافر العالي والموثوقية عن طريق إرسال الطلبات فقط إلى المصادر التي تكون متصلة بالشبكة وجاهزة للعمل. يوفر هذا المرونة في إضافة أو إزالة المصادر حسب الطلب.
 
-![load-balancing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/load-balancing/load-balancer.png)
+![توزيع الحمل](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/load-balancing/load-balancer.png)
 
-For additional scalability and redundancy, we can try to load balance at each layer of our system:
+للحصول على مزيد من التوسعية والاحتياطية، يمكننا تطبيق توزيع الحمل على كل طبقة في نظامنا:
 
-![load-balancing-layers](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/load-balancing/load-balancer-layers.png)
+![طبقات توزيع الحمل](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/load-balancing/load-balancer-layers.png)
 
-## But why?
+## لكن لماذا؟
 
-Modern high-traffic websites must serve hundreds of thousands, if not millions, of concurrent requests from users or clients. To cost-effectively scale to meet these high volumes, modern computing best practice generally requires adding more servers.
+يجب أن تكون المواقع الحديثة عالية الحركة قادرة على تلبية مئات الآلاف، إن لم يكن الملايين، من الطلبات المتزامنة من المستخدمين. لتحقيق التوسع الفعال لتلبية هذه الأحمال العالية، يتطلب المعتمد عليه في الحوسبة الحديثة إضافة مزيد من الخوادم.
 
-A load balancer can sit in front of the servers and route client requests across all servers capable of fulfilling those requests in a manner that maximizes speed and capacity utilization. This ensures that no single server is overworked, which could degrade performance. If a single server goes down, the load balancer redirects traffic to the remaining online servers. When a new server is added to the server group, the load balancer automatically starts sending requests to it.
+يمكن أن يكون توزيع الحمل أمام الخوادم وتوجيه طلبات العملاء عبر جميع الخوادم القادرة على تلبية هذه الطلبات بطريقة تزيد من سرعة واستخدام القدرات. يضمن هذا ألا يتم استغلال خادم واحد بشكل مفرط، مما قد يؤدي إلى تدهور الأداء. إذا تعطل خادم واحد، يقوم توزيع الحمل بإعادة توجيه حركة المرور إلى الخوادم المتاحة. عند إضافة خادم جديد إلى مجموعة الخوادم، يقوم توزيع الحمل تلقائيًا ببدء إرسال الطلبات إليه.
 
-## Workload distribution
+## توزيع الأعباء العمل
 
-This is the core functionality provided by a load balancer and has several common variations:
+هذه هي الوظيفة الأساسية التي يقدمها توزيع الحمل ولها العديد من التغييرات الشائعة:
 
-- **Host-based**: Distributes requests based on the requested hostname.
-- **Path-based**: Using the entire URL to distribute requests as opposed to just the hostname.
-- **Content-based**: Inspects the message content of a request. This allows distribution based on content such as the value of a parameter.
+- **بناءً على المضيف**: يوزع الطلبات بناءً على اسم المضيف المطلوب.
+- **بناءً على المسار**: يستخدم العنوان الكامل لعنوان URL لتوزيع الطلبات بدلاً من المضيف فقط.
+- **بناءً على المحتوى**: يفحص محتوى الرسالة للطلب. يتيح ذلك التوزيع بناءً على المحتوى مثل قيمة معلمة معينة.
 
-## Layers
+## الطبقات
 
-Generally speaking, load balancers operate at one of the two levels:
+بشكل عام، يعمل توزيع الحمل على أحد المستويين التاليين:
 
-### Network layer
+### الطبقة الشبكية
 
-This is the load balancer that works at the network's transport layer, also known as layer 4. This performs routing based on networking information such as IP addresses and is not able to perform content-based routing. These are often dedicated hardware devices that can operate at high speed.
+هذا هو توزيع الحمل الذي يعمل على مستوى الشبكة ويعرف أيضًا باسم المستوى 4. يقوم بالتو
 
-### Application layer
+جيه بناءً على معلومات الشبكة مثل عناوين IP ولا يمكنه القيام بتوجيه بناءً على المحتوى. عادة ما تكون هذه الأجهزة مخصصة لتوزيع الحمل وتستطيع العمل بسرعة عالية.
 
-This is the load balancer that operates at the application layer, also known as layer 7. Load balancers can read requests in their entirety and perform content-based routing. This allows the management of load based on a full understanding of traffic.
+### الطبقة التطبيقية
 
-## Types
+هذا هو توزيع الحمل الذي يعمل على مستوى التطبيق ويعرف أيضًا باسم المستوى 7. يمكن لتوزيع الحمل قراءة الطلبات بأكملها والقيام بتوزيع بناءً على المحتوى. يتيح ذلك إدارة الحمل بناءً على فهم كامل لحركة المرور.
 
-Let's look at different types of load balancers:
+## الأنواع
 
-### Software
+لنلقي نظرة على أنواع مختلفة من توزيع الحمل:
 
-Software load balancers usually are easier to deploy than hardware versions. They also tend to be more cost-effective and flexible, and they are used in conjunction with software development environments. The software approach gives us the flexibility of configuring the load balancer to our environment's specific needs. The boost in flexibility may come at the cost of having to do more work to set up the load balancer. Compared to hardware versions, which offer more of a closed-box approach, software balancers give us more freedom to make changes and upgrades.
+### البرمجيات
 
-Software load balancers are widely used and are available either as installable solutions that require configuration and management or as a managed cloud service.
+غالبًا ما تكون الحملات البرمجية أسهل في التنفيذ مقارنة بالإصدارات الأجهزة. كما أنها تميل إلى أن تكون أكثر كفاءة من حيث التكلفة ومرونة، وتُستخدم بالتعاون مع بيئات تطوير البرمجيات. يمنحنا النهج البرمجي مرونة تكوين موازن الحمل وفقًا لاحتياجات بيئتنا الخاصة. وقد يكون هذا التحسين في المرونة على حساب الحاجة للقيام بمزيد من العمل لإعداد توازن الحمل. بالمقارنة مع الإصدارات الأجهزة التي توفر نهجًا أكثر تقييدًا، تمنحنا الأنظمة البرمجية حرية أكبر لإجراء التغييرات والترقيات.
 
-### Hardware
+تُستخدم الحملات البرمجية على نطاق واسع وتتوفر إما كحلول قابلة للتثبيت تتطلب التكوين والإدارة، أو كخدمة سحابية مُدارة.
 
-As the name implies, a hardware load balancer relies on physical, on-premises hardware to distribute application and network traffic. These devices can handle a large volume of traffic but often carry a hefty price tag and are fairly limited in terms of flexibility.
+### الأجهزة
 
-Hardware load balancers include proprietary firmware that requires maintenance and updates as new versions, and security patches are released.
+كما يوحي الاسم، يعتمد توزيع الحمل على الأجهزة الفعلية في الموقع لتوزيع حركة التطبيق والشبكة. يمكن أن تتعامل هذه الأجهزة مع حجم كبير من حركة المرور ولكنها غالبًا ما تحمل تكلفة باهظة ومحدودة إلى حد ما من حيث المرونة.
+
+تشتمل أجهزة توزيع الحمل على برامج محددة تتطلب صيانة وتحديثات عند صدور الإصدارات الجديدة والتصحيحات الأمنية.
 
 ### DNS
 
-DNS load balancing is the practice of configuring a domain in the Domain Name System (DNS) such that client requests to the domain are distributed across a group of server machines.
+توزيع الحمل في نظام أسماء النطاقات (DNS) يتضمن تكوين نطاق في نظام أسماء النطاقات بحيث تتم توزيع طلبات العملاء عبر مجموعة من خوادم الخادم.
 
-Unfortunately, DNS load balancing has inherent problems limiting its reliability and efficiency. Most significantly, DNS does not check for server and network outages, or errors. It always returns the same set of IP addresses for a domain even if servers are down or inaccessible.
+مع الأسف، يعاني توزيع الحمل في نظام أسماء النطاقات من مشكلات تقلل من موثوقيته وكفاءته. الأمر الأكثر أهمية هو أن نظام أسماء النطاقات لا يتحقق من تعطل الخوادم أو الشبكات أو الأخطاء. دائمًا ما يعيد نفس مجموعة عناوين IP لنطاق حتى إذا كانت الخوادم غير متصلة بالشبكة أو لا يمكن الوصول إليها.
 
-## Routing Algorithms
+## خوارزميات التوجيه
 
-Now, let's discuss commonly used routing algorithms:
+الآن، دعنا نناقش بعض خوارزميات التوجيه الشائعة المستخدمة:
 
-- **Round-robin**: Requests are distributed to application servers in rotation.
-- **Weighted Round-robin**: Builds on the simple Round-robin technique to account for differing server characteristics such as compute and traffic handling capacity using weights that can be assigned via DNS records by the administrator.
-- **Least Connections**: A new request is sent to the server with the fewest current connections to clients. The relative computing capacity of each server is factored into determining which one has the least connections.
-- **Least Response Time**: Sends requests to the server selected by a formula that combines the fastest response time and fewest active connections.
-- **Least Bandwidth**: This method measures traffic in megabits per second (Mbps), sending client requests to the server with the least Mbps of traffic.
-- **Hashing**: Distributes requests based on a key we define, such as the client IP address or the request URL.
+- **Round-robin**: يتم توزيع الطلبات ع
 
-## Advantages
+لى خوادم التطبيق بالتناوب.
+- **Weighted Round-robin**: يعتمد على تقنية Round-robin البسيطة ويأخذ في اعتبار خصائص الخادم المختلفة مثل قدرة الحساب ومعالجة حركة المرور باستخدام أوزان يمكن تعيينها عن طريق سجلات DNS من قبل المسؤول.
+- **Least Connections**: يتم إرسال طلب جديد إلى الخادم الذي يحتوي على أقل عدد من الاتصالات الحالية إلى العملاء. يتم احتساب القدرة الحسابية النسبية لكل خادم عند تحديد الخادم الذي يحتوي على أقل عدد من الاتصالات.
+- **Least Response Time**: يرسل الطلبات إلى الخادم الذي تم اختياره باستخدام معادلة تجمع بين أسرع وقت استجابة وأقل عدد من الاتصالات النشطة.
+- **Least Bandwidth**: يقيس حركة المرور بالميجابت في الثانية (ميغابت في الثانية) ويقوم بإرسال طلبات العملاء إلى الخادم الذي يحتوي على أدنى ميجابت في الثانية من حركة المرور.
+- **Hashing**: يوزع الطلبات بناءً على مفتاح نحدده مثل عنوان IP الخاص بالعميل أو عنوان URL للطلب.
 
-Load balancing also plays a key role in preventing downtime, other advantages of load balancing include the following:
+## المزايا
 
-- Scalability
-- Redundancy
-- Flexibility
-- Efficiency
+تلعب توزيع الحمل أيضًا دورًا رئيسيًا في منع التوقف، وتشمل المزايا الأخرى لتوزيع الحمل ما يلي:
 
-## Redundant load balancers
+- التوسعية
+- الاحتياطية
+- المرونة
+- الكفاءة
 
-As you must've already guessed, the load balancer itself can be a single point of failure. To overcome this, a second or `N` number of load balancers can be used in a cluster mode.
+## توزيع الأحمال المكررة
 
-And, if there's a failure detection and the _active_ load balancer fails, another _passive_ load balancer can take over which will make our system more fault-tolerant.
+كما يمكن أن نتوقع، فإن توزيع الحمل نفسه يمكن أن يكون نقطة فردية للفشل. للتغلب على ذلك، يمكن استخدام خادم آخر أو عدد "N" من خوادم التوزيع في وضع عنقودي.
 
-![redundant-load-balancing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/load-balancing/redundant-load-balancer.png)
+وإذا كان هناك اكتشاف للفشل وفشل الخادم التوزيع "النشط"، يمكن لخادم آخر "السلبي" أن يتولى السيطرة مما يجعل نظامنا أكثر قدرة على تحمل الأخطاء.
 
-## Features
+## المميزات
 
-Here are some commonly desired features of load balancers:
+فيما يلي بعض الميزات المطلوبة بشكل شائع لخوادم التوزيع:
 
-- **Autoscaling**: Starting up and shutting down resources in response to demand conditions.
-- **Sticky sessions**: The ability to assign the same user or device to the same resource in order to maintain the session state on the resource.
-- **Healthchecks**: The ability to determine if a resource is down or performing poorly in order to remove the resource from the load balancing pool.
-- **Persistence connections**: Allowing a server to open a persistent connection with a client such as a WebSocket.
-- **Encryption**: Handling encrypted connections such as TLS and SSL.
-- **Certificates**: Presenting certificates to a client and authentication of client certificates.
-- **Compression**: Compression of responses.
-- **Caching**: An application-layer load balancer may offer the ability to cache responses.
-- **Logging**: Logging of request and response metadata can serve as an important audit trail or source for analytics data.
-- **Request tracing**: Assigning each request a unique id for the purposes of logging, monitoring, and troubleshooting.
-- **Redirects**: The ability to redirect an incoming request based on factors such as the requested path.
-- **Fixed response**: Returning a static response for a request such as an error message.
+- **التوسع التلقائي**: تشغيل وإيقاف الموارد استجابةً لظروف الطلب.
+- **جلسات لاصقة**: القدرة على تعيين نفس المستخدم أو الجهاز إلى نفس المصدر للحفاظ على حالة الجلسة على المصدر.
+- **فحص الصحة**: القدرة على تحديد ما إذا كان مصدر ما غير متصل أو يعمل بشكل سيئ لإزالته من مجموعة توزيع الحمل.
+- **الاتصالات الثابتة**: السماح للخادم بفتح اتصال ثابت مع العميل مثل WebSocket.
+- **التشفير**: التعامل مع الاتصالات المشفرة مثل TLS و SSL.
+- **الشهادات**: تقديم شهادات للعميل ومصادقة شهادات العميل.
+- **ضغط البيانات**: ضغط الاستجابات.
+- **التخزين المؤقت**: قد يقدم خادم توزيع الحمل القدرة على تخزين مؤقت للاستجابات.
+- **تسجيل الأحداث**: تسجيل بيانات الطلب والاستجابة يمكن أن يكون مسارًا تدقيقًا هامًا أو مصدرًا لبيانات التحليل.
+- **تتبع الطلبات**: تعيين معرف فريد لكل طلب لأغراض التسجيل والمراقبة وإصلاح الأخطاء.
+- **إعادة التوجيه**: القدرة على إعادة توجيه طلب وارد بناءً على عوامل مثل المسار المطلوب.
+- **استجابة ثابتة**: إرجاع استجابة ثابتة للطلب مثل رسالة خطأ.
 
-## Examples
+## أمثلة
 
-Following are some of the load balancing solutions commonly used in the industry:
+فيما يلي بعض حلول توزيع الح
+
+مل المستخدمة على نطاق واسع في الصناعة:
 
 - [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing)
 - [Azure Load Balancing](https://azure.microsoft.com/en-in/services/load-balancer)
@@ -447,6 +451,8 @@ Following are some of the load balancing solutions commonly used in the industry
 - [DigitalOcean Load Balancer](https://www.digitalocean.com/products/load-balancer)
 - [Nginx](https://www.nginx.com)
 - [HAProxy](http://www.haproxy.org)
+
+
 
 # Clustering
 
