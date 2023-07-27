@@ -6,7 +6,7 @@ _يمكنك أيضًا الحصول على هذه الدورة على موقعي
 
 # جدول المحتويات
 
-- **البدء**
+- **مقدمة**
 
   - [ما هو تصميم النظم؟](#what-is-system-design)
 
@@ -67,9 +67,7 @@ _يمكنك أيضًا الحصول على هذه الدورة على موقعي
   - [SLA و SLO و SLI](#sla-slo-sli)
   - [استعادة الكوارث (Disaster recovery)](#disaster-recovery)
   - [الآلات الافتراضية (VMs) والحاويات (Containers)](#virtual-machines-vms-and-containers)
-  - [OAuth 2.0 وOpenID Connect (OID
-
-C)](#oauth-20-and-openid-connect-oidc)
+  - [OAuth 2.0 وOpenID Connect (OIDC)](#oauth-20-and-openid-connect-oidc)
   - [تسجيل الدخول الموحد (SSO)](#single-sign-on-sso)
   - [SSL وTLS وmTLS](#ssl-tls-mtls)
 
