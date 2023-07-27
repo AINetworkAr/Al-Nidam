@@ -1,89 +1,91 @@
-# System Design Course
+# دورة تصميم النظم
 
-Hey, welcome to the course. I hope this course provides a great learning experience.
+مرحبًا، أهلاً بك في الدورة. آمل أن توفر لك هذه الدورة تجربة تعلم رائعة.
 
-_This course is also available on my [website](https://karanpratapsingh.com/courses/system-design) and as an ebook on [leanpub](https://leanpub.com/systemdesign). Please leave a ⭐ as motivation if this was helpful!_
+_يمكنك أيضًا الحصول على هذه الدورة على موقعي الإلكتروني [هنا](https://karanpratapsingh.com/courses/system-design) وكذلك ككتاب إلكتروني على [leanpub](https://leanpub.com/systemdesign). يُرجى تقييم الدورة بنجمة واحدة كتحفيز إذا كانت مفيدة لك!_
 
-# Table of contents
+# جدول المحتويات
 
-- **Getting Started**
+- **البدء**
 
-  - [What is system design?](#what-is-system-design)
+  - [ما هو تصميم النظم؟](#what-is-system-design)
 
-- **Chapter I**
+- **الفصل الأول**
 
-  - [IP](#ip)
-  - [OSI Model](#osi-model)
-  - [TCP and UDP](#tcp-and-udp)
-  - [Domain Name System (DNS)](#domain-name-system-dns)
-  - [Load Balancing](#load-balancing)
-  - [Clustering](#clustering)
-  - [Caching](#caching)
-  - [Content Delivery Network (CDN)](#content-delivery-network-cdn)
-  - [Proxy](#proxy)
-  - [Availability](#availability)
-  - [Scalability](#scalability)
-  - [Storage](#storage)
+  - [بروتوكول الإنترنت (IP)](#ip)
+  - [نموذج OSI](#osi-model)
+  - [بروتوكولات TCP و UDP](#tcp-and-udp)
+  - [نظام اسم المجال (DNS)](#domain-name-system-dns)
+  - [توازن الحمل (Load Balancing)](#load-balancing)
+  - [التجميع (Clustering)](#clustering)
+  - [التخزين المؤقت (Caching)](#caching)
+  - [شبكة توزيع المحتوى (CDN)](#content-delivery-network-cdn)
+  - [البروكسي (Proxy)](#proxy)
+  - [التوفر (Availability)](#availability)
+  - [التوسعية (Scalability)](#scalability)
+  - [التخزين (Storage)](#storage)
 
-- **Chapter II**
+- **الفصل الثاني**
 
-  - [Databases and DBMS](#databases-and-dbms)
-  - [SQL databases](#sql-databases)
-  - [NoSQL databases](#nosql-databases)
-  - [SQL vs NoSQL databases](#sql-vs-nosql-databases)
-  - [Database Replication](#database-replication)
-  - [Indexes](#indexes)
-  - [Normalization and Denormalization](#normalization-and-denormalization)
-  - [ACID and BASE consistency models](#acid-and-base-consistency-models)
-  - [CAP theorem](#cap-theorem)
-  - [PACELC Theorem](#pacelc-theorem)
-  - [Transactions](#transactions)
-  - [Distributed Transactions](#distributed-transactions)
-  - [Sharding](#sharding)
-  - [Consistent Hashing](#consistent-hashing)
-  - [Database Federation](#database-federation)
+  - [قواعد البيانات ونظام إدارة قواعد البيانات (DBMS)](#databases-and-dbms)
+  - [قواعد البيانات ذات اللغة الهيكلية (SQL)](#sql-databases)
+  - [قواعد البيانات غير اللغة الهيكلية (NoSQL)](#nosql-databases)
+  - [قواعد البيانات ذات اللغة الهيكلية مقابل قواعد البيانات غير اللغة الهيكلية](#sql-vs-nosql-databases)
+  - [تكرار قاعدة البيانات (Database Replication)](#database-replication)
+  - [الفهارس (Indexes)](#indexes)
+  - [التطبيع والتجانس (Normalization and Denormalization)](#normalization-and-denormalization)
+  - [نماذج الاتساق ACID و BASE](#acid-and-base-consistency-models)
+  - [نظرية CAP](#cap-theorem)
+  - [نظرية PACELC](#pacelc-theorem)
+  - [المعاملات (Transactions)](#transactions)
+  - [المعاملات الموزعة (Distributed Transactions)](#distributed-transactions)
+  - [التجزئة (Sharding)](#sharding)
+  - [التجزئة الهاشية المتسقة (Consistent Hashing)](#consistent-hashing)
+  - [التوحيد القاعدي (Database Federation)](#database-federation)
 
-- **Chapter III**
+- **الفصل الثالث**
 
-  - [N-tier architecture](#n-tier-architecture)
-  - [Message Brokers](#message-brokers)
-  - [Message Queues](#message-queues)
-  - [Publish-Subscribe](#publish-subscribe)
-  - [Enterprise Service Bus (ESB)](#enterprise-service-bus-esb)
-  - [Monoliths and Microservices](#monoliths-and-microservices)
-  - [Event-Driven Architecture (EDA)](#event-driven-architecture-eda)
-  - [Event Sourcing](#event-sourcing)
-  - [Command and Query Responsibility Segregation (CQRS)](#command-and-query-responsibility-segregation-cqrs)
-  - [API Gateway](#api-gateway)
-  - [REST, GraphQL, gRPC](#rest-graphql-grpc)
-  - [Long polling, WebSockets, Server-Sent Events (SSE)](#long-polling-websockets-server-sent-events-sse)
+  - [الهندسة المتعددة الطبقات (N-tier architecture)](#n-tier-architecture)
+  - [وسطاء الرسائل (Message Brokers)](#message-brokers)
+  - [قوائم الرسائل (Message Queues)](#message-queues)
+  - [النشر والاشتراك (Publish-Subscribe)](#publish-subscribe)
+  - [حافلة الخدمات المؤسسية (ESB)](#enterprise-service-bus-esb)
+  - [الأحجام الضخمة والخدمات المصغرة (Monoliths and Microservices)](#monoliths-and-microservices)
+  - [هندسة المعمارية المستندة إلى الأحداث (EDA)](#event-driven-architecture-eda)
+  - [تتبع الأحداث (Event Sourcing)](#event-sourcing)
+  - [فصل المسؤولية بين الأوامر والاستعلامات (CQRS)](#command-and-query-responsibility-segregation-cqrs)
+  - [بوابة واجهة برمجة التطبيقات (API Gateway)](#api-gateway)
+  - [REST وGraphQL وgRPC](#rest-graphql-grpc)
+  - [الاستطلاع الطويل والمقابس الشبكية وأحداث الخادم المُرسَل (SSE)](#long-polling-websockets-server-sent-events-sse)
 
-- **Chapter IV**
+- **الفصل الرابع**
 
-  - [Geohashing and Quadtrees](#geohashing-and-quadtrees)
-  - [Circuit breaker](#circuit-breaker)
-  - [Rate Limiting](#rate-limiting)
-  - [Service Discovery](#service-discovery)
-  - [SLA, SLO, SLI](#sla-slo-sli)
-  - [Disaster recovery](#disaster-recovery)
-  - [Virtual Machines (VMs) and Containers](#virtual-machines-vms-and-containers)
-  - [OAuth 2.0 and OpenID Connect (OIDC)](#oauth-20-and-openid-connect-oidc)
-  - [Single Sign-On (SSO)](#single-sign-on-sso)
-  - [SSL, TLS, mTLS](#ssl-tls-mtls)
+  - [التشفير الجغرافي وأشجار الرباعيات (Geohashing and Quadtrees)](#geohashing-and-quadtrees)
+  - [المفتاح الكهربائي (Circuit breaker)](#circuit-breaker)
+  - [تحديد المعدل (Rate Limiting)](#rate-limiting)
+  - [اكتشاف الخدمات (Service Discovery)](#service-discovery)
+  - [SLA و SLO و SLI](#sla-slo-sli)
+  - [استعادة الكوارث (Disaster recovery)](#disaster-recovery)
+  - [الآلات الافتراضية (VMs) والحاويات (Containers)](#virtual-machines-vms-and-containers)
+  - [OAuth 2.0 وOpenID Connect (OID
 
-- **Chapter V**
+C)](#oauth-20-and-openid-connect-oidc)
+  - [تسجيل الدخول الموحد (SSO)](#single-sign-on-sso)
+  - [SSL وTLS وmTLS](#ssl-tls-mtls)
 
-  - [System Design Interviews](#system-design-interviews)
-  - [URL Shortener](#url-shortener)
-  - [WhatsApp](#whatsapp)
-  - [Twitter](#twitter)
-  - [Netflix](#netflix)
-  - [Uber](#uber)
+- **الفصل الخامس**
 
-- **Appendix**
+  - [مقابلات تصميم النظم](#system-design-interviews)
+  - [مُختصر عناوين URL](#url-shortener)
+  - [تطبيق واتساب](#whatsapp)
+  - [تطبيق تويتر](#twitter)
+  - [خدمة نتفليكس](#netflix)
+  - [خدمة أوبر](#uber)
 
-  - [Next Steps](#next-steps)
-  - [References](#references)
+- **الملحق**
+
+  - [الخطوات التالية](#next-steps)
+  - [المراجع](#references)
 
 # What is system design?
 
