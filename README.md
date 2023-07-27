@@ -85,22 +85,16 @@ _يمكنك أيضًا الحصول على هذه الدورة على موقعي
   - [الخطوات التالية](#next-steps)
   - [المراجع](#references)
 
-# What is system design?
+# ما هو تصميم النظم؟
 
-Before we start this course, let's talk about what even is system design.
+قبل أن نبدأ هذه الدورة، دعنا نتحدث عن مفهوم تصميم النظم بشكل عام.
 
-System design is the process of defining the architecture, interfaces, and data
-for a system that satisfies specific requirements. System design meets the needs
-of your business or organization through coherent and efficient systems. It requires
-a systematic approach to building and engineering systems. A good system design requires
-us to think about everything, from infrastructure all the way down to the data and how it's stored.
+تصميم النظم هو عملية تحديد الهيكلية والواجهات والبيانات لنظام يلبي المتطلبات المحددة. يهدف تصميم النظم إلى تلبية احتياجات الأعمال أو المؤسسة من خلال نظم متماسكة وفعالة. يتطلب هذا التصميم نهجاً منهجياً لبناء وهندسة الأنظمة. يتطلب تصميم نظام جيد أن نفكر في كل شيء، بدءًا من البنية التحتية وصولاً إلى كيفية تخزين البيانات.
 
-## Why is System Design so important?
+## لماذا يُعتبر تصميم النظم مهمًا جدًا؟
 
-System design helps us define a solution that meets the business requirements. It is
-one of the earliest decisions we can make when building a system. Often it is essential
-to think from a high level as these decisions are very difficult to correct later. It
-also makes it easier to reason about and manage architectural changes as the system evolves.
+يساعد تصميم النظم في تحديد حلاً يلبي متطلبات الأعمال. إنه واحد من أولى القرارات التي يمكننا اتخاذها عند بناء نظام. في كثير من الأحيان، من الضروري التفكير على المستوى العالي نظراً لأن هذه القرارات صعبة التصحيح في وقت لاحق. كما يجعل من السهل استنتاج وإدارة التغييرات المعمارية مع تطور النظام.
+
 
 # IP
 
