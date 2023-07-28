@@ -842,46 +842,47 @@ $$
 
 يتميّز النظام القادر على التحمّل بعدم انقطاع الخدمة، لكنه يتطلب تكلفة أعلى بشكل كبير، بينما يكون النظام ذو التوفُّر العالي لديه انقطاعات خدمة طفيفة. يتطلب التحمُّل توفُّرًا كاملاً للأجهزة، بحيث إذا فشل النظام الرئيسي، بدون فقدان في الوقت الفعال، يجب على نظام آخر أن يتولى المهمة.
 
-# Scalability
+# التوسعية (Scalability)
 
-Scalability is the measure of how well a system responds to changes by adding or removing resources to meet demands.
+التوسعية هي مقياس لمدى استجابة النظام للتغييرات عن طريق إضافة أو إزالة الموارد لتلبية المطالب.
 
 ![scalability](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/scalability/scalability.png)
 
-Let's discuss different types of scaling:
+لنناقش أنواع مختلفة من التوسعية:
 
-## Vertical scaling
+## التوسعية الرأسية
 
-Vertical scaling (also known as scaling up) expands a system's scalability by adding more power to an existing machine. In other words, vertical scaling refers to improving an application's capability via increasing hardware capacity.
+التوسعية الرأسية (المعروفة أيضًا بالتوسع الصعودي) توسع قدرة النظام عن طريق إضافة مزيد من الطاقة إلى الجهاز الحالي. بعبارة أخرى، يُشار بالتوسعية الرأسية إلى تحسين قدرة التطبيق عن طريق زيادة سعة الأجهزة.
 
-### Advantages
+### المزايا
 
-- Simple to implement
-- Easier to manage
-- Data consistent
+- سهولة التنفيذ
+- أسهل للإدارة
+- استقرار البيانات
 
-### Disadvantages
+### العيوب
 
-- Risk of high downtime
-- Harder to upgrade
-- Can be a single point of failure
+- خطر توقف طويل للنظام
+- أصعب للترقية
+- قد يكون نقطة فشل واحدة
 
-## Horizontal scaling
+## التوسعية الأفقية
 
-Horizontal scaling (also known as scaling out) expands a system's scale by adding more machines. It improves the performance of the server by adding more instances to the existing pool of servers, allowing the load to be distributed more evenly.
+التوسعية الأفقية (المعروفة أيضًا بالتوسع التوازي) توسع نطاق النظام عن طريق إضافة المزيد من الأجهزة. يعمل ذلك على تحسين أداء الخادم عن طريق إضافة مزيد من النسخ إلى مجموعة الخوادم الحالية، مما يتيح توزيع الأحمال بشكل أكثر تكافؤًا.
 
-### Advantages
+### المزايا
 
-- Increased redundancy
-- Better fault tolerance
-- Flexible and efficient
-- Easier to upgrade
+- زيادة التكرار
+- تحسين التحمُّل للأخطاء
+- مرونة وكفاءة
+- أسهل للترقية
 
-### Disadvantages
+### العيوب
 
-- Increased complexity
-- Data inconsistency
-- Increased load on downstream services
+- زيادة التعقيد
+- عدم اتساق البيانات
+- زيادة الضغط على الخدمات النازلة
+
 
 # Storage
 
