@@ -523,138 +523,144 @@ ycast](https://en.wikipedia.org/wiki/Anycast) لتوفير استجابة سري
 - قواعد البيانات (مثل [Cassandra](https://cassandra.apache.org/_/index.html)، [MongoDB](https://www.mongodb.com))
 - التخزين المؤقت (مثل [Redis](https://redis.io/docs/manual/scaling))
 
-# Caching
+# التخزين المؤقت (Caching)
 
-_"There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton_
+_"هناك فقط شيئين صعبين في علم الحاسوب: إبطال التخزين المؤقت وتسمية الأشياء." - فيل كارلتون_
 
-![caching](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/caching.png)
+![التخزين المؤقت](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/caching.png)
 
-A cache's primary purpose is to increase data retrieval performance by reducing the need to access the underlying slower storage layer. Trading off capacity for speed, a cache typically stores a subset of data transiently, in contrast to databases whose data is usually complete and durable.
+الهدف الأساسي للتخزين المؤقت هو زيادة أداء استرداد البيانات عن طريق تقليل الحاجة للوصول إلى الطبقة البطيئة الأساسية للتخزين. يتم التضحية بالقدرة من أجل السرعة، حيث يخزن التخزين المؤقت عادةً مجموعة من البيانات بشكل مؤقت، بالمقارنة مع قواعد البيانات التي يكون عادةً بياناتها كاملة ودائمة.
 
-Caches take advantage of the locality of reference principle _"recently requested data is likely to be requested again"._
+يستغل التخزين المؤقت مبدأ قرب المرجعية _"البيانات التي طلبت مؤخرًا من المرجح أن يتم طلبها مرة أخرى"._
 
-## Caching and Memory
+## التخزين المؤقت والذاكرة
 
-Like a computer's memory, a cache is a compact, fast-performing memory that stores data in a hierarchy of levels, starting at level one, and progressing from there sequentially. They are labeled as L1, L2, L3, and so on. A cache also gets written if requested, such as when there has been an update and new content needs to be saved to the cache, replacing the older content that was saved.
+مثل ذاكرة الحاسوب، يعتبر التخزين المؤقت ذاكرة سريعة ومدمجة تقوم بتخزين البيانات في تسلسل من المستويات، حيث يبدأ المستوى الأول (L1) ويتقدم تدريجيًا إلى المستوى التالي وهكذا. تحمل هذه المستويات التسميات L1، L2، L3، وهكذا. يتم أيضًا كتابة التخزين المؤقت عند الطلب، مثل عند وجود تحديث ويجب حفظ محتوى جديد في التخزين المؤقت لاستبدال المحتوى القديم الذي تم حفظه.
 
-No matter whether the cache is read or written, it's done one block at a time. Each block also has a tag that includes the location where the data was stored in the cache. When data is requested from the cache, a search occurs through the tags to find the specific content that's needed in level one (L1) of the memory. If the correct data isn't found, more searches are conducted in L2.
+بغض النظر عما إذا كان التخزين المؤقت يتم قراءته أو كتابته، يتم ذلك بشكل تدريجي على شكل كتلة. كل كتلة تحمل علامة (tag) تشمل الموقع الذي تم تخزين البيانات فيه بالتخزين المؤقت. عندما يتم طلب البيانات من التخزين المؤقت، يتم البحث عن البيانات من خلال العلامات للعثور على المحتوى المطلوب في المستوى الأول (L1) من الذاكرة. إذا لم يتم العثور على البيانات الصحيحة، يتم إجراء بحث إضافي في المستوى الثاني (L2).
 
-If the data isn't found there, searches are continued in L3, then L4, and so on until it has been found, then, it's read and loaded. If the data isn't found in the cache at all, then it's written into it for quick retrieval the next time.
+إذا لم يتم العثور على البيانات هناك، يتم مواصلة البحث في المستوى الثالث (L3)، ثم المستوى الرابع (L4)، وهكذا حتى يتم العثور عليها وقرائتها وتحميله
 
-## Cache hit and Cache miss
+ا. إذا لم يتم العثور على البيانات في التخزين المؤقت على الإطلاق، يتم كتابتها فيه لاستردادها بسرعة في المرة القادمة.
 
-### Cache hit
+## الاصطدام والفاقد في التخزين المؤقت
 
-A cache hit describes the situation where content is successfully served from the cache. The tags are searched in the memory rapidly, and when the data is found and read, it's considered a cache hit.
+### الاصطدام (Cache hit)
 
-**Cold, Warm, and Hot Caches**
+يصف الاصطدام الحالة عندما يتم تقديم المحتوى بنجاح من التخزين المؤقت. تتم البحث في العلامات في الذاكرة بسرعة، وعندما يتم العثور على البيانات وقرائتها، يعتبر ذلك اصطدامًا ناجحًا.
 
-A cache hit can also be described as cold, warm, or hot. In each of these, the speed at which the data is read is described.
+**التخزين المؤقت البارد، الدافئ، والساخن**
 
-A hot cache is an instance where data was read from the memory at the _fastest_ possible rate. This happens when the data is retrieved from L1.
+يمكن وصف الاصطدام بأنه بارد، دافئ، أو ساخن. في كل حالة من هذه الحالات، يتم وصف سرعة قراءة البيانات.
 
-A cold cache is the _slowest_ possible rate for data to be read, though, it's still successful so it's still considered a cache hit. The data is just found lower in the memory hierarchy such as in L3, or lower.
+التخزين المؤقت الساخن يحدث عندما يتم قراءة البيانات من الذاكرة بأسرع معدل ممكن. يحدث هذا عند استرداد البيانات من المستوى الأول (L1).
 
-A warm cache is used to describe data that's found in L2 or L3. It's not as fast as a hot cache, but it's still faster than a cold cache. Generally, calling a cache warm is used to express that it's slower and closer to a cold cache than a hot one.
+التخزين المؤقت البارد هو أبطأ معدل ممكن لقراءة البيانات، لكنه ما زال ناجحًا، لأن البيانات تم العثور عليها في المستوى الأدنى من التسلسل الهرمي مثل المستوى الثالث (L3) أو أدنى.
 
-### Cache miss
+التخزين المؤقت الدافئ يستخدم لوصف البيانات التي تم العثور عليها في المستوى الثاني (L2) أو الثالث (L3). إنه ليس بسرعة التخزين المؤقت الساخن، لكنه أسرع من التخزين المؤقت البارد. عمومًا، يتم استخدام مصطلح التخزين المؤقت الدافئ للتعبير عن بطءه واقترابه من التخزين المؤقت البارد.
 
-A cache miss refers to the instance when the memory is searched, and the data isn't found. When this happens, the content is transferred and written into the cache.
+### الفاقد (Cache miss)
 
-## Cache Invalidation
+يشير الفاقد إلى حالة عدم العثور على البيانات عند البحث في الذاكرة. عندما يحدث هذا، يتم نقل المحتوى وكتابته في التخزين المؤقت.
 
-Cache invalidation is a process where the computer system declares the cache entries as invalid and removes or replaces them. If the data is modified, it should be invalidated in the cache, if not, this can cause inconsistent application behavior. There are three kinds of caching systems:
+## إبطال التخزين المؤقت
 
-### Write-through cache
+إبطال التخزين المؤقت هو عملية تعلن فيها نظام الحاسوب إدخالات التخزين المؤقت كغير صالحة ويقوم بإزالتها أو استبدالها. إذا تم تعديل البيانات، يجب إبطالها في التخزين المؤقت، فإذا لم يتم ذلك، فقد يتسبب ذلك في تواتر غير متناسق في سلوك التطبيق. هناك ثلاثة أنواع من أنظمة التخزين المؤقت:
 
-![write-through-cache](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/write-through-cache.png)
+### التخزين المؤقت المتجاوب بالكتابة (Write-through cache)
 
-Data is written into the cache and the corresponding database simultaneously.
+![التخزين المؤقت المتجاوب بالكتابة](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/write-through-cache.png)
 
-**Pro**: Fast retrieval, complete data consistency between cache and storage.
+يتم كتابة البيانات في التخزين المؤقت وفي قاعدة البيانات المقابلة في وقت واحد.
 
-**Con**: Higher latency for write operations.
+**المزايا**: استرداد سريع، استقامة البيانات الكاملة بين التخزين المؤقت والتخزين الدائم.
 
-### Write-around cache
+**العيوب**: وقت الانتظار الأعلى لعمليات الكتابة.
 
-![write-around-cache](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/write-around-cache.png)
+### التخزين المؤقت المتجاوب بالتجاوز (Write-around cache)
 
-Where write directly goes to the database or permanent storage, bypassing the cache.
+![التخزين المؤقت المتجاوب بالتجاوز](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/write-around-cache.png)
 
-**Pro**: This may reduce latency.
+تذهب الكتابة مباشرة إلى قاعدة البيانات أو التخزين الدائم، متجاوزةً التخزين المؤقت.
 
-**Con**: It increases cache misses because the cache system has to read the information from the database in case of a cache miss. As a result, this can lead to higher read latency in the case of applications that write and re-read the information quickly. Read happen from slower back-end storage and experiences higher latency.
+**المزايا**: يمكن أن يؤدي ذلك إلى تقليل الانتظار.
 
-### Write-back cache
+**العيوب**: يزيد من احتمال فقدان التخزين المؤقت بسبب قراءة المعلومات من قاعدة البيانات في حالة فقدان التخزين المؤقت. بالتالي، قد يؤدي ذلك إلى زيادة عدد الفاقدين في التخزين المؤقت، مما يؤدي إلى زيادة زمن الانتظار لعمليات القراءة في التطبيقات التي تقوم بالكتابة وإعادة قراءة المعلومات بسرعة. القراءة تحدث من التخزين الخلفي الأبطأ وتعاني من ارتفاع زمن الانتظار.
 
-![write-back-cache](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/write-back-cache.png)
+### التخزين المؤقت المتأخر في الكتابة (Write-back cache)
 
-Where the write is only done to the caching layer and the write is confirmed as soon as the write to the cache completes. The cache then asynchronously syncs this write to the database.
+![التخزين المؤقت المتأخر في الكتابة](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/write-back-cache.png)
 
-**Pro**: This would lead to reduced latency and high throughput for write-intensive applications.
+يتم كتابة البيانات فقط في طبقة التخزين المؤقت ويتم تأكيد الكتابة بمجرد اكتمال الكتابة في التخزين المؤقت. يتم مزامنة هذه الكتابة في وقت لاحق مع قاعدة البيانات.
 
-**Con**: There is a risk of data loss in case the caching layer crashes. We can improve this by having more than one replica acknowledging the write in the cache.
+**المزايا**: يؤدي إلى تقليل وقت الانتظار وزيادة الإنتاجية لتطبيقات الكتابة المكثفة.
 
-## Eviction policies
+**العيوب**: هناك خطر فقدان البيانات في حالة تعطل التخزين المؤقت. يمكن تحسين هذا من خلال الحصول على موافقة عن كتابة واحدة من أكثر من نسخة في التخزين المؤقت.
 
-Following are some of the most common cache eviction policies:
+## سياسات الطرد من التخزين المؤقت
 
-- **First In First Out (FIFO)**: The cache evicts the first block accessed first without any regard to how often or how many times it was accessed before.
-- **Last In First Out (LIFO)**: The cache evicts the block accessed most recently first without any regard to how often or how many times it was accessed before.
-- **Least Recently Used (LRU)**: Discards the least recently used items first.
-- **Most Recently Used (MRU)**: Discards, in contrast to LRU, the most recently used items first.
-- **Least Frequently Used (LFU)**: Counts how often an item is needed. Those that are used least often are discarded first.
-- **Random Replacement (RR)**: Randomly selects a candidate item and discards it to make space when necessary.
+فيما يلي بعض أشهر سياسات الطرد من التخزين المؤقت:
 
-## Distributed Cache
+- **الأولوية للأولوية للأولوية للأولوية (FIFO)**: يقوم التخزين المؤقت بطرد البلوك الذي تم الوصول إليه أولاً بدون اعتبار لكيفية وكم مرة تم الوصول إليه قبل ذلك.
+- **الأولوية للأخير للأولوية للأخير (LIFO)**: يقوم التخزين المؤقت بطرد البلوك الذي تم الوصول إليه مؤخرًا بشكل أولوي دون اعتبار لكيفية وكم مرة تم الوصول إليه قبل ذلك.
+- **المستخدم الأقل للأولوية للأخير (LRU)**: يقوم بطرد العناصر التي تم استخدامها بشكل أقل في البداية.
+- **المستخدم الأكثر للأولوية للأخير (MRU)**: يقوم بطرد العناصر التي تم استخدامها بشكل أكثر من LRU.
+- **الأقل استخدامًا للأولوية للأخير (LFU)**: يحسب مدى استخدام العنصر. يتم طرد تلك التي تم استخدامها بشكل أقل في البداية.
+- **الاستبدال العشوائي (RR)**: يختار عنصر مرشح بشكل عشوائي ويقوم بطرده لإفساح المساحة عند الحاجة.
 
-![distributed-cache](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/distributed-cache.png)
+## التخزين المؤقت الموزع
 
-A distributed cache is a system that pools together the random-access memory (RAM) of multiple networked computers into a single in-memory data store used as a data cache to provide fast access to data. While most caches are traditionally in one physical server or hardware component, a distributed cache can grow beyond the memory limits of a single computer by linking together multiple computers.
+![التخزين المؤقت الموزع](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/distributed-cache.png)
 
-## Global Cache
+التخزين المؤقت الموزع هو نظام يجمع بين ذاكرة الوصول العشوائي (RAM) لعدة أجهزة حاسوب متصلة في شبكة واحدة في مخزن بيانات مؤقت واحد مستخدمًا للوصول السريع إلى البيانات. بينما يكون معظم التخزينات المؤقتة تقليديًا في جهاز خادم واحد أو جزء من الأجهزة، يمكن للتخزين المؤقت الموزع أن ينمو ليتجاوز حدود الذاكرة لجهاز كمبيوتر واحد عن طريق ربط عدة أجهزة معًا.
 
-![global-cache](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/global-cache.png)
+## التخزين المؤقت العالمي
 
-As the name suggests, we will have a single shared cache that all the application nodes will use. When the requested data is not found in the global cache, it's the responsibility of the cache to find out the missing piece of data from the underlying data store.
+![التخزين المؤقت العالمي](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/global-cache.png)
 
-## Use cases
+كما يوحي الاسم، سنمتلك تخزين مؤقت مشترك واحد سيستخدمه جميع عقد التطبيق. عندما لا يتم العثور على البيانات المطلوبة في التخزين المؤقت العالمي، فمسؤولية التخزين المؤقت هو العثور على الجزء المفقود من البيانات من مخزن البيانات الأساسي.
 
-Caching can have many real-world use cases such as:
+## الحالات الاستخدامية
 
-- Database Caching
-- Content Delivery Network (CDN)
-- Domain Name System (DNS) Caching
-- API Caching
+يمكن أن يكون للتخزين المؤقت العديد من الحالات الاستخدامية في العالم الحقيقي مثل:
 
-**When not to use caching?**
+- التخزين المؤقت لقاعدة البيانات
+- شبكة تسليم المحتوى (CDN)
+- التخزين المؤقت لنظام اسم النطاق (DNS)
+- التخزين المؤقت لواجهة برمجة التطبيق (API)
 
-Let's also look at some scenarios where we should not use cache:
+**متى لا يجب استخدام التخزين المؤقت؟**
 
-- Caching isn't helpful when it takes just as long to access the cache as it does to access the primary data store.
-- Caching doesn't work as well when requests have low repetition (higher randomness), because caching performance comes from repeated memory access patterns.
-- Caching isn't helpful when the data changes frequently, as the cached version gets out of sync, and the primary data store must be accessed every time.
+لنلق نظرة أيضًا على بعض السيناريوهات التي يجب ألا نستخدم فيها التخزين المؤقت:
 
-_It's important to note that a cache should not be used as permanent data storage. They are almost always implemented in volatile memory because it is faster, and thus should be considered transient._
+- التخزين المؤقت لا يكون مفيدًا عندما يستغرق الوصول إلى التخزين المؤقت بنفس الوقت الذي يستغرقه الوصول إلى مخزن البيانات الأساسي.
+- التخزين المؤقت لا يعمل بشكل جيد عندما تكون الطلبات تتكرر بشكل منخفض (أكبر فوض
 
-## Advantages
+وية)، لأن أداء التخزين المؤقت يعتمد على أنماط الوصول إلى الذاكرة المتكررة.
+- التخزين المؤقت لا يكون مفيدًا عندما يتغير البيانات بشكل متكرر، حيث يتجاوز الإصدار المخزن مؤقتًا ويجب الوصول إلى مخزن البيانات الأساسي في كل مرة.
 
-Below are some advantages of caching:
+_من المهم أن نلاحظ أن التخزين المؤقت لا يجب أن يُستخدم كتخزين دائم للبيانات. فهي تُنفذ عادةً في الذاكرة العشوائية لأنها أسرع، وبالتالي يجب أن تُعتبر غير دائمة._
 
-- Improves performance
-- Reduce latency
-- Reduce load on the database
-- Reduce network cost
-- Increase Read Throughput
+## المزايا
 
-## Examples
+فيما يلي بعض المزايا للتخزين المؤقت:
 
-Here are some commonly used technologies for caching:
+- يحسن الأداء
+- يقلل من التأخير
+- يخفف العبء على قاعدة البيانات
+- يقلل من تكلفة الشبكة
+- يزيد من قدرة القراءة
+
+## أمثلة
+
+وفيما يلي بعض التقنيات المستخدمة عادة للتخزين المؤقت:
 
 - [Redis](https://redis.io)
 - [Memcached](https://memcached.org)
 - [Amazon Elasticache](https://aws.amazon.com/elasticache)
 - [Aerospike](https://aerospike.com)
+
+
 
 # Content Delivery Network (CDN)
 
