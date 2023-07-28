@@ -662,60 +662,63 @@ _من المهم أن نلاحظ أن التخزين المؤقت لا يجب أ
 
 
 
-# Content Delivery Network (CDN)
+# شبكة توزيع المحتوى (CDN)
 
-A content delivery network (CDN) is a geographically distributed group of servers that work together to provide fast delivery of internet content. Generally, static files such as HTML/CSS/JS, photos, and videos are served from CDN.
+شبكة توزيع المحتوى (CDN) هي مجموعة من الخوادم الموزعة جغرافيًا تعمل معًا لتوفير تسليم سريع للمحتوى على الإنترنت. عمومًا، يتم تقديم الملفات الثابتة مثل HTML/CSS/JS والصور ومقاطع الفيديو من CDN.
 
 ![cdn-map](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/content-delivery-network/cdn-map.png)
 
-## Why use a CDN?
+## لماذا استخدام CDN؟
 
-Content Delivery Network (CDN) increases content availability and redundancy while reducing bandwidth costs and improving security. Serving content from CDNs can significantly improve performance as users receive content from data centers close to them and our servers do not have to serve requests that the CDN fulfills.
+تزيد شبكة توزيع المحتوى (CDN) من توافر المحتوى والتكرارية مع تقليل تكاليف النطاق الترددي وتحسين الأمان. يمكن أن يحسن تقديم المحتوى من خلال CDNs الأداء بشكل كبير حيث يحصل المستخدمون على المحتوى من مراكز البيانات القريبة منهم ولا يتعين على خوادمنا تلبية الطلبات التي يقوم CDN بتحقيقها.
 
-## How does a CDN work?
+## كيفية عمل CDN؟
 
 ![cdn](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/content-delivery-network/cdn.png)
 
-In a CDN, the origin server contains the original versions of the content while the edge servers are numerous and distributed across various locations around the world.
+في CDN، يحتوي الخادم الأصلي على النسخ الأصلية من المحتوى بينما تكون خوادم الحافة (الحافة) كثيرة وموزعة في مواقع مختلفة حول العالم.
 
-To minimize the distance between the visitors and the website's server, a CDN stores a cached version of its content in multiple geographical locations known as edge locations. Each edge location contains several caching servers responsible for content delivery to visitors within its proximity.
+لتقليل المسافة بين الزائرين وخادم موقع الويب، تقوم CDN بتخزين نسخة مخزنة من محتواها في عدة مواقع جغرافية معروفة باسم مواقع الحافة. تحتوي كل موقع حافة على العديد من خوادم التخزين المسؤولة عن تقديم المحتوى للزوار ضمن نطاقها.
 
-Once the static assets are cached on all the CDN servers for a particular location, all subsequent website visitor requests for static assets will be delivered from these edge servers instead of the origin, thus reducing the origin load and improving scalability.
+بمجرد أن يتم تخزين المحتوى الثابت على جميع خوادم CDN لموقع معين، سيتم تقديم جميع طلبات زوار الموقع اللاحقة للمحتوى الثابت من هذه الخوادم الحافة بدلاً من الأصل، وبالتالي يتم تقليل العبء على الأصل وتحسين القدرة على التوسع.
 
-For example, when someone in the UK requests our website which might be hosted in the USA, they will be served from the closest edge location such as the London edge location. This is much quicker than having the visitor make a complete request to the origin server which will increase the latency.
+على سبيل المثال، عندما يطلب شخص ما في المملكة المتحدة موقعنا الذي قد يتم استضافته في الولايات المتحدة، سيتم تقديمه من أقرب موقع حافة مثل موقع لندن. وهذا أسرع بكثير من طلب الزائر للخادم الأصلي والذي سيزيد من وقت الاستجابة.
 
-## Types
+## الأنواع
 
-CDNs are generally divided into two types:
+تنقسم CDN عمومًا إلى نوعين:
 
-### Push CDNs
+### CDNs الدفع
 
-Push CDNs receive new content whenever changes occur on the server. We take full responsibility for providing content, uploading directly to the CDN, and rewriting URLs to point to the CDN. We can configure when content expires and when it is updated. Content is uploaded only when it is new or changed, minimizing traffic, but maximizing storage.
+تتلقى CDNs الدفع محتوى جديد عند حدوث تغييرات على الخادم. نحن نتحمل مسؤولية توفير المحتوى، وتحميله مباشرة إلى CDN، وإعادة كتابة عناوين URL للإشارة إلى CDN. يمكننا تكوين متى ينتهي مفعول المحتوى ومتى يتم تحديثه. يتم تحميل المحتوى فقط عندما يكون جديدًا أو تم تغييره، مما يقلل من حركة المرور ولكن يزيد من التخزين.
 
-Sites with a small amount of traffic or sites with content that isn't often updated work well with push CDNs. Content is placed on the CDNs once, instead of being re-pulled at regular intervals.
+تعمل مواقع ذات حركة مرور قليلة أو المواقع التي لا يتم تحديث محتواها كثيرًا بشكل جيد مع CDNs الدفع. يتم وضع المحتوى على CDNs مرة واحدة، بدلاً من إعادة سحبه بفترات منتظمة.
 
-### Pull CDNs
+### CDNs الاستحضار
 
-In a Pull CDN situation, the cache is updated based on request. When the client sends a request that requires static assets to be fetched from the CDN if the CDN doesn't have it, then it will fetch the newly updated assets from the origin server and populate its cache with this new asset, and then send this new cached asset to the user.
+في حالة CDNs الاستحضار، يتم تحديث الذاكرة المؤقتة استنادًا إلى الطلب. عندما يرسل العميل طلبًا يتطلب استحضار الأصول الثابتة من CDN إذا كانت لديها، فإنه سيقوم بجلب الأصول المحدثة حديثًا من الخادم الأصلي وملء ذاكرته المؤقتة بهذا الأصل الجديد، ثم يرسل هذ
 
-Contrary to the Push CDN, this requires less maintenance because cache updates on CDN nodes are performed based on requests from the client to the origin server. Sites with heavy traffic work well with pull CDNs, as traffic is spread out more evenly with only recently-requested content remaining on the CDN.
+ا الأصل المؤقت الجديد للمستخدم.
 
-## Disadvantages
+خلافًا لـ CDNs الدفع، يتم ذلك بأقل قدر من الصيانة لأن تحديثات الذاكرة المؤقتة على خوادم CDN تتم استنادًا إلى طلبات من العميل إلى الخادم الأصلي. يعمل مع CDNs الاستحضار المواقع ذات حركة مرور كبيرة بشكل جيد، حيث يتم توزيع الحركة بشكل أكثر توازناً مع الحفاظ على المحتوى المطلوب مؤخرًا على الـ CDN.
 
-As we all know good things come with extra costs, so let's discuss some disadvantages of CDNs:
+## العيوب
 
-- **Extra charges**: It can be expensive to use a CDN, especially for high-traffic services.
-- **Restrictions**: Some organizations and countries have blocked the domains or IP addresses of popular CDNs.
-- **Location**: If most of our audience is located in a country where the CDN has no servers, the data on our website may have to travel further than without using any CDN.
+كما نعلم، الأشياء الجيدة تأتي بتكاليف إضافية، لذلك دعونا نناقش بعض العيوب لـ CDNs:
 
-## Examples
+- **تكاليف إضافية**: قد يكون استخدام CDN مكلفًا، خاصة بالنسبة للخدمات التي تتمتع بحركة مرور عالية.
+- **قيود**: قامت بعض المنظمات والدول بحظر نطاقات أو عناوين IP لـ CDNs الشهيرة.
+- **الموقع**: إذا كان معظم جمهورنا موجود في بلد لا تحتوي فيه CDN على خوادم، فقد يتعين على البيانات على موقعنا عبور مسافة أكبر مما هو الحال بدون استخدام أي CDN.
 
-Here are some widely used CDNs:
+## أمثلة
+
+فيما يلي بعض CDNs المستخدمة على نطاق واسع:
 
 - [Amazon CloudFront](https://aws.amazon.com/cloudfront)
 - [Google Cloud CDN](https://cloud.google.com/cdn)
 - [Cloudflare CDN](https://www.cloudflare.com/cdn)
 - [Fastly](https://www.fastly.com/products/cdn)
+
 
 # Proxy
 
