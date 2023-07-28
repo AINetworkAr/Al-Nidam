@@ -952,63 +952,64 @@ NAS (Network Attached Storage) هو جهاز تخزين متصل بالشبكة 
 
 ف باستثناء الكتلة الأخيرة تكون نفس الحجم. يتم تكرار كتل الملف للحصول على تحمل الأخطاء.
 
-# Databases and DBMS
+## قواعد البيانات وأنظمة إدارة قواعد البيانات
 
-## What is a Database?
+## ما هي قاعدة البيانات؟
 
-A database is an organized collection of structured information, or data, typically stored electronically in a computer system. A database is usually controlled by a Database Management System (DBMS). Together, the data and the DBMS, along with the applications that are associated with them, are referred to as a database system, often shortened to just database.
+قاعدة البيانات هي مجموعة من المعلومات المنظمة والمهيكلة، والتي يتم تخزينها عادة بشكل إلكتروني في نظام كمبيوتري. قاعدة البيانات غالبًا ما يتم التحكم فيها بواسطة نظام إدارة قواعد البيانات (DBMS). يُشار إلى المعلومات ونظام إدارة قواعد البيانات، جنبًا إلى جنب مع التطبيقات المرتبطة بهم، باسم نظام قاعدة البيانات، وعادةً يُختصر إلى مصطلح "قاعدة بيانات" فقط.
 
-## What is DBMS?
+## ما هو نظام إدارة قواعد البيانات (DBMS)؟
 
-A database typically requires a comprehensive database software program known as a Database Management System (DBMS). A DBMS serves as an interface between the database and its end-users or programs, allowing users to retrieve, update, and manage how the information is organized and optimized. A DBMS also facilitates oversight and control of databases, enabling a variety of administrative operations such as performance monitoring, tuning, and backup and recovery.
+تتطلب قاعدة البيانات عادة برنامجًا شاملًا للبرمجيات المعروف باسم نظام إدارة قواعد البيانات (DBMS). يعمل نظام إدارة قواعد البيانات كواجهة بين قاعدة البيانات والمستخدمين النهائيين أو البرامج، مما يتيح للمستخدمين استرداد البيانات وتحديثها وإدارتها وتحسين تنظيمها. يوفر نظام إدارة قواعد البيانات أيضًا الإشراف والتحكم في قواعد البيانات، مما يتيح العديد من العمليات الإدارية مثل مراقبة الأداء والضبط والنسخ الاحتياطي والاسترداد.
 
-## Components
+## المكونات
 
-Here are some common components found across different databases:
+إليك بعض المكونات الشائعة التي توجد في قواعد البيانات المختلفة:
 
-### Schema
+### مخطط (Schema)
 
-The role of a schema is to define the shape of a data structure, and specify what kinds of data can go where. Schemas can be strictly enforced across the entire database, loosely enforced on part of the database, or they might not exist at all.
+يكمن دور المخطط في تعريف شكل هيكل البيانات، وتحديد أنواع البيانات التي يمكن وضعها في أي مكان. يمكن تنفيذ المخططات بصرامة عبر قاعدة البيانات بأكملها، أو بصورة فضفاضة على جزء من قاعدة البيانات، أو قد لا تكون موجودة على الإطلاق.
 
-### Table
+### جدول (Table)
 
-Each table contains various columns just like in a spreadsheet. A table can have as meager as two columns and upwards of a hundred or more columns, depending upon the kind of information being put in the table.
+يحتوي كل جدول على عدة أعمدة تمامًا مثل جدول في جدول بيانات الجداول. يمكن أن يحتوي الجدول على أقل من عمودين وما يصل إلى مائة عمود أو أكثر، اعتمادًا على نوع المعلومات التي يتم وضعها في الجدول.
 
-### Column
+### عمود (Column)
 
-A column contains a set of data values of a particular type, one value for each row of the database. A column may contain text values, numbers, enums, timestamps, etc.
+يحتوي العمود على مجموعة من قيم البيانات من نوع محدد، قيمة واحدة لكل صف في قاعدة البيانات. يمكن أن يحتوي العمود على قيم نصية أو أرقام أو قيم معينة أو الطوابق الزمنية وما إلى ذلك.
 
-### Row
+### صف (Row)
 
-Data in a table is recorded in rows. There can be thousands or millions of rows in a table having any particular information.
+تُسجل البيانات في جدول في صفوف. يمكن أن يحتوي الجدول على آلاف أو ملايين الصفوف التي تحمل معلومات محددة.
 
-## Types
+## أنواع
 
-![database-types](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/databases-and-dbms/database-types.png)
-
-Below are different types of databases:
+فيما يلي أنواع مختلفة من قواعد البيانات:
 
 - **[SQL](https://karanpratapsingh.com/courses/system-design/sql-databases)**
 - **[NoSQL](https://karanpratapsingh.com/courses/system-design/nosql-databases)**
-  - Document
-  - Key-value
-  - Graph
-  - Timeseries
-  - Wide column
-  - Multi-model
+  - المستند (Document)
+  - المفتاح-القيمة (Key-value)
+  - الرسم البياني (Graph)
+  - السلاسل الزمن
 
-SQL and NoSQL databases are broad topics and will be discussed separately in [SQL databases](https://karanpratapsingh.com/courses/system-design/sql-databases) and [NoSQL databases](https://karanpratapsingh.com/courses/system-design/nosql-databases). Learn how they compare to each other in [SQL vs NoSQL databases](https://karanpratapsingh.com/courses/system-design/sql-vs-nosql-databases).
+ية (Timeseries)
+  - العمود الواسع (Wide column)
+  - متعدد النماذج (Multi-model)
 
-## Challenges
+قواعد البيانات SQL وNoSQL هي مواضيع واسعة وسيتم مناقشتها بشكل منفصل في [قواعد بيانات SQL](https://karanpratapsingh.com/courses/system-design/sql-databases) و[قواعد بيانات NoSQL](https://karanpratapsingh.com/courses/system-design/nosql-databases). تعرف كيف تقارن بينهما في [قواعد بيانات SQL مقابل NoSQL](https://karanpratapsingh.com/courses/system-design/sql-vs-nosql-databases).
 
-Some common challenges faced while running databases at scale:
+## التحديات
 
-- **Absorbing significant increases in data volume**: The explosion of data coming in from sensors, connected machines, and dozens of other sources.
-- **Ensuring data security**: Data breaches are happening everywhere these days, it's more important than ever to ensure that data is secure but also easily accessible to users.
-- **Keeping up with demand**: Companies need real-time access to their data to support timely decision-making and to take advantage of new opportunities.
-- **Managing and maintaining the database and infrastructure**: As databases become more complex and data volumes grow, companies are faced with the expense of hiring additional talent to manage their databases.
-- **Removing limits on scalability**: A business needs to grow if it's going to survive, and its data management must grow along with it. But it's very difficult to predict how much capacity the company will need, particularly with on-premises databases.
-- **Ensuring data residency, data sovereignty, or latency requirements**: Some organizations have use cases that are better suited to run on-premises. In those cases, engineered systems that are pre-configured and pre-optimized for running the database are ideal.
+بعض التحديات الشائعة التي تواجه أثناء تشغيل قواعد البيانات بمقياس كبير:
+
+- **استيعاب زيادات كبيرة في حجم البيانات**: انفجار البيانات القادمة من الحساسات والأجهزة المتصلة وعشرات المصادر الأخرى.
+- **ضمان أمان البيانات**: انتشار اختراقات البيانات في كل مكان هذه الأيام، من المهم أكثر من أي وقت مضى ضمان أمان البيانات ولكن يمكن الوصول إليها بسهولة من قبل المستخدمين.
+- **التحاق بالطلب**: تحتاج الشركات إلى الوصول إلى بياناتها في الوقت الحقيقي لدعم صنع القرار في الوقت المناسب ولاستغلال الفرص الجديدة.
+- **إدارة وصيانة قاعدة البيانات والبنية التحتية**: بينما تصبح قواعد البيانات أكثر تعقيدًا وتزداد حجوم البيانات، تواجه الشركات تكاليف توظيف مواهب إضافية لإدارة قواعد البيانات الخاصة بها.
+- **إزالة الحدود عن قابلية التوسع**: تحتاج الأعمال إلى النمو إذا أرادت أن تبقى على قيد الحياة، ويجب أن تكبر إدارة البيانات معها. لكن من الصعب جدًا التنبؤ بكمية الطاقة التي ستحتاجها الشركة، خاصةً مع قواعد البيانات على الأجهزة الموجودة في الموقع.
+- **ضمان متطلبات إقامة البيانات أو سيادة البيانات أو التأخير**: تواجه بعض المنظمات حالات استخدام يكون فيها العمل أفضل عند التشغيل في المواقع. في تلك الحالات، يعتبر الأنظمة المهندسة التي تم تكوينها مسبقًا وتحسينها مسبقًا لتشغيل قاعدة البيانات هي الخيار الأمثل.
+
 
 # SQL databases
 
