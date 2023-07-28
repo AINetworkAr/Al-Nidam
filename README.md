@@ -884,69 +884,73 @@ $$
 - زيادة الضغط على الخدمات النازلة
 
 
-# Storage
+# التخزين (Storage)
 
-Storage is a mechanism that enables a system to retain data, either temporarily or permanently. This topic is mostly skipped over in the context of system design, however, it is important to have a basic understanding of some common types of storage techniques that can help us fine-tune our storage components. Let's discuss some important storage concepts:
+التخزين هو آلية تمكّن النظام من الاحتفاظ بالبيانات، إما بشكل مؤقت أو دائم. عادةً ما يتم تجاوز هذا الموضوع في سياق تصميم النظام، ولكن من المهم أن نمتلك فهمًا أساسيًا لبعض أنواع التقنيات الشائعة للتخزين التي يمكن أن تساعدنا في ضبط مكونات التخزين. لنناقش بعض المفاهيم المهمة للتخزين:
 
-## RAID
+## مجموعات RAID
 
-RAID (Redundant Array of Independent Disks) is a way of storing the same data on multiple hard disks or solid-state drives (SSDs) to protect data in the case of a drive failure.
+مجموعات RAID (Redundant Array of Independent Disks) هي طريقة لتخزين نفس البيانات على الأقراص الصلبة أو محركات الأقراص الصلبة الثابتة (SSD) المتعددة لحماية البيانات في حالة فشل محرك الأقراص.
 
-There are different RAID levels, however, and not all have the goal of providing redundancy. Let's discuss some commonly used RAID levels:
+هناك مستويات RAID مختلفة، ولكن ليس جميعها لهدف توفير الاحتياط. دعنا نناقش بعض مستويات RAID المستخدمة بشكل شائع:
 
-- **RAID 0**: Also known as striping, data is split evenly across all the drives in the array.
-- **RAID 1**: Also known as mirroring, at least two drives contains the exact copy of a set of data. If a drive fails, others will still work.
-- **RAID 5**: Striping with parity. Requires the use of at least 3 drives, striping the data across multiple drives like RAID 0, but also has a parity distributed across the drives.
-- **RAID 6**: Striping with double parity. RAID 6 is like RAID 5, but the parity data are written to two drives.
-- **RAID 10**: Combines striping plus mirroring from RAID 0 and RAID 1. It provides security by mirroring all data on secondary drives while using striping across each set of drives to speed up data transfers.
+- **RAID 0**: يُعرف أيضًا بـ "التشطيب"، يتم تجزئة البيانات بالتساوي عبر جميع الأقراص في المجموعة.
+- **RAID 1**: يُعرف أيضًا بـ "التماثل"، يحتوي ما لا يقل عن قرصين على نسخة دقيقة لمجموعة من البيانات. إذا فشل أحد الأقراص، فسيستمر الآخرون في العمل.
+- **RAID 5**: التشطيب مع الزائدة. يتطلب استخدام ما لا يقل عن 3 أقراص، يتم تجزئة البيانات عبر عدة أقراص مثل RAID 0، لكنه يحتوي أيضًا على زائدة موزعة عبر الأقراص.
+- **RAID 6**: التشطيب مع زائدة مزدوجة. يشبه RAID 6 RAID 5، لكن بيانات الزائدة يتم كتابتها على قرصين.
+- **RAID 10**: يجمع بين التشطيب مع التماثل من RAID 0 و RAID 1. يوفر الأمان عن طريق تكرار جميع البيانات على الأقراص الثانوية بينما يتم استخدام التشطيب عبر كل مجموعة من الأقراص لتسريع نقل البيانات.
 
-### Comparison
+### المقارنة
 
-Let's compare all the features of different RAID levels:
+دعنا نقارن كل مستويات RAID المختلفة:
 
-| Features             | RAID 0   | RAID 1               | RAID 5               | RAID 6                      | RAID 10                                  |
-| -------------------- | -------- | -------------------- | -------------------- | --------------------------- | ---------------------------------------- |
-| Description          | Striping | Mirroring            | Striping with Parity | Striping with double parity | Striping and Mirroring                   |
-| Minimum Disks        | 2        | 2                    | 3                    | 4                           | 4                                        |
-| Read Performance     | High     | High                 | High                 | High                        | High                                     |
-| Write Performance    | High     | Medium               | High                 | High                        | Medium                                   |
-| Cost                 | Low      | High                 | Low                  | Low                         | High                                     |
-| Fault Tolerance      | None     | Single-drive failure | Single-drive failure | Two-drive failure           | Up to one disk failure in each sub-array |
-| Capacity Utilization | 100%     | 50%                  | 67%-94%              | 50%-80%                     | 50%                                      |
+| المميزات         | RAID 0     | RAID 1     | RAID 5     | RAID 6       | RAID 10    |
+| ------------------ | --------- | --------- | --------- | ------------ | ---------- |
+| الوصف             | تشطيب    | تماثل      | تشطيب مع زائدة | تشطيب مع زائدة مزدوجة | تشطيب وتماثل  |
+| الأقراص الدنيا    | 2         | 2         | 3         | 4            | 4          |
+| أداء القراءة     | عالي    | عالي    | عالي    | عالي      | عالي      |
+| أداء الكتابة     | عالي    | متوسط    | عالي    | عالي      | متوسط    |
+| التكلفة           | منخفضة | عالية   | منخفضة | منخفضة      | عالية   |
+| الاحتياط          | لا يوجد | فشل أحد الأقراص | فشل أحد الأقراص | فشل قرصين | حتى فشل واحد في كل مجموعة فرعية |
+| استخدام السعة    | 100٪    | 50٪     | 67٪-94٪ | 50٪-80٪     | 50٪       |
 
-## Volumes
+## الأجلة
 
-Volume is a fixed amount of storage on a disk or tape. The term volume is often used as a synonym for the storage itself, but it is possible for a single disk to contain more than one volume or a volume to span more than one disk.
+الأجلة هي كمية ثابتة من التخزين على قرص أو شريط. غالبًا ما يُستخدم مصطلح "الأجلة" كمرادف للتخزين نفسه، ولكن يُمكن أن يحتوي قرص واحد على أكثر من وحدة أجلة أو يمكن لوحدة أجلة أن تمتد عبر أكثر من قرص واحد.
 
-## File storage
+## التخزين السلسلي
 
-File storage is a solution to store data as files and present it to its final users as a hierarchical directories structure. The main advantage is to provide a user-friendly solution to store and retrieve files. To locate a file in file storage, the complete path of the file is required. It is economical and easily structured and is usually found on hard drives, which means that they appear exactly the same for the user and on the hard drive.
+التخزين السلسلي هو حلاً لتخزين البيانات على شكل ملفات وتقديمها ل
 
-Example: [Amazon EFS](https://aws.amazon.com/efs), [Azure files](https://azure.microsoft.com/en-in/services/storage/files), [Google Cloud Filestore](https://cloud.google.com/filestore), etc.
+لمستخدمين النهائيين على هيئة هيكل أدلة هرمي. الميزة الرئيسية هي توفير حلاً يسهل استخدامه لتخزين الملفات واستردادها. لتحديد ملف في التخزين السلسلي، يتطلب الأمر المسار الكامل للملف. إنه اقتصادي ومنظم بسهولة وعادةً ما يُوجد على محركات الأقراص الثابتة، وهذا يعني أنها تظهر بنفس الشكل تمامًا للمستخدم وعلى القرص الثابت.
 
-## Block storage
+مثال: [Amazon EFS](https://aws.amazon.com/efs)، [Azure Files](https://azure.microsoft.com/en-in/services/storage/files)، [Google Cloud Filestore](https://cloud.google.com/filestore)، إلخ.
 
-Block storage divides data into blocks (chunks) and stores them as separate pieces. Each block of data is given a unique identifier, which allows a storage system to place the smaller pieces of data wherever it is most convenient.
+## التخزين القطعي
 
-Block storage also decouples data from user environments, allowing that data to be spread across multiple environments. This creates multiple paths to the data and allows the user to retrieve it quickly. When a user or application requests data from a block storage system, the underlying storage system reassembles the data blocks and presents the data to the user or application
+التخزين القطعي يقسم البيانات إلى قطع (مجموعات) ويخزنها كأجزاء منفصلة. يتم منح كل قطعة من البيانات مُعرفًا فريدًا، مما يتيح لنظام التخزين وضع القطع الأصغر من البيانات في الموقع الأكثر ملاءمة.
 
-Example: [Amazon EBS](https://aws.amazon.com/ebs).
+يقوم التخزين القطعي أيضًا بفصل البيانات عن بيئات المستخدم، مما يتيح لهذه البيانات أن تُنتشر عبر بيئات متعددة. ينشئ هذا مسارات متعددة للبيانات ويتيح للمستخدم استردادها بسرعة. عندما يطلب المستخدم أو التطبيق البيانات من نظام التخزين القطعي، يقوم النظام التخزيني الأساسي بإعادة تجميع قطع البيانات وتقديم البيانات للمستخدم أو التطبيق.
 
-## Object Storage
+مثال: [Amazon EBS](https://aws.amazon.com/ebs).
 
-Object storage, which is also known as object-based storage, breaks data files up into pieces called objects. It then stores those objects in a single repository, which can be spread out across multiple networked systems.
+## التخزين بالكائنات
 
-Example: [Amazon S3](https://aws.amazon.com/s3), [Azure Blob Storage](https://azure.microsoft.com/en-in/services/storage/blobs), [Google Cloud Storage](https://cloud.google.com/storage), etc.
+التخزين بالكائنات، المعروف أيضًا باسم التخزين القائم على الكائنات، يقسم ملفات البيانات إلى أجزاء تُسمى بالكائنات. ثم يقوم بتخزين هذه الكائنات في مستودع واحد، والذي يمكن أن ينتشر عبر أنظمة متعددة متصلة بالشبكة.
+
+مثال: [Amazon S3](https://aws.amazon.com/s3)، [Azure Blob Storage](https://azure.microsoft.com/en-in/services/storage/blobs)، [Google Cloud Storage](https://cloud.google.com/storage)، إلخ.
 
 ## NAS
 
-A NAS (Network Attached Storage) is a storage device connected to a network that allows storage and retrieval of data from a central location for authorized network users. NAS devices are flexible, meaning that as we need additional storage, we can add to what we have. It's faster, less expensive, and provides all the benefits of a public cloud on-site, giving us complete control.
+NAS (Network Attached Storage) هو جهاز تخزين متصل بالشبكة يسمح بتخزين البيانات واستردادها من موقع مركزي للمستخدمين المخول لهم الوصول عبر الشبكة. يتمتع أجهزة NAS بالمرونة، مما يعني أنه عند الحاجة إلى تخزين إضافي، يمكننا إضافته إلى ما لدينا. إنه أسرع وأقل تكلفة، ويوفر جميع فوائد السحابة العامة في الموقع، مما يمنحنا التحكم الكامل.
 
 ## HDFS
 
-The Hadoop Distributed File System (HDFS) is a distributed file system designed to run on commodity hardware. HDFS is highly fault-tolerant and is designed to be deployed on low-cost hardware. HDFS provides high throughput access to application data and is suitable for applications that have large data sets. It has many similarities with existing distributed file systems.
+نظام الملفات الموزع Hadoop (HDFS) هو نظام ملفات موزع مصمم للعمل على الأجهزة الرخيصة. HDFS متين للغاية وتم تصميمه ليُنشَّر على أجهزة منخفضة التكلفة. يوفر HDFS وصولًا عالي الإنتاجية إلى بيانات التطبيق وهو مناسب للتطبيقات التي تحتوي على مجموعات بيانات كبيرة. يتشابه HDFS إلى حد كبير مع أنظمة الملفات الموزعة الحالية.
 
-HDFS is designed to reliably store very large files across machines in a large cluster. It stores each file as a sequence of blocks, all blocks in a file except the last block are the same size. The blocks of a file are replicated for fault tolerance.
+تم تصميم HDFS لتخزين الملفات الكبيرة جدًا عبر أجهزة في مجموعة كبيرة. يتم تخزين كل ملف كمتسلسلة من الكتل، وكل كتلة في المل
+
+ف باستثناء الكتلة الأخيرة تكون نفس الحجم. يتم تكرار كتل الملف للحصول على تحمل الأخطاء.
 
 # Databases and DBMS
 
