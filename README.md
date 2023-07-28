@@ -720,58 +720,60 @@ _من المهم أن نلاحظ أن التخزين المؤقت لا يجب أ
 - [Fastly](https://www.fastly.com/products/cdn)
 
 
-# Proxy
+# البروكسي (Proxy)
 
-A proxy server is an intermediary piece of hardware/software sitting between the client and the backend server. It receives requests from clients and relays them to the origin servers. Typically, proxies are used to filter requests, log requests, or sometimes transform requests (by adding/removing headers, encrypting/decrypting, or compression).
+يعد البروكسي (Proxy) خادمًا وسيطًا بين العميل وخادم الأصل. يتلقى طلبات من العملاء ويحولها إلى خوادم الأصل. عادةً ما يُستخدم البروكسي لتصفية الطلبات وتسجيل الطلبات أو أحيانًا تحويل الطلبات (بإضافة/إزالة العناوين الرأسية، التشفير/فك التشفير، أو الضغط).
 
-## Types
+## الأنواع
 
-There are two types of proxies:
+هناك نوعان من البروكسي:
 
-### Forward Proxy
+### بروكسي إلى الأمام (Forward Proxy)
 
-A forward proxy, often called a proxy, proxy server, or web proxy is a server that sits in front of a group of client machines. When those computers make requests to sites and services on the internet, the proxy server intercepts those requests and then communicates with web servers on behalf of those clients, like a middleman.
+البروكسي إلى الأمام، المعروف أيضًا باسم بروكسي أو خادم بروكسي أو بروكسي ويب، هو خادم يجلس أمام مجموعة من أجهزة العميل. عندما تقوم تلك الأجهزة بطلبات للمواقع والخدمات على الإنترنت، يقوم خادم البروكسي بالتقاط هذه الطلبات ثم التواصل مع خوادم الويب نيابةً عن تلك العملاء، كوسيط.
 
 ![forward-proxy](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/proxy/forward-proxy.png)
 
-**Advantages**
+**الفوائد**
 
-Here are some advantages of a forward proxy:
+إليك بعض فوائد بروكسي إلى الأمام:
 
-- Block access to certain content
-- Allows access to [geo-restricted](https://en.wikipedia.org/wiki/Geo-blocking) content
-- Provides anonymity
-- Avoid other browsing restrictions
+- حجب الوصول إلى محتوى معين
+- السماح بالوصول إلى محتوى مقيد جغرافيًا
+- توفير الاختفاء
+- تجنب قيود التصفح الأخرى
 
-Although proxies provide the benefits of anonymity, they can still track our personal information. Setup and maintenance of a proxy server can be costly and requires configurations.
+على الرغم من أن البروكسيات توفر فوائد الاختفاء، إلا أنها يمكنها متابعة معلوماتنا الشخصية. إعداد وصيانة خادم بروكسي يمكن أن يكون مكلفًا ويتطلب تكوينات.
 
-### Reverse Proxy
+### بروكسي عكسي (Reverse Proxy)
 
-A reverse proxy is a server that sits in front of one or more web servers, intercepting requests from clients. When clients send requests to the origin server of a website, those requests are intercepted by the reverse proxy server.
+البروكسي العكسي هو خادم يجلس أمام خادم ويب واحد أو أكثر، ويعترض طلبات العملاء. عندما يرسل العملاء طلبات لخادم الأصل لموقع ويب، تُعترض هذه الطلبات من قبل خادم البروكسي العكسي.
 
-The difference between a forward and reverse proxy is subtle but important. A simplified way to sum it up would be to say that a forward proxy sits in front of a client and ensures that no origin server ever communicates directly with that specific client. On the other hand, a reverse proxy sits in front of an origin server and ensures that no client ever communicates directly with that origin server.
+الفرق بين بروكسي إلى الأمام وبروكسي عكسي طفيف ولكنه مهم. طريقة بسيطة للتلخيص هي أن البروكسي إلى الأمام يجلس أمام عميل ويضمن أنه لا يتصل أي خادم أصلي أبدًا مباشرةً مع تلك العميل بالتحديد. من ناحية أخرى، يجلس البروكسي العكسي أمام خادم أصلي ويضمن أن أي عميل لا يتصل أبدًا مباشرةً مع ذلك الخادم الأصلي.
 
 ![reverse-proxy](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/proxy/reverse-proxy.png)
 
-Introducing reverse proxy results in increased complexity. A single reverse proxy is a single point of failure, configuring multiple reverse proxies (i.e. a failover) further increases complexity.
+إدخال البروكسي العكسي يؤدي إلى زيادة التعقيد. يعتبر البروكسي العكسي الفردي نقطة فشل فردية، وتكوين عدة بروكسيات عكسية (مثل الحوجة) يزيد من التعقيد أكثر.
 
-**Advantages**
+**الفوائد**
 
-Here are some advantages of using a reverse proxy:
+إليك بعض فوائد استخدام بروكسي عكسي:
 
-- Improved security
-- Caching
-- SSL encryption
-- Load balancing
-- Scalability and flexibility
+- تحسين الأمان
+- التخزين المؤقت
+- التشفير SSL
+- توازن الحمولة
+- القدرة على التوسع والمرونة
 
-## Load balancer vs Reverse Proxy
+## توازن الحمولة مقابل البروكسي العكسي
 
-Wait, isn't reverse proxy similar to a load balancer? Well, no as a load balancer is useful when we have multiple servers. Often, load balancers route traffic to a set of servers serving the same function, while reverse proxies can be useful even with just one web server or application server. A reverse proxy can also act as a load balancer but not the other way around.
+انتظر، أليس البروكسي العكسي مشابهًا لتوازن الحمولة؟ حسنًا، ليس كذلك، حيث يكون توازن الحمولة مفيدًا عندما يكون لدينا عدة خوادم. غالبًا ما يوجه موزعو الحمولة حركة المرور إلى مجموعة من الخوادم التي تؤدي نفس الوظيفة، بينما يمكن أن يكون البروكسي العكسي مفيدًا حتى مع خادم واحد فقط أو خادم تطبيق واحد. يمكن أن يعمل البر
 
-## Examples
+وكسي العكسي أيضًا كموزع للحمولة ولكن ليس العكس. 
 
-Below are some commonly used proxy technologies:
+## أمثلة
+
+فيما يلي بعض تقنيات البروكسي المستخدمة على نطاق واسع:
 
 - [Nginx](https://www.nginx.com)
 - [HAProxy](http://www.haproxy.org)
