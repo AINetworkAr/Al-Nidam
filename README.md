@@ -780,65 +780,67 @@ _من المهم أن نلاحظ أن التخزين المؤقت لا يجب أ
 - [Traefik](https://doc.traefik.io/traefik)
 - [Envoy](https://www.envoyproxy.io)
 
-# Availability
+# التوفُّر (Availability)
 
-Availability is the time a system remains operational to perform its required function in a specific period. It is a simple measure of the percentage of time that a system, service, or machine remains operational under normal conditions.
+التوفر هو الوقت الذي يظل فيه النظام قائمًا لأداء وظيفته المطلوبة في فترة زمنية محددة. إنها مقياس بسيط لنسبة الوقت الذي يظل فيه النظام أو الخدمة أو الجهاز قائمًا تحت الظروف العادية.
 
-## The Nine's of availability
+## تسميات التوفُّر بالأرقام
 
-Availability is often quantified by uptime (or downtime) as a percentage of time the service is available. It is generally measured in the number of 9s.
+غالبًا ما يتم تقدير التوفُّر بنسبة الوقت الفعال (أو الوقت الخامل) كنسبة من الوقت الذي تكون فيه الخدمة متوفرة. وعادةً ما يُقاس بعدد الأرقام التسعة.
 
 $$
-Availability = \frac{Uptime}{(Uptime + Downtime)}
+التوفُّر = \frac{وقت العمل}{(وقت العمل + وقت التعطُّل)}
 $$
 
-If availability is 99.00% available, it is said to have "2 nines" of availability, and if it is 99.9%, it is called "3 nines", and so on.
+إذا كان التوفُّر متوفر بنسبة 99.00%، يُقال إنه يمتلك "توفُّر متواجد لمدة 2 تسعة"، وإذا كان 99.9%، يُسمى "3 تسعات"، وهكذا.
 
-| Availability (Percent)   | Downtime (Year)    | Downtime (Month)  | Downtime (Week)    |
+| التوفُّر (بالنسبة المئوية) | وقت التعطُّل (سنويًا) | وقت التعطُّل (شهريًا) | وقت التعطُّل (أسبوعيًا) |
 | ------------------------ | ------------------ | ----------------- | ------------------ |
-| 90% (one nine)           | 36.53 days         | 72 hours          | 16.8 hours         |
-| 99% (two nines)          | 3.65 days          | 7.20 hours        | 1.68 hours         |
-| 99.9% (three nines)      | 8.77 hours         | 43.8 minutes      | 10.1 minutes       |
-| 99.99% (four nines)      | 52.6 minutes       | 4.32 minutes      | 1.01 minutes       |
-| 99.999% (five nines)     | 5.25 minutes       | 25.9 seconds      | 6.05 seconds       |
-| 99.9999% (six nines)     | 31.56 seconds      | 2.59 seconds      | 604.8 milliseconds |
-| 99.99999% (seven nines)  | 3.15 seconds       | 263 milliseconds  | 60.5 milliseconds  |
-| 99.999999% (eight nines) | 315.6 milliseconds | 26.3 milliseconds | 6 milliseconds     |
-| 99.9999999% (nine nines) | 31.6 milliseconds  | 2.6 milliseconds  | 0.6 milliseconds   |
+| 90% (تسعة واحدة)       | 36.53 يوم         | 72 ساعة          | 16.8 ساعة         |
+| 99% (تسعتان)           | 3.65 يوم          | 7.20 ساعة        | 1.68 ساعة         |
+| 99.9% (ثلاث تسعات)     | 8.77 ساعة         | 43.8 دقيقة       | 10.1 دقائق        |
+| 99.99% (أربع تسعات)    | 52.6 دقيقة        | 4.32 دقيقة       | 1.01 دقيقة        |
+| 99.999% (خمس تسعات)    | 5.25 دقيقة        | 25.9 ثانية       | 6.05 ثواني        |
+| 99.9999% (ست تسعات)    | 31.56 ثانية       | 2.59 ثواني       | 604.8 ميلّي ثانية |
+| 99.99999% (سبع تسعات)  | 3.15 ثانية        | 263 ميلّي ثانية | 60.5 ميلّي ثانية |
+| 99.999999% (ثمان تسعات) | 315.6 ميلّي ثانية | 26.3 ميلّي ثانية | 6 ميلّي ثانية     |
+| 99.9999999% (تسع تسعات) | 31.6 ميلّي ثانية  | 2.6 ميلّي ثانية  | 0.6 ميلّي ثانية   |
 
-## Availability in Sequence vs Parallel
+## التوفُّر التتابعي مقابل التوفُّر الموازي
 
-If a service consists of multiple components prone to failure, the service's overall availability depends on whether the components are in sequence or in parallel.
+إذا كانت الخدمة تتكون من مكونات متعددة عرضة للفشل، فإن التوفُّر الكلي للخدمة يعتمد على ما إذا كانت المكونات في تتابع أو موازية.
 
-### Sequence
+### التتابع
 
-Overall availability decreases when two components are in sequence.
-
-$$
-Availability \space (Total) = Availability \space (Foo) * Availability \space (Bar)
-$$
-
-For example, if both `Foo` and `Bar` each had 99.9% availability, their total availability in sequence would be 99.8%.
-
-### Parallel
-
-Overall availability increases when two components are in parallel.
+يقل التوفُّر الكلي عندما تكون مكونتان في تتابع.
 
 $$
-Availability \space (Total) = 1 - (1 - Availability \space (Foo)) * (1 - Availability \space (Bar))
+التوفُّر \space (الكلي) = التوفُّر \space (Foo) * التوفُّر \space (Bar)
 $$
 
-For example, if both `Foo` and `Bar` each had 99.9% availability, their total availability in parallel would be 99.9999%.
+على سبيل المثال، إذا كان لدى `Foo` و `Bar` كل منهما توفُّر بنسبة 99.9%، فإن توفُّرهما الإجمالي في
 
-## Availability vs Reliability
+ التتابع سيكون 99.8%.
 
-If a system is reliable, it is available. However, if it is available, it is not necessarily reliable. In other words, high reliability contributes to high availability, but it is possible to achieve high availability even with an unreliable system.
+### الموازاة
 
-## High availability vs Fault Tolerance
+يزداد التوفُّر الكلي عندما تكون مكونتان في الموازاة.
 
-Both high availability and fault tolerance apply to methods for providing high uptime levels. However, they accomplish the objective differently.
+$$
+التوفُّر \space (الكلي) = 1 - (1 - التوفُّر \space (Foo)) * (1 - التوفُّر \space (Bar))
+$$
 
-A fault-tolerant system has no service interruption but a significantly higher cost, while a highly available system has minimal service interruption. Fault-tolerance requires full hardware redundancy as if the main system fails, with no loss in uptime, another system should take over.
+على سبيل المثال، إذا كان لدى `Foo` و `Bar` كل منهما توفُّر بنسبة 99.9%، فإن توفُّرهما الإجمالي في الموازاة سيكون 99.9999%.
+
+## التوفُّر مقابل الاعتمادية
+
+إذا كان النظام موثوقًا به، فهو متوفّر. ومع ذلك، إذا كان متوفّرًا، فليس بالضرورة أنه موثوقٌ به. بعبارة أخرى، يُسهم الاعتمادية العالية في التوفُّر العالي، ولكن من الممكن تحقيق التوفُّر العالي حتى مع نظام غير موثوق.
+
+## التوفُّر العالي مقابل القدرة على التحمّل
+
+كلا التوفُّر العالي والقدرة على التحمُّل ينطبقان على الأساليب التي توفّر مستويات عالية من الوقت الفعال. ومع ذلك، تختلف وسيلة تحقيق الهدف.
+
+يتميّز النظام القادر على التحمّل بعدم انقطاع الخدمة، لكنه يتطلب تكلفة أعلى بشكل كبير، بينما يكون النظام ذو التوفُّر العالي لديه انقطاعات خدمة طفيفة. يتطلب التحمُّل توفُّرًا كاملاً للأجهزة، بحيث إذا فشل النظام الرئيسي، بدون فقدان في الوقت الفعال، يجب على نظام آخر أن يتولى المهمة.
 
 # Scalability
 
