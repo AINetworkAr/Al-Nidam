@@ -1483,59 +1483,61 @@ _ملاحظة: التجانس لا يعني عكس التطوير._
 - زيادة تكرار البيانات.
 - زيادة فرص عدم الاتساق في البيانات.
 
-# ACID and BASE consistency models
+# ACID وBASE نماذج التجانس
 
-Let's discuss the ACID and BASE consistency models.
+لنتناول نماذج التجانس ACID وBASE.
 
 ## ACID
 
-The term ACID stands for Atomicity, Consistency, Isolation, and Durability. ACID properties are used for maintaining data integrity during transaction processing.
+تتمثل كلمة ACID في Atomicity وConsistency وIsolation وDurability. تُستخدم خصائص ACID للحفاظ على سلامة البيانات أثناء معالجة المعاملات.
 
-In order to maintain consistency before and after a transaction relational databases follow ACID properties. Let us understand these terms:
+من أجل الحفاظ على التجانس قبل وبعد المعاملة، يتبع قواعد البيانات العلاقية خصائص ACID. دعنا نفهم هذه المصطلحات:
 
-### Atomic
+### Atomicity (الذرية)
 
-All operations in a transaction succeed or every operation is rolled back.
+جميع العمليات في المعاملة ناجحة أو يتم التراجع عن كل العمليات.
 
-### Consistent
+### Consistency (التجانس)
 
-On the completion of a transaction, the database is structurally sound.
+عند الانتهاء من المعاملة، تكون قاعدة البيانات صالحة هيكليًا.
 
-### Isolated
+### Isolation (العزلة)
 
-Transactions do not contend with one another. Contentious access to data is moderated by the database so that transactions appear to run sequentially.
+المعاملات لا تتنافس مع بعضها البعض. يُقيد الوصول الصراعي للبيانات من قبل قاعدة البيانات بحيث تبدو المعاملات كأنها تعمل بتسلسل.
 
-### Durable
+### Durability (الدوام)
 
-Once the transaction has been completed and the writes and updates have been written to the disk, it will remain in the system even if a system failure occurs.
+بمجرد الانتهاء من المعاملة وتمت كتابة الكتابات والتحديثات على القرص، فإنها ستظل في النظام حتى في حالة حدوث فشل في النظام.
 
 ## BASE
 
-With the increasing amount of data and high availability requirements, the approach to database design has also changed dramatically. To increase the ability to scale and at the same time be highly available, we move the logic from the database to separate servers. In this way, the database becomes more independent and focused on the actual process of storing data.
+مع زيادة كمية البيانات ومتطلبات التوفر العالي، تغيرت أيضًا طريقة تصميم قواعد البيانات بشكل كبير. لزيادة القدرة على التوسع وفي نفس الوقت تحقيق التوفر العالي، ننقل المنطق من قاعدة البيانات إلى خوادم منفصلة. بهذه الطريقة، تصبح قاعدة البيانات أكثر استقلالية وتركز على عملية فعلية لتخزين البيانات.
 
-In the NoSQL database world, ACID transactions are less common as some databases have loosened the requirements for immediate consistency, data freshness, and accuracy in order to gain other benefits, like scale and resilience.
+في عالم قواعد البيانات NoSQL، تكون المعاملات ACID أقل شيوعًا حيث قامت بعض قواعد البيانات بتخفيف متطلبات التجانس الفوري، والانتعاش الفوري للبيانات والدقة للحصول على فوائد أخرى، مثل التوسع والمرونة.
 
-BASE properties are much looser than ACID guarantees, but there isn't a direct one-for-one mapping between the two consistency models. Let us understand these terms:
+خصائص BASE هي أضعف بكثير من ضمانات ACID، لكن ليس هناك تطابق مباشر بنسبة واحدة لواحد بين نماذج التجانس الاثنين. دعنا نفهم هذه المصطلحات:
 
-### Basic Availability
+### Basic Availability (التوفر الأساسي)
 
-The database appears to work most of the time.
+تبدو قاعدة البيانات تعمل معظم الوقت.
 
-### Soft-state
+### Soft-state (الحالة الناعمة)
 
-Stores don't have to be write-consistent, nor do different replicas have to be mutually consistent all the time.
+التخزينات لا يجب أن تكون متسقة للكتابة، ولا يجب أن تكون النسخ المختلفة متسقة تمامًا في كل الأوقات.
 
-### Eventual consistency
+### Eventual consistency (التجانس التدريجي)
 
-The data might not be consistent immediately but eventually, it becomes consistent. Reads in the system are still possible even though they may not give the correct response due to inconsistency.
+قد لا تكون البيانات متسقة على الفور ولكن في النهاية، ستصبح متسقة. القراءات في النظام لا تزال ممكنة على الرغم من أنها قد لا تعطي الاستجابة الصحيحة بسبب عدم التسلسل.
 
-## ACID vs BASE Trade-offs
+## مزايا ACID مقابل BASE
 
-There's no right answer to whether our application needs an ACID or a BASE consistency model. Both the models have been designed to satisfy different requirements. While choosing a database we need to keep the properties of both the models and the requirements of our application in mind.
+لا يوجد إجابة صحيحة لما إذا كان تطبيقنا يحتاج إلى نموذج تجانس ACID أو BASE. تم تصميم كل من النماذج لتلبية متطلبات مختلفة. عند اختيار قاعدة بيانات، يجب أن نأخذ في الاعتبار خصائص كلتا النموذجين ومتطلبات تطبيقنا.
 
-Given BASE's loose consistency, developers need to be more knowledgeable and rigorous about consistent data if they choose a BASE store for their application. It's essential to be familiar with the BASE behavior of the chosen database and work within those constraints.
+بفضل التجانس الضعيف لنموذج BASE، يحتاج المطورون إلى أن يكونوا أكثر ذكاء ودقة بشأن البيانات المتسقة إذا اختاروا تخزين BASE لتطبيقهم. من الضروري أن ت
 
-On the other hand, planning around BASE limitations can sometimes be a major disadvantage when compared to the simplicity of ACID transactions. A fully ACID database is the perfect fit for use cases where data reliability and consistency are essential.
+كون ملمًا بسلوك قاعدة البيانات BASE التي اخترتها والعمل ضمن هذه القيود.
+
+من ناحية أخرى، يمكن أن يكون التخطيط حول قيود BASE أحيانًا عيبًا كبيرًا مقارنة ببساطة المعاملات ACID. قاعدة بيانات ACID كاملة التجانس هي الاختيار المثالي لحالات الاستخدام التي يكون فيها موثوقية البيانات والتجانس أمرًا أساسيًا.
 
 # CAP Theorem
 
