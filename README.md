@@ -1539,47 +1539,51 @@ _ملاحظة: التجانس لا يعني عكس التطوير._
 
 من ناحية أخرى، يمكن أن يكون التخطيط حول قيود BASE أحيانًا عيبًا كبيرًا مقارنة ببساطة المعاملات ACID. قاعدة بيانات ACID كاملة التجانس هي الاختيار المثالي لحالات الاستخدام التي يكون فيها موثوقية البيانات والتجانس أمرًا أساسيًا.
 
-# CAP Theorem
+# نظرية CAP
 
-CAP theorem states that a distributed system can deliver only two of the three desired characteristics Consistency, Availability, and Partition tolerance (CAP).
+تنص نظرية CAP على أن النظام الموزع يمكن أن يقدم فقط اثنين من الصفات الثلاث المطلوبة: التجانس (Consistency)، التوفر (Availability)، وتحمل التجزئة (Partition tolerance).
 
-![cap-theorem](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/cap-theorem/cap-theorem.png)
+![نظرية-CAP](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/cap-theorem/cap-theorem.png)
 
-Let's take a detailed look at the three distributed system characteristics to which the CAP theorem refers.
+لنلقي نظرة مفصلة على الصفات الثلاث للنظام الموزع المشار إليها في نظرية CAP.
 
-### Consistency
+### التجانس (Consistency)
 
-Consistency means that all clients see the same data at the same time, no matter which node they connect to. For this to happen, whenever data is written to one node, it must be instantly forwarded or replicated across all the nodes in the system before the write is deemed "successful".
+التجانس يعني أن جميع العملاء يرى نفس البيانات في نفس الوقت، بغض النظر عن العقدة التي يتصلون بها. لتحقيق ذلك، يجب عند كتابة البيانات إلى عقدة واحدة، أن يتم توجيهها أو نسخها على الفور عبر جميع العقد في النظام قبل أن تعتبر الكتابة "ناجحة".
 
-### Availability
+### التوفر (Availability)
 
-Availability means that any client making a request for data gets a response, even if one or more nodes are down.
+التوفر يعني أن أي عميل يطلب البيانات يحصل على استجابة، حتى إذا كانت إحدى أو أكثر من العقد متوقفة.
 
-### Partition tolerance
+### تحمل التجزئة (Partition tolerance)
 
-Partition tolerance means the system continues to work despite message loss or partial failure. A system that is partition-tolerant can sustain any amount of network failure that doesn't result in a failure of the entire network. Data is sufficiently replicated across combinations of nodes and networks to keep the system up through intermittent outages.
+تحمل التجزئة يعني أن النظام يستمر في العمل على الرغم من فقدان الرسائل أو فشل جزئي. يمكن للنظام الذي يتحمل التجزئة الاستمرار في العمل حتى في حالة حدوث فشل في الشبكة لا يؤدي إلى فشل الشبكة بأكملها. يتم تكريس البيانات بشكل كاف عبر تجميعات العقد والشبكات للحفاظ على استمرارية النظام عبر الانقطاعات المتقطعة.
 
-## Consistency-Availability Tradeoff
+## التجارة بين التجانس والتوفر
 
-We live in a physical world and can't guarantee the stability of a network, so distributed databases must choose Partition Tolerance (P). This implies a tradeoff between Consistency (C) and Availability (A).
+نحن نعيش في عالم مادي ولا يمكننا ضمان استقرار الشبكة، لذلك يجب على قواعد البيانات الموزعة اختيار تحمل التجزئة (P). هذا يعني التجارة بين التجانس (C) والتوفر (A).
 
-### CA database
+### قاعدة بيانات CA
 
-A CA database delivers consistency and availability across all nodes. It can't do this if there is a partition between any two nodes in the system, and therefore can't deliver fault tolerance.
+توفر قاعدة بيانات CA التجانس والتوفر عبر جميع العقد. لا يمكنها فعل ذلك إذا كان هناك تجزء بين أي عقدتين في النظام، وبالتالي لا يمكن تحقيق التحمل من الأخطاء.
 
-**Example**: [PostgreSQL](https://www.postgresql.org), [MariaDB](https://mariadb.org).
+**مثال**: [PostgreSQL](https://www.postgresql.org)، [MariaDB](https://mariadb.org).
 
-### CP database
+### قاعدة بيانات CP
 
-A CP database delivers consistency and partition tolerance at the expense of availability. When a partition occurs between any two nodes, the system has to shut down the non-consistent node until the partition is resolved.
+توفر قاعدة بيانات CP التجانس وتحمل التجزئة على حساب التوفر. عند حدوث تجزء بين أي عقدتين، يجب على النظام إيقاف العقدة غير المتسقة حتى يتم حل التجزء.
 
-**Example**: [MongoDB](https://www.mongodb.com), [Apache HBase](https://hbase.apache.org).
+**مثال**: [MongoDB](https://www.mongodb.com)، [Apache HBase](https://hbase.apache.org).
 
-### AP database
+### قاعدة بيانات AP
 
-An AP database delivers availability and partition tolerance at the expense of consistency. When a partition occurs, all nodes remain available but those at the wrong end of a partition might return an older version of data than others. When the partition is resolved, the AP databases typically re-syncs the nodes to repair all inconsistencies in the system.
 
-**Example**: [Apache Cassandra](https://cassandra.apache.org), [CouchDB](https://couchdb.apache.org).
+
+توفر قاعدة بيانات AP التوفر وتحمل التجزئة على حساب التجانس. عند حدوث تجزء، تظل جميع العقد متاحة ولكن العقد في النهاية الخاطئة قد يعود بإصدار أقدم من البيانات مقارنة بالآخرين. عند حل التجزء، غالبًا ما تقوم قواعد البيانات AP بإعادة مزامنة العقد لإصلاح جميع التناقضات في النظام.
+
+**مثال**: [Apache Cassandra](https://cassandra.apache.org)، [CouchDB](https://couchdb.apache.org).
+
+
 
 # PACELC Theorem
 
