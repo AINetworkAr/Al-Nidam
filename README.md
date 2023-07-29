@@ -1011,50 +1011,51 @@ NAS (Network Attached Storage) هو جهاز تخزين متصل بالشبكة 
 - **ضمان متطلبات إقامة البيانات أو سيادة البيانات أو التأخير**: تواجه بعض المنظمات حالات استخدام يكون فيها العمل أفضل عند التشغيل في المواقع. في تلك الحالات، يعتبر الأنظمة المهندسة التي تم تكوينها مسبقًا وتحسينها مسبقًا لتشغيل قاعدة البيانات هي الخيار الأمثل.
 
 
-# SQL databases
+# قواعد بيانات SQL
 
-A SQL (or relational) database is a collection of data items with pre-defined relationships between them. These items are organized as a set of tables with columns and rows. Tables are used to hold information about the objects to be represented in the database. Each column in a table holds a certain kind of data and a field stores the actual value of an attribute. The rows in the table represent a collection of related values of one object or entity.
+قاعدة بيانات SQL (أو العلاقية) هي مجموعة من عناصر البيانات ذات العلاقات المحددة مسبقًا بينها. يتم تنظيم هذه العناصر كمجموعة من الجداول بأعمدة وصفوف. تُستخدم الجداول لاحتواء المعلومات حول الكائنات التي سيتم تمثيلها في قاعدة البيانات. تحمل كل عمود في الجدول نوعًا معينًا من البيانات ويُخزّن الحقل القيمة الفعلية للسمة. تُمثل الصفوف في الجدول مجموعة من القيم المتعلقة بكائن أو كيان واحد.
 
-Each row in a table could be marked with a unique identifier called a primary key, and rows among multiple tables can be made related using foreign keys. This data can be accessed in many different ways without re-organizing the database tables themselves. SQL databases usually follow the [ACID consistency model](https://karanpratapsingh.com/courses/system-design/acid-and-base-consistency-models#acid).
+يمكن تمييز كل صف في الجدول بمعرّف فريد يُسمى مفتاح رئيسي (Primary Key)، ويمكن جعل صفوف بين جداول متعددة ذات علاقة باستخدام مفاتيح أجنبية (Foreign Keys). يمكن الوصول إلى هذه البيانات بعدة طرق مختلفة دون إعادة تنظيم جداول قاعدة البيانات نفسها. تتبع قواعد قواعد بيانات SQL عادة نموذج الاتساق [ACID](https://karanpratapsingh.com/courses/system-design/acid-and-base-consistency-models#acid).
 
-## Materialized views
+## العروض المادية
 
-A materialized view is a pre-computed data set derived from a query specification and stored for later use. Because the data is pre-computed, querying a materialized view is faster than executing a query against the base table of the view. This performance difference can be significant when a query is run frequently or is sufficiently complex.
+العرض المادي هو مجموعة بيانات محسوبة مسبقًا مُشتقة من مواصفات الاستعلام وتُخزن للاستخدام لاحقًا. نظرًا لأن البيانات محسوبة مسبقًا، فإن استعلام العرض المادي أسرع من تنفيذ استعلام ضد جدول البيانات الأساسي للعرض. يمكن أن تكون هذه الفروق في الأداء ذات أهمية بالغة عند تشغيل استعلام بشكل متكرر أو عندما يكون الاستعلام معقدًا بما يكفي.
 
-It also enables data subsetting and improves the performance of complex queries that run on large data sets which reduces network loads. There are other uses of materialized views, but they are mostly used for performance and replication.
+يتيح أيضًا العرض المادي تجزئة البيانات ويحسن أداء الاستعلامات المعقدة التي تعمل على مجموعات بيانات كبيرة مما يقلل من حمولات الشبكة. هناك استخدامات أخرى للعروض المادية، ولكنها تستخدم في الغالب للأداء والتكرار.
 
-## N+1 query problem
+## مشكلة استعلام N+1
 
-The N+1 query problem happens when the data access layer executes N additional SQL statements to fetch the same data that could have been retrieved when executing the primary SQL query. The larger the value of N, the more queries will be executed, the larger the performance impact.
+تحدث مشكلة الاستعلام N+1 عندما يقوم طبقة الوصول إلى البيانات بتنفيذ N تعليمة SQL إضافية لاسترداد نفس البيانات التي يمكن استردادها عند تنفيذ استعلام SQL الأساسي. كلما ازدادت قيمة N، زادت عدد التعليمات التي سيتم تنفيذها، وأكبر تأثير على الأداء.
 
-This is commonly seen in GraphQL and ORM (Object-Relational Mapping) tools and can be addressed by optimizing the SQL query or using a dataloader that batches consecutive requests and makes a single data request under the hood.
+يُرى هذا الأمر بشكل شائع في GraphQL وأدوات ORM (Object-Relational Mapping) ويمكن معالجته بتحسين استعلام SQL أو باستخدام مُحمّل البيانات (dataloader) الذي يجمع الطلبات المتتالية ويجعل طلب بيانات واحد تحت الغطاء.
 
-## Advantages
+## المزايا
 
-Let's look at some advantages of using relational databases:
+دعنا نلقي نظرة على بعض المزايا في استخدام قواعد البيانات العلاقية:
 
-- Simple and accurate
-- Accessibility
-- Data consistency
-- Flexibility
+- بسيطة ودقيقة
+- سهولة الوصول
+- استقرار البيانات
+- مرونة
 
-## Disadvantages
+## العيوب
 
-Below are the disadvantages of relational databases:
+فيما يلي عيوب قواعد البيانات العلاقية:
 
-- Expensive to maintain
-- Difficult schema evolution
-- Performance hits (join, denormalization, etc.)
-- Difficult to scale due to poor horizontal scalability
+- مكلفة الصيانة
+- تطور المخطط الصعب
+- تأثيرات الأداء (الانضمام، التجانس، وما إلى ذلك)
+- صعوبة التوسع بسبب القابلية الأفقية الضعيفة
 
-## Examples
+## أمثلة
 
-Here are some commonly used relational databases:
+فيما يلي بعض قواعد البيانات العلاقية المستخدمة بشكل شائع:
 
 - [PostgreSQL](https://www.postgresql.org)
 - [MySQL](https://www.mysql.com)
 - [MariaDB](https://mariadb.org)
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora)
+
 
 # NoSQL databases
 
