@@ -1057,88 +1057,89 @@ NAS (Network Attached Storage) هو جهاز تخزين متصل بالشبكة 
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora)
 
 
-# NoSQL databases
+# قواعد البيانات NoSQL
 
-NoSQL is a broad category that includes any database that doesn't use SQL as its primary data access language. These types of databases are also sometimes referred to as non-relational databases. Unlike in relational databases, data in a NoSQL database doesn't have to conform to a pre-defined schema. NoSQL databases follow [BASE consistency model](https://karanpratapsingh.com/courses/system-design/acid-and-base-consistency-models#base).
+NoSQL هي فئة واسعة تشمل أي قاعدة بيانات لا تستخدم SQL كلغة رئيسية للوصول إلى البيانات. تسمى هذه الأنواع من قواعد البيانات أحيانًا بقواعد البيانات غير العلاقية. على عكس قواعد البيانات العلاقية، لا يجب أن تتوافق البيانات في قاعدة بيانات NoSQL مع مخطط محدد مسبقًا. تتبع قواعد البيانات NoSQL عادة نموذج الاتساق [BASE](https://karanpratapsingh.com/courses/system-design/acid-and-base-consistency-models#base).
 
-Below are different types of NoSQL databases:
+فيما يلي أنواع مختلفة من قواعد البيانات NoSQL:
 
-### Document
+### قاعدة الوثائق
 
-A document database (also known as a document-oriented database or a document store) is a database that stores information in documents. They are general-purpose databases that serve a variety of use cases for both transactional and analytical applications.
+قاعدة بيانات الوثائق (المعروفة أيضًا باسم قاعدة بيانات موجهة الوثائق أو مخزن الوثائق) هي قاعدة بيانات تخزن المعلومات في وثائق. إنها قواعد بيانات عامة الاستخدام تخدم مجموعة متنوعة من الحالات الاستخدامية لكل من التطبيقات التحليلية والمعاملاتية.
 
-**Advantages**
+**المزايا**
 
-- Intuitive and flexible
-- Easy horizontal scaling
-- Schemaless
+- بديهية ومرنة
+- سهولة التوسع الأفقي
+- عدم وجود مخطط
 
-**Disadvantages**
+**العيوب**
 
-- Schemaless
-- Non-relational
+- عدم وجود مخطط
+- غير علاقي
 
-**Examples**
+**أمثلة**
 
 - [MongoDB](https://www.mongodb.com)
 - [Amazon DocumentDB](https://aws.amazon.com/documentdb)
 - [CouchDB](https://couchdb.apache.org)
 
-### Key-value
+### قيمة المفتاح
 
-One of the simplest types of NoSQL databases, key-value databases save data as a group of key-value pairs made up of two data items each. They're also sometimes referred to as a key-value store.
+إحدى أبسط أنواع قواعد البيانات NoSQL، حيث تحفظ قواعد البيانات قيم البيانات كمجموعة من أزواج المفتاح والقيمة التي تتكون من عنصري بيانات لكل منهما. يُشار أحيانًا إلى هذا النوع أيضًا بمتجر المفاتيح والقيمة.
 
-**Advantages**
+**المزايا**
 
-- Simple and performant
-- Highly scalable for high volumes of traffic
-- Session management
-- Optimized lookups
+- بسيطة وأداءها عالي
+- قابلية توسعية عالية لحجم المرور الكبير
+- إدارة الجلسة
+- البحث المحسّن
 
-**Disadvantages**
+**العيوب**
 
-- Basic CRUD
-- Values can't be filtered
-- Lacks indexing and scanning capabilities
-- Not optimized for complex queries
+- CRUD الأساسي
+- لا يمكن تصفية القيم
+- نقص القدرة على فهرسة وفحص البيانات
+- غير محسّنة للاستعلامات المعقدة
 
-**Examples**
+**أمثلة**
 
 - [Redis](https://redis.io)
 - [Memcached](https://memcached.org)
 - [Amazon DynamoDB](https://aws.amazon.com/dynamodb)
 - [Aerospike](https://aerospike.com)
 
-### Graph
+### قاعدة البيانات الرسمية
 
-A graph database is a NoSQL database that uses graph structures for semantic queries with nodes, edges, and properties to represent and store data instead of tables or documents.
+قاعدة بيانات الرسمية هي قاعدة بيانات NoSQL تستخدم هياكل رسمية للاستعلامات الدلالية مع العقد والحواف والخصائص لتمثيل وتخزين البيانات بدلاً من الجداول أو الوثائق.
 
-The graph relates the data items in the store to a collection of nodes and edges, the edges representing the relationships between the nodes. The relationships allow data in the store to be linked together directly and, in many cases, retrieved with one operation.
+تربط الرسم البيانات في المتجر بمجموعة من العقد والحواف، حيث تمثل الحواف العلاقات بين العقد. تسمح العلاقات بربط البيانات في المتجر معًا مباشرة وفي كثير من الحالات يمكن استردادها بعملية واحدة.
 
-**Advantages**
+**المزايا**
 
-- Query speed
-- Agile and flexible
-- Explicit data representation
+- سرعة الاستعلام
+- ليونة ومرونة
+- تمثيل بيانات صريح
 
-**Disadvantages**
+**العيوب**
 
-- Complex
-- No standardized query language
+- معقدة
+- لا يوجد لغة استعلام موحدة
 
-**Use cases**
+**حالات الاستخدام**
 
-- Fraud detection
-- Recommendation engines
-- Social networks
-- Network mapping
+- اكتشاف الاحتيال
+- محركات التوصية
+- الشبكات الاجتماعية
+- رسم الشبكات
 
-**Examples**
+**أمثلة**
 
 - [Neo4j](https://neo4j.com)
 - [ArangoDB](https://www.arangodb.com)
 - [Amazon Neptune](https://aws.amazon.com/neptune)
 - [JanusGraph](https://janusgraph.org)
+
 
 ### Time series
 
