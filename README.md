@@ -1735,85 +1735,90 @@ _عادة، تدعم قواعد البيانات العلائقية العملي
 - يفرض عدم وجود عزل بيانات المشارك يتسبب في تحديات متانة.
 - الاختبار صعب لأنه يجب أن تكون كل الخدمات تعمل لمحاكاة المعاملة.
 
-# Sharding
+# التجزئة (Sharding)
 
-Before we discuss sharding, let's talk about data partitioning:
+قبل أن نتحدث عن التجزئة (Sharding)، دعنا نتحدث عن تجزئة البيانات:
 
-## Data Partitioning
+## تجزئة البيانات
 
-Data partitioning is a technique to break up a database into many smaller parts. It is the process of splitting up a database or a table across multiple machines to improve the manageability, performance, and availability of a database.
+تجزئة البيانات هي تقنية لتقسيم قاعدة بيانات إلى أجزاء أصغر. إنه عملية تقسيم قاعدة بيانات أو جدول عبر عدة أجهزة لتحسين قابلية الإدارة والأداء وتوفر القاعدة البياناتية.
 
-### Methods
+### الأساليب
 
-There are many different ways one could use to decide how to break up an application database into multiple smaller DBs. Below are two of the most popular methods used by various large-scale applications:
+هناك العديد من الطرق المختلفة التي يمكن استخدامها لتقرير كيفية تجزئة قاعدة بيانات التطبيق إلى قواعد بيانات أصغر متعددة. فيما يلي اثنتان من أكثر الطرق شيوعًا التي تستخدمها التطبيقات ذات الحجم الكبير:
 
-**Horizontal Partitioning (or Sharding)**
+**التجزئة الأفقية (أو التجزئة)**
 
-In this strategy, we split the table data horizontally based on the range of values defined by the _partition key_. It is also referred to as **_database sharding_**.
+في هذا الاستراتيجية، نقوم بتجزئة بيانات الجدول أفقيًا استنادًا إلى نطاق القيم المحددة بواسطة _مفتاح التجزئة_. يُشار أيضًا إلى هذا بـ **_تجزئة قاعدة البيانات_**.
 
-**Vertical Partitioning**
+**التجزئة العمودية**
 
-In vertical partitioning, we partition the data vertically based on columns. We divide tables into relatively smaller tables with few elements, and each part is present in a separate partition.
+في التجزئة العمودية، نقوم بتجزئة البيانات عموديًا استنادًا إلى الأعمدة. نقوم بتقسيم الجداول إلى جداول صغيرة نسبيًا تحتوي على عناصر قليلة، وتكون كل جزء موجودًا في قسم منفصل.
 
-In this tutorial, we will specifically focus on sharding.
+في هذا البرنامج التعليمي، سنركز بشكل خاص على التجزئة.
 
-## What is sharding?
+## ما هي التجزئة؟
 
-Sharding is a database architecture pattern related to _horizontal partitioning_, which is the practice of separating one table's rows into multiple different tables, known as _partitions_ or _shards_. Each partition has the same schema and columns, but also a subset of the shared data. Likewise, the data held in each is unique and independent of the data held in other partitions.
+التجزئة هو نمط له علاقة بـ _التجزئة الأفقية_، وهو الممارسة الخاصة بفصل صفوف جدول واحد إلى جداول متعددة مختلفة، تُعرف باسم الأقسام أو التجزئات. كل تجزئة لديها نفس البنية والأعمدة، ولكنها تحتوي أيضًا على مجموعة فرعية من البيانات المشتركة. وبالمثل، البيانات الموجودة في كل تجزئة فريدة ومستقلة عن البيانات الموجودة في التجزئات الأخرى.
 
 ![sharding](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/sharding/sharding.png)
 
-The justification for data sharding is that, after a certain point, it is cheaper and more feasible to scale horizontally by adding more machines than to scale it vertically by adding powerful servers. Sharding can be implemented at both application or the database level.
+التبرير للتجزئة هو أنه بعد نقطة معينة، فإنه أرخص وأكثر جدوى لتوسيع القاعدة بأكملها عن طريق إضافة المزيد من الأجهزة بدلاً من التوسع عموديًا عن طريق إضافة خوادم قوية. يمكن تنفيذ التجزئة على مستوى التطبيق أو مستوى قاعدة البيانات.
 
-## Partitioning criteria
+## معايير التجزئة
 
-There are a large number of criteria available for data partitioning. Some most commonly used criteria are:
+هناك عدد كبير من المعايير المتاحة لتجزئة البيانات. بعض المعايير الأكثر شيوعًا المستخدمة هي:
 
-### Hash-Based
+### استنادًا إلى القيمة المجموعة
 
-This strategy divides the rows into different partitions based on a hashing algorithm rather than grouping database rows based on continuous indexes.
+تقوم هذه الاستراتيجية بتقسيم الصفوف إلى أجزاء مختلفة بناءً على خوارزمية التجزئة بدلاً من تجميع صفوف قاعدة البيانات بناءً على الفهارس المتواصلة.
 
-The disadvantage of this method is that dynamically adding/removing database servers becomes expensive.
+يعتبر عيب هذه الطريقة أنه يصبح من الصعب تكلفة إضافة / إزالة خوادم قاعدة البيانات ديناميكيًا.
 
-### List-Based
+### استنادًا إلى القائمة
 
-In list-based partitioning, each partition is defined and selected based on the list of values on a column rather than a set of contiguous ranges of values.
+في التجزئة القائمة، ي
 
-### Range Based
+تم تعريف كل جزء واختياره بناءً على القائمة من القيم في عمود بدلاً من مجموعة من النطاقات المتواصلة للقيم.
 
-Range partitioning maps data to various partitions based on ranges of values of the partitioning key. In other words, we partition the table in such a way that each partition contains rows within a given range defined by the partition key.
+### استنادًا إلى النطاق
 
-Ranges should be contiguous but not overlapping, where each range specifies a non-inclusive lower and upper bound for a partition. Any partitioning key values equal to or higher than the upper bound of the range are added to the next partition.
+يقوم تجزئة النطاق بتعيين البيانات إلى عدة أجزاء استنادًا إلى نطاقات من قيم المفتاح التجزئة. بعبارة أخرى، نقوم بتجزئة الجدول بحيث يحتوي كل جزء على صفوف ضمن نطاق معين محدد بمفتاح التجزئة.
 
-### Composite
+يجب أن تكون النطاقات متتالية ولكن غير تداخلية، حيث يحدد كل نطاق الحد الأدنى والحد الأعلى غير المتضمن لجزء. يتم إضافة قيم مفتاح التجزئة المساوية أو أعلى من الحد الأعلى للنطاق إلى الجزء التالي.
 
-As the name suggests, composite partitioning partitions the data based on two or more partitioning techniques. Here we first partition the data using one technique, and then each partition is further subdivided into sub-partitions using the same or some other method.
+### التجزئة المركبة
 
-## Advantages
+كما يوحي الاسم، تقوم التجزئة المركبة بتجزئة البيانات بناءً على اثنين أو أكثر من تقنيات التجزئة. هنا نقوم بتجزئة البيانات باستخدام تقنية واحدة أولاً، ثم يتم تجزئة كل جزء إلى أجزاء فرعية باستخدام نفس الطريقة أو طريقة أخرى.
 
-But why do we need sharding? Here are some advantages:
+## المزايا
 
-- **Availability**: Provides logical independence to the partitioned database, ensuring the high availability of our application. Here individual partitions can be managed independently.
-- **Scalability**: Proves to increase scalability by distributing the data across multiple partitions.
-- **Security**: Helps improve the system's security by storing sensitive and non-sensitive data in different partitions. This could provide better manageability and security to sensitive data.
-- **Query Performance**: Improves the performance of the system. Instead of querying the whole database, now the system has to query only a smaller partition.
-- **Data Manageability**: Divides tables and indexes into smaller and more manageable units.
+لكن لماذا نحتاج إلى التجزئة؟ هنا بعض المزايا:
 
-## Disadvantages
+- **التوافر**: يوفر استقلالية منطقية لقاعدة البيانات المجزأة، مما يضمن توافرًا عاليًا لتطبيقنا. يمكن إدارة الأقسام الفردية بشكل مستقل.
+- **قابلية التوسع**: يثبت أنه يزيد من التوسعية عن طريق توزيع البيانات عبر عدة أقسام.
+- **الأمان**: يساعد على تحسين أمان النظام من خلال تخزين البيانات الحساسة وغير الحساسة في أقسام مختلفة. يمكن أن يوفر ذلك إدارة وأمانًا أفضل للبيانات الحساسة.
+- **أداء الاستعلام**: يحسن أداء النظام. بدلاً من استعلام قاعدة البيانات بأكملها، يجب الآن على النظام الاستعلام عن قسم أصغر فقط.
+- **إدارة البيانات**: يقسم الجداول والفهارس إلى وحدات أصغر وأكثر قابلية للإدارة.
 
-- **Complexity**: Sharding increases the complexity of the system in general.
-- **Joins across shards**: Once a database is partitioned and spread across multiple machines it is often not feasible to perform joins that span multiple database shards. Such joins will not be performance efficient since data has to be retrieved from multiple servers.
-- **Rebalancing**: If the data distribution is not uniform or there is a lot of load on a single shard, in such cases, we have to rebalance our shards so that the requests are as equally distributed among the shards as possible.
+## العيوب
 
-## When to use sharding?
+- **التعقيد**: يزيد التجزئة من تعقيد النظام بشكل عام.
+- **الانضمام عبر التجزئة**: بمجرد أن يتم تجزئة قاعدة بيانات ونشرها عبر العديد من الأجهزة، فإن الانضمامات التي تتعدى التجزئة الأساسية للقاعدة بيانات غالبًا ما لا تكون فعالة من حيث الأداء لأنه يجب استرداد البيانات من العديد من الخوادم.
+- **إعادة التوازن**: إذا كان توزيع البيانات غير متجانس أو يوجد الكثير من الحمل على جزء واحد، في مثل هذه الحالات، يجب علينا إعادة توازن أقسامنا بحيث يتم توزيع الط
 
-Here are some reasons why sharding might be the right choice:
+لبات بالتساوي على قدر الإمكان بين الأقسام.
 
-- Leveraging existing hardware instead of high-end machines.
-- Maintain data in distinct geographic regions.
-- Quickly scale by adding more shards.
-- Better performance as each machine is under less load.
-- When more concurrent connections are required.
+## متى يجب استخدام التجزئة؟
+
+فيما يلي بعض الأسباب التي قد تجعل التجزئة الاختيار الصحيح:
+
+- استغلال الأجهزة الحالية بدلاً من الأجهزة ذات الأداء العالي.
+- الحفاظ على البيانات في مناطق جغرافية مختلفة.
+- النمو بسرعة من خلال إضافة مزيد من الأقسام.
+- أفضل أداء حيث يكون كل جهاز تحت أقل قدر من الحمل.
+- عندما يكون هناك حاجة للمزيد من الاتصالات المتزامنة.
+
 
 # Consistent Hashing
 
