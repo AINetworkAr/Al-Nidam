@@ -1141,68 +1141,68 @@ NoSQL هي فئة واسعة تشمل أي قاعدة بيانات لا تستخ
 - [JanusGraph](https://janusgraph.org)
 
 
-### Time series
+### قاعدة بيانات السلاسل الزمنية
 
-A time-series database is a database optimized for time-stamped, or time series, data.
+قاعدة بيانات السلاسل الزمنية هي قاعدة بيانات مُحسّنة للبيانات المُختَمَرة بالوقت، أو ما يُعرف بالسلاسل الزمنية.
 
-**Advantages**
+**المزايا**
 
-- Fast insertion and retrieval
-- Efficient data storage
+- الإدخال والاسترجاع السريع
+- تخزين البيانات بكفاءة
 
-**Use cases**
+**حالات الاستخدام**
 
-- IoT data
-- Metrics analysis
-- Application monitoring
-- Understand financial trends
+- بيانات الإنترنت of Things (IoT)
+- تحليل المقاييس
+- رصد التطبيقات
+- فهم الاتجاهات المالية
 
-**Examples**
+**أمثلة**
 
 - [InfluxDB](https://www.influxdata.com)
 - [Apache Druid](https://druid.apache.org)
 
-### Wide column
+### الأعمدة الواسعة
 
-Wide column databases, also known as wide column stores, are schema-agnostic. Data is stored in column families, rather than in rows and columns.
+قواعد البيانات الأعمدة الواسعة، المعروفة أيضًا باسم متاجر الأعمدة الواسعة، هي عديمة التخطيط. يتم تخزين البيانات في أُسُر الأعمدة بدلاً من الصفوف والأعمدة.
 
-**Advantages**
+**المزايا**
 
-- Highly scalable, can handle petabytes of data
-- Ideal for real-time big data applications
+- قابلة للتوسع بشكل كبير، يمكنها التعامل مع بيتابايت من البيانات
+- مثالية لتطبيقات بيانات الكبير الحية
 
-**Disadvantages**
+**العيوب**
 
-- Expensive
-- Increased write time
+- مكلفة
+- زمن الكتابة المتزايد
 
-**Use cases**
+**حالات الاستخدام**
 
-- Business analytics
-- Attribute-based data storage
+- تحليل الأعمال
+- تخزين البيانات على أساس السمات
 
-**Examples**
+**أمثلة**
 
 - [BigTable](https://cloud.google.com/bigtable)
 - [Apache Cassandra](https://cassandra.apache.org)
 - [ScyllaDB](https://www.scylladb.com)
 
-### Multi-model
+### قاعدة البيانات متعددة النماذج
 
-Multi-model databases combine different database models (i.e. relational, graph, key-value, document, etc.) into a single, integrated backend. This means they can accommodate various data types, indexes, queries, and store data in more than one model.
+تجمع قواعد البيانات متعددة النماذج بين نماذج قواعد البيانات المختلفة (مثل العلاقية، الرسمية، قيمة المفتاح، الوثيقة، إلخ) في واجهة موحدة واحدة. يعني ذلك أنها يمكن أن تستوعب أنواع بيانات مختلفة وفهارس واستعلامات، وتخزين البيانات في أكثر من نموذج واحد.
 
-**Advantages**
+**المزايا**
 
-- Flexibility
-- Suitable for complex projects
-- Data consistent
+- المرونة
+- مناسبة للمشاريع المعقدة
+- توحيد البيانات
 
-**Disadvantages**
+**العيوب**
 
-- Complex
-- Less mature
+- معقدة
+- أقل نضجًا
 
-**Examples**
+**أمثلة**
 
 - [ArangoDB](https://www.arangodb.com)
 - [Azure Cosmos DB](https://azure.microsoft.com/en-in/services/cosmos-db)
