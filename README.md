@@ -1642,96 +1642,98 @@ _عادة، تدعم قواعد البيانات العلائقية العملي
 
 إذا لم يكن هناك أي تراجع أو جاءت العملية النقل من الحالة المستكملة، فإن النظام متسق وجاهز لعملية نقل جديدة وتم إنهاء العملية القديمة.
 
-# Distributed Transactions
+# المعاملات الموزعة
 
-A distributed transaction is a set of operations on data that is performed across two or more databases. It is typically coordinated across separate nodes connected by a network, but may also span multiple databases on a single server.
+المعاملة الموزعة هي مجموعة من العمليات على البيانات التي يتم تنفيذها عبر قواعد بيانات اثنين أو أكثر. عادةً ما يتم تنسيقها عبر عقدات منفصلة متصلة بشبكة، ولكن قد تشمل أيضًا قواعد بيانات متعددة على خادم واحد.
 
-## Why do we need distributed transactions?
+## لماذا نحتاج إلى المعاملات الموزعة؟
 
-Unlike an ACID transaction on a single database, a distributed transaction involves altering data on multiple databases. Consequently, distributed transaction processing is more complicated, because the database must coordinate the committing or rollback of the changes in a transaction as a self-contained unit.
+على عكس المعاملة ACID على قاعدة بيانات واحدة، تتضمن المعاملة الموزعة تعديل البيانات على قواعد بيانات متعددة. وبناءً عليه، يعد معالجة المعاملات الموزعة أكثر تعقيدًا، لأن قاعدة البيانات يجب أن تنسق الالتزام أو التراجع عن التغييرات في المعاملة كوحدة مكتملة ذاتية.
 
-In other words, all the nodes must commit, or all must abort and the entire transaction rolls back. This is why we need distributed transactions.
+بعبارة أخرى، يجب أن تقوم كل العقدات بالتأكيد على الالتزام أو العودة إلى الخلف وإلغاء المعاملة بالكامل. وهذا هو السبب في أننا بحاجة إلى المعاملات الموزعة.
 
-Now, let's look at some popular solutions for distributed transactions:
+الآن، دعنا نلقي نظرة على بعض الحلول الشائعة للمعاملات الموزعة:
 
-## Two-Phase commit
+## الالتزام المرحلي ذو المرحلتين
 
 ![two-phase-commit](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/distributed-transactions/two-phase-commit.png)
 
-The two-phase commit (2PC) protocol is a distributed algorithm that coordinates all the processes that participate in a distributed transaction on whether to commit or abort (roll back) the transaction.
+بروتوكول الالتزام المرحلي ذو المرحلتين (2PC) هو خوارزمية موزعة تنسق جميع العمليات التي تشارك في المعاملة الموزعة حول ما إذا كان يجب الالتزام أو إلغاء (التراجع) المعاملة.
 
-This protocol achieves its goal even in many cases of temporary system failure and is thus widely used. However, it is not resilient to all possible failure configurations, and in rare cases, manual intervention is needed to remedy an outcome.
+تحقق هذه الخوارزمية هدفها حتى في العديد من حالات فشل النظام المؤقت وبالتالي يُستخدم على نطاق واسع. ومع ذلك، فإنها ليست مقاومة لجميع تكوينات الفشل الممكنة، وفي حالات نادرة، يلزم التدخل اليدوي لتصحيح النتيجة.
 
-This protocol requires a coordinator node, which basically coordinates and oversees the transaction across different nodes. The coordinator tries to establish the consensus among a set of processes in two phases, hence the name.
+هذا البروتوكول يتطلب عقدة مُنسِّقة، والتي تنسق وتراقب بالأساس المعاملة عبر عقدات مختلفة. يحاول المُنسِّق إنشاء توافق بين مجموعة من العمليات في مرحلتين، ومن هنا يأتي الاسم.
 
-### Phases
+### المراحل
 
-Two-phase commit consists of the following phases:
+يتكون الالتزام المرحلي ذو المرحلتين من المراحل التالية:
 
-**Prepare phase**
+**مرحلة التحضير**
 
-The prepare phase involves the coordinator node collecting consensus from each of the participant nodes. The transaction will be aborted unless each of the nodes responds that they're _prepared_.
+تنطوي مرحلة التحضير على تجميع عقدة المنسق الرأي المتفق عليه من كل عقدات المشاركة. سيتم إلغاء المعاملة ما لم تكن كل العقدات قد ردت أنها "مستعدة".
 
-**Commit phase**
+**مرحلة الالتزام**
 
-If all participants respond to the coordinator that they are _prepared_, then the coordinator asks all the nodes to commit the transaction. If a failure occurs, the transaction will be rolled back.
+إذا كان جميع المشاركين يُجيبون على المُنسِّق أنهم "مستعدون"، فإن المُنسِّق يُطلب من جميع العقدات الالتزام بالمعاملة. إذا حدث فشل، فإن المعاملة ستُراجع.
 
-### Problems
+### المشاكل
 
-Following problems may arise in the two-phase commit protocol:
+قد تحدث المشاكل التالية في بروتوكول الالتزام المرحلي ذو المرحلتين:
 
-- What if one of the nodes crashes?
-- What if the coordinator itself crashes?
-- It is a blocking protocol.
+- ماذا لو حدث فشل في إ
 
-## Three-phase commit
+حدى العقدات؟
+- ماذا لو فشل المُنسِّق نفسه؟
+- إنها بروتوكول معوق.
+
+## الالتزام المرحلي ذو المرحلة الثلاثة
 
 ![three-phase-commit](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/distributed-transactions/three-phase-commit.png)
 
-Three-phase commit (3PC) is an extension of the two-phase commit where the commit phase is split into two phases. This helps with the blocking problem that occurs in the two-phase commit protocol.
+الالتزام المرحلي ذو المرحلة الثلاثة (3PC) هو تمديد للالتزام المرحلي ذو المرحلتين حيث يتم تجزئة مرحلة الالتزام إلى مرحلتين. يساعد هذا في حل مشكلة الحجب التي تحدث في بروتوكول الالتزام المرحلي ذو المرحلتين.
 
-### Phases
+### المراحل
 
-Three-phase commit consists of the following phases:
+يتكون الالتزام المرحلي ذو المرحلة الثلاثة من المراحل التالية:
 
-**Prepare phase**
+**مرحلة التحضير**
 
-This phase is the same as the two-phase commit.
+هذه المرحلة هي نفسها كمرحلة الالتزام المرحلي ذو المرحلتين.
 
-**Pre-commit phase**
+**مرحلة الالتزام الجزئي**
 
-Coordinator issues the pre-commit message and all the participating nodes must acknowledge it. If a participant fails to receive this message in time, then the transaction is aborted.
+يُصدر المنسِّق رسالة الالتزام الجزئي ويجب على جميع العقدات المشاركة التأكيد عليها. إذا فشلت العقدة في استلام هذه الرسالة في الوقت المناسب، فإن المعاملة ستُراجع.
 
-**Commit phase**
+**مرحلة الالتزام**
 
-This step is also similar to the two-phase commit protocol.
+تكون هذه الخطوة مشابهة أيضًا لبروتوكول الالتزام المرحلي ذو المرحلتين.
 
-### Why is the Pre-commit phase helpful?
+### لماذا تُفيد مرحلة الالتزام الجزئي؟
 
-The pre-commit phase accomplishes the following:
+تحقق مرحلة الالتزام الجزئي من النقاط التالية:
 
-- If the participant nodes are found in this phase, that means that _every_ participant has completed the first phase. The completion of prepare phase is guaranteed.
-- Every phase can now time out and avoid indefinite waits.
+- إذا تم العثور على عقدات المشاركة في هذه المرحلة، فهذا يعني أن كل المشاركين قد أكملوا المرحلة الأولى. تكون إكمال مرحلة التحضير مضمونًا.
+- يمكن لكل مرحلة الانتهاء الزمني وتجنب الانتظار غير المحدود.
 
-## Sagas
+## السيجا
 
 ![sagas](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/distributed-transactions/sagas.png)
 
-A saga is a sequence of local transactions. Each local transaction updates the database and publishes a message or event to trigger the next local transaction in the saga. If a local transaction fails because it violates a business rule then the saga executes a series of compensating transactions that undo the changes that were made by the preceding local transactions.
+السيجا هو تسلسل من المعاملات المحلية. يُحدث كل معاملة محلية قاعدة البيانات وينشر رسالة أو حدثًا لتشغيل المعاملة المحلية التالية في السيجا. إذا فشلت المعاملة المحلية لأنها تخالف قاعدة أعمال معينة، فإن السيجا تنفذ سلسلة من المعاملات التعويضية التي تُلغي التغييرات التي تم إجراؤها بواسطة المعاملات المحلية السابقة.
 
-### Coordination
+### التنسيق
 
-There are two common implementation approaches:
+هناك نهجان شائعان للتنفيذ:
 
-- **Choreography**: Each local transaction publishes domain events that trigger local transactions in other services.
-- **Orchestration**: An orchestrator tells the participants what local transactions to execute.
+- **الكوروغرافيا**: تنشر كل معاملة محلية أحداث المجال التي تشغل المعاملات المحلية في خدمات أخرى.
+- **الأوركسترا**: يخبر الساقن المشاركين بالمعاملات المحلية التي يجب تنفيذها.
 
-### Problems
+### المشاكل
 
-- The Saga pattern is particularly hard to debug.
-- There's a risk of cyclic dependency between saga participants.
-- Lack of participant data isolation imposes durability challenges.
-- Testing is difficult because all services must be running to simulate a transaction.
+- النمط السيجا صعب جدا للتصحيح.
+- هناك خطر من التبعية الدورية بين مشاركي السيجا.
+- يفرض عدم وجود عزل بيانات المشارك يتسبب في تحديات متانة.
+- الاختبار صعب لأنه يجب أن تكون كل الخدمات تعمل لمحاكاة المعاملة.
 
 # Sharding
 
