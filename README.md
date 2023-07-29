@@ -1269,52 +1269,52 @@ NoSQL هي فئة واسعة تشمل أي قاعدة بيانات لا تستخ
 - الإنتاجية العالية جداً للمداخل والمخارج لكل ثانية (IOPS)
 
 
-# Database Replication
+# استنساخ قواعد البيانات
 
-Replication is a process that involves sharing information to ensure consistency between redundant resources such as multiple databases, to improve reliability, fault-tolerance, or accessibility.
+الاستنساخ هو عملية تتضمن مشاركة المعلومات لضمان التوافق بين الموارد المكررة مثل قواعد البيانات المتعددة، بهدف تحسين الموثوقية ومقاومة الأخطاء أو سهولة الوصول.
 
-## Master-Slave Replication
+## استنساخ رئيسي-عبد
 
-The master serves reads and writes, replicating writes to one or more slaves, which serve only reads. Slaves can also replicate additional slaves in a tree-like fashion. If the master goes offline, the system can continue to operate in read-only mode until a slave is promoted to a master or a new master is provisioned.
+يخدم الماستر القراءة والكتابة، ويقوم بتكرار الكتابات إلى واحد أو أكثر من العبيد، التي تخدم فقط القراءة. يمكن للعبيد أيضاً تكرار عبيد إضافيين بتنسيق شبه شجري. إذا تعطل الماستر، يمكن للنظام أن يستمر في العمل في وضع القراءة فقط حتى يتم ترقية عبد ليصبح ماستر أو توفير ماستر جديد.
 
-![master-slave-replication](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/database-replication/master-slave-replication.png)
+![استنساخ رئيسي-عبد](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/database-replication/master-slave-replication.png)
 
-### Advantages
+### المزايا
 
-- Backups of the entire database of relatively no impact on the master.
-- Applications can read from the slave(s) without impacting the master.
-- Slaves can be taken offline and synced back to the master without any downtime.
+- النُسخ الاحتياطي لقاعدة البيانات بتأثير ضئيل على الماستر.
+- يمكن للتطبيقات قراءة من العبيد دون التأثير على الماستر.
+- يمكن أخذ العبيد دون اتصال عن الخط ومزامنتها مرة أخرى مع الماستر دون أي فترة توقف.
 
-### Disadvantages
+### العيوب
 
-- Replication adds more hardware and additional complexity.
-- Downtime and possibly loss of data when a master fails.
-- All writes also have to be made to the master in a master-slave architecture.
-- The more read slaves, the more we have to replicate, which will increase replication lag.
+- يؤدي الاستنساخ إلى إضافة مزيد من الأجهزة وتعقيد إضافي.
+- توقف الماستر يعني إمكانية فقدان البيانات.
+- جميع الكتابات يجب أن تتم أيضًا على الماستر في هندسة الماستر-عبد.
+- كلما زاد عدد العبيد للقراءة، زاد عدد الكتابات التي يجب أن تكرر، وهو ما سيزيد من تأخير الاستنساخ.
 
-## Master-Master Replication
+## استنساخ ماستر-ماستر
 
-Both masters serve reads/writes and coordinate with each other. If either master goes down, the system can continue to operate with both reads and writes.
+يخدم كل من الماسترين القراءة/الكتابة ويتنسقان مع بعضهما. إذا تعطل أحد الماسترين، يمكن للنظام أن يستمر في العمل مع كل من القراءة والكتابة.
 
-![master-master-replication](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/database-replication/master-master-replication.png)
+![استنساخ ماستر-ماستر](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/database-replication/master-master-replication.png)
 
-### Advantages
+### المزايا
 
-- Applications can read from both masters.
-- Distributes write load across both master nodes.
-- Simple, automatic, and quick failover.
+- يمكن للتطبيقات قراءة من كلا الماسترين.
+- يوزع حمل الكتابة على كلا عقدة ماستر.
+- يوفر الفشل الذاتي البسيط والتلقائي والسريع.
 
-### Disadvantages
+### العيوب
 
-- Not as simple as master-slave to configure and deploy.
-- Either loosely consistent or have increased write latency due to synchronization.
-- Conflict resolution comes into play as more write nodes are added and as latency increases.
+- ليس بسيطاً مثل ماستر-عبد من حيث التكوين والنشر.
+- إما أن يكون قليلًا في التوافق أو أن يزيد وقت الكتابة بسبب التزامن.
+- يتعين حل المشاكل عند إضافة المزيد من عقدات الكتابة ومع زيادة وقت التأخير.
 
-## Synchronous vs Asynchronous replication
+## الاستنساخ المتزامن مقابل الاستنساخ غير المتزامن
 
-The primary difference between synchronous and asynchronous replication is how the data is written to the replica. In synchronous replication, data is written to primary storage and the replica simultaneously. As such, the primary copy and the replica should always remain synchronized.
+الفرق الرئيسي بين الاستنساخ المتزامن والاستنساخ غير المتزامن هو كيفية كتابة البيانات إلى النسخة المكررة. في الاستنساخ المتزامن، يتم كتابة البيانات إلى التخزين الأساسي والنسخة المكررة في نفس الوقت. وبالتالي، يجب أن تظل النسخة الأساسية والنسخة المكررة متزامنتين دائماً.
 
-In contrast, asynchronous replication copies the data to the replica after the data is already written to the primary storage. Although the replication process may occur in near-real-time, it is more common for replication to occur on a scheduled basis and it is more cost-effective.
+بالمقابل، يقوم الاستنساخ غير المتزامن بنسخ البيانات إلى النسخة المكررة بعد كتابة البيانات بالفعل إلى التخزين الأساسي. على الرغم من أن عملية الاستنساخ قد تحدث في الوقت الحقيقي، إلا أنه من الأكثر شيوعاً أن تحدث الاستنساخ بناءً على جدول زمني وهو أكثر فعالية من حيث التكلفة.
 
 # Indexes
 
