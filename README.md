@@ -1340,161 +1340,148 @@ NoSQL هي فئة واسعة تشمل أي قاعدة بيانات لا تستخ
 
 ![الفهرس المنقطع](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/indexes/sparse-index.png)
 
-الفهارس المنقطعة تتطلب صيانة أقل من الفهارس الكثيفة عند وقت الكتابة حيث تحتوي فقط على مجموعة من القيم. هذا العبء الأخف يعني أن الإدخالات والتحديثات والحذف سيكونون أسرع. بالنظر إلى أنها تحتوي على عدد أقل من الإدخالات أيضًا، فإن ذلك يعني أن الفهرس سيستخدم ذا
 
-# Normalization and Denormalization
+الفهارس المنقطعة تتطلب صيانة أقل من الفهارس الكثيفة عند وقت الكتابة حيث تحتوي فقط على مجموعة من القيم. هذا العبء الأخف يعني أن الإدخالات والتحديثات والحذف سيكونون أسرع. بالنظر إلى أنها تحتوي على عدد أقل من الإدخالات أيضًا، فإن ذلك يعني أن الفهرس سيستخدم ذاكرة أقل. يكون البحث عن البيانات أبطأ نظرًا لأنه عادة ما يتبع البحث الثنائي مسحًا عبر الصفحة. تكون الفهارس المنقطعة اختيارية أيضًا عند العمل مع البيانات المرتبة.
 
-## Terms
+# التطوير والتجانس
 
-Before we go any further, let's look at some commonly used terms in normalization and denormalization.
+## المصطلحات
 
-### Keys
+قبل أن نتقدم أكثر، دعنا نلقي نظرة على بعض المصطلحات المستخدمة بشكل شائع في التطوير والتجانس.
 
-**Primary key**: Column or group of columns that can be used to uniquely identify every row of the table.
+### المفاتيح
 
-**Composite key**: A primary key made up of multiple columns.
+**المفتاح الأساسي (Primary key)**: عمود أو مجموعة من الأعمدة يمكن استخدامها لتحديد بشكل فريد كل صف في الجدول.
 
-**Super key**: Set of all keys that can uniquely identify all the rows present in a table.
+**المفتاح المركب (Composite key)**: مفتاح أساسي يتكون من عدة أعمدة.
 
-**Candidate key**: Attributes that identify rows uniquely in a table.
+**المفتاح العظمى (Super key)**: مجموعة من جميع المفاتيح التي يمكن أن تحدد بشكل فريد جميع الصفوف الموجودة في جدول.
 
-**Foreign key**: It is a reference to a primary key of another table.
+**المفتاح المرشح (Candidate key)**: السمات التي تحدد الصفوف بشكل فريد في جدول.
 
-**Alternate key**: Keys that are not primary keys are known as alternate keys.
+**المفتاح الخارجي (Foreign key)**: إشارة إلى المفتاح الأساسي لجدول آخر.
 
-**Surrogate key**: A system-generated value that uniquely identifies each entry in a table when no other column was able to hold properties of a primary key.
+**المفتاح البديل (Alternate key)**: المفاتيح التي ليست مفاتيح أساسية يطلق عليها المفاتيح البديلة.
 
-### Dependencies
+**المفتاح الاستبدالي (Surrogate key)**: قيمة تُنشأ تلقائيًا من قبل النظام تحدد كل إدخال بشكل فريد في جدول عندما لا يمكن لعمود آخر أن يحمل خصائص مفتاح أساسي.
 
-**Partial dependency**: Occurs when the primary key determines some other attributes.
+### الاعتماديات
 
-**Functional dependency**: It is a relationship that exists between two attributes, typically between the primary key and non-key attribute within a table.
+**الاعتمادية الجزئية (Partial dependency)**: تحدث عندما يحدد المفتاح الأساسي بعض السمات الأخرى.
 
-**Transitive functional dependency**: Occurs when some non-key attribute determines some other attribute.
+**الاعتمادية الوظيفية (Functional dependency)**: هو العلاقة القائمة بين سمتين، عادة بين المفتاح الأساسي وسمة غير مفتاحية ضمن جدول.
 
-### Anomalies
+**الاعتمادية الوظيفية الناقلة (Transitive functional dependency)**: تحدث عندما تحدد بعض السمة غير المفتاحية سمة أخرى.
 
-Database anomaly happens when there is a flaw in the database due to incorrect planning or storing everything in a flat database. This is generally addressed by the process of normalization.
+### التشوهات
 
-There are three types of database anomalies:
+تحدث تشوهات قاعدة البيانات عندما يكون هناك عيب في قاعدة البيانات ناتج عن تخطيط غير صحيح أو تخزين كل شيء في قاعدة بيانات مستوية. يتم التعامل مع ذلك عمومًا من خلال عملية التطوير والتجانس.
 
-**Insertion anomaly**: Occurs when we are not able to insert certain attributes in the database without the presence of other attributes.
+هناك ثلاثة أنواع من تشوهات قاعدة البيانات:
 
-**Update anomaly**: Occurs in case of data redundancy and partial update. In other words, a correct update of the database needs other actions such as addition, deletion, or both.
+**تشوه الإدخال (Insertion anomaly)**: يحدث عندما لا يمكننا إدخال بعض السمات في قاعدة البيانات بدون وجود سمات أخرى.
 
-**Deletion anomaly**: Occurs where deletion of some data requires deletion of other data.
+**تشوه التحديث (Update anomaly)**: يحدث في حالة وجود استدراج البيانات والتحديث الجزئي. بعبارة أخرى، يتطلب تحديث صحيح لقاعدة البيانات إجراءات أخرى مثل الإضافة أو الحذف أو كليهما.
 
-**Example**
+**تشوه الحذف (Deletion anomaly)**: يحدث ع
 
-Let's consider the following table which is not normalized:
+ندما يتطلب حذف بعض البيانات حذف بيانات أخرى.
 
-| ID  | Name   | Role              | Team |
+**مثال**
+
+لنأخذ الجدول التالي الذي لم يتم تطويره:
+
+| المعرف  | الاسم   | الدور              | الفريق |
 | --- | ------ | ----------------- | ---- |
-| 1   | Peter  | Software Engineer | A    |
-| 2   | Brian  | DevOps Engineer   | B    |
-| 3   | Hailey | Product Manager   | C    |
-| 4   | Hailey | Product Manager   | C    |
-| 5   | Steve  | Frontend Engineer | D    |
+| 1   | بيتر  | مهندس برمجيات | أ    |
+| 2   | براين  | مهندس ديفوبس   | ب    |
+| 3   | هايلي | مدير منتجات   | ج    |
+| 4   | هايلي | مدير منتجات   | ج    |
+| 5   | ستيف  | مهندس واجهة مستخدم | د    |
 
-Let's imagine, we hired a new person "John" but they might not be assigned a team immediately. This will cause an _insertion anomaly_ as the team attribute is not yet present.
+فلنتخيل أننا قمنا بتوظيف شخص جديد "جون" ولكنهم قد لا يتم تعيينهم إلى فريق على الفور. سيتسبب هذا في "تشوه الإدخال" حيث لا يوجد بعد سمة الفريق.
 
-Next, let's say Hailey from Team C got promoted, to reflect that change in the database, we will need to update 2 rows to maintain consistency which can cause an _update anomaly_.
+ثم، لنقل أن هايلي من الفريق ج تمت ترقيتها، لكي نعكس هذا التغيير في قاعدة البيانات، سيكون علينا تحديث 2 صفوف للحفاظ على التوافق وهذا قد يتسبب في "تشوه التحديث".
 
-Finally, we would like to remove Team B but to do that we will also need to remove additional information such as name and role, this is an example of a _deletion anomaly_.
+أخيرًا، نود إزالة الفريق ب ولكن للقيام بذلك يجب علينا أيضًا إزالة معلومات إضافية مثل الاسم والدور، وهذا مثال على "تشوه الحذف".
 
-## Normalization
+## التطوير
 
-Normalization is the process of organizing data in a database. This includes creating tables and establishing relationships between those tables according to rules designed both to protect the data and to make the database more flexible by eliminating redundancy and inconsistent dependency.
+التطوير هو عملية تنظيم البيانات في قاعدة بيانات. يشمل ذلك إنشاء الجداول وإقامة العلاقات بين تلك الجداول وفقًا للقواعد المصممة لحماية البيانات وجعل قاعدة البيانات أكثر مرونة من خلال القضاء على التكرار والاعتماديات المتضاربة.
 
-### Why do we need normalization?
+### لماذا نحتاج إلى التطوير؟
 
-The goal of normalization is to eliminate redundant data and ensure data is consistent. A fully normalized database allows its structure to be extended to accommodate new types of data without changing the existing structure too much. As a result, applications interacting with the database are minimally affected.
+الهدف من التطوير هو القضاء على تكرار البيانات وضمان تجانس البيانات. تسمح قاعدة البيانات التي تم تطويرها بالتمديد لتوفير أنواع جديدة من البيانات دون تغيير الهيكل الحالي كثيرًا. نتيجة لذلك، تتأثر التطبيقات التي تتفاعل مع قاعدة البيانات بأدنى قدر.
 
-### Normal forms
+### أشكال التطوير
 
-Normal forms are a series of guidelines to ensure that the database is normalized. Let's discuss some essential normal forms:
+التطوير هي سلسلة من الإرشادات للتأكد من أن قاعدة البيانات متطورة. دعونا نناقش بعض أشكال التطوير الأساسية:
 
 **1NF**
 
-For a table to be in the first normal form (1NF), it should follow the following rules:
+لكي يكون الجدول في الصيغة الطبيعية الأولى (1NF)، يجب أن يتبع القواعد التالية:
 
-- Repeating groups are not permitted.
-- Identify each set of related data with a primary key.
-- Set of related data should have a separate table.
-- Mixing data types in the same column is not permitted.
+- لا يُسمح بوجود مجموعات متكررة.
+- تحديد كل مجموعة من البيانات ذات الصلة بمفتاح أساسي.
+- يجب أن يكون لمجموعة البيانات ذات الصلة جدول منفصل.
+- لا يُسمح بخلط أنواع البيانات في نفس العمود.
 
 **2NF**
 
-For a table to be in the second normal form (2NF), it should follow the following rules:
+لكي يكون الجدول في الصيغة الطبيعية الثانية (2NF)، يجب أن يتبع القواعد التالية:
 
-- Satisfies the first normal form (1NF).
-- Should not have any partial dependency.
+- يستوفي الصيغة الطبيعية الأولى (1NF).
+- لا يجب أن يكون هناك أي اعتمادية جزئية.
 
 **3NF**
 
-For a table to be in the third normal form (3NF), it should follow the following rules:
+لكي يكون الجدول في الصيغة الطبيعية الثالثة (3NF)، يجب أن يتبع القواعد التالية:
 
-- Satisfies the second normal form (2NF).
-- Transitive functional dependencies are not permitted.
+- يستوفي الصيغة الطبيعية الثانية (2NF).
+- لا يُسمح بالاعتماديات الوظيفية الناقلة.
 
 **BCNF**
 
-Boyce-Codd normal form (or BCNF) is a slightly stronger version of the third normal form (3NF) used to address certain types of anomalies not dealt with by 3NF as originally defined. Sometimes it is also known as the 3.5 normal form (3.5NF).
+الصيغة الطبيعية لبويس كود (BCNF) هي نسخة أقوى بقليل من الصيغة الطبيعية الثالثة (3NF) تُستخدم لمعالجة بعض أنواع التشوهات التي لا تتعامل معها 3NF كما تم تعريفها أصلاً. في بعض الأحيان يُعرف أيضًا باسم الصيغة الطبيعية 3.5 (3.5NF).
 
-For a table to be in the Boyce-Codd normal form (BCNF), it should follow the following rules:
+لكي يكون الجدول في ال
 
-- Satisfied the third normal form (3NF).
-- For every functional dependency X → Y, X should be the super key.
+صيغة الطبيعية لبويس كود (BCNF)، يجب أن يتبع القواعد التالية:
 
-_There are more normal forms such as 4NF, 5NF, and 6NF but we won't discuss them here. Check out this [amazing video](https://www.youtube.com/watch?v=GFQaEYEc8_8) that goes into detail._
+- يستوفي الصيغة الطبيعية الثالثة (3NF).
+- بالنسبة لكل اعتمادية وظيفية X → Y، يجب أن يكون X المفتاح العظمى.
 
-In a relational database, a relation is often described as _"normalized"_ if it meets the third normal form. Most 3NF relations are free of insertion, update, and deletion anomalies.
+_هناك المزيد من أشكال التطوير مثل 4NF و 5NF و 6NF ولكننا لن نناقشها هنا. تحقق من هذا [الفيديو المذهل](https://www.youtube.com/watch؟v=GFQaEYEc8_8) الذي يدخل في التفاصيل._
 
-As with many formal rules and specifications, real-world scenarios do not always allow for perfect compliance. If you decide to violate one of the first three rules of normalization, make sure that your application anticipates any problems that could occur, such as redundant data and inconsistent dependencies.
+في قاعدة بيانات ذات صلة، يُصف العلاقة عادة بأنها "مطورة" إذا كانت تستوفي الصيغة الطبيعية الثالثة. يكون معظم العلاقات الحاصلة على الصيغة الطبيعية الثالثة خالية من تشوهات الإدخال والتحديث والحذف.
 
-### Advantages
+كما هو الحال مع العديد من القواعد والمواصفات الرسمية، فإن السيناريوهات الواقعية لا تسمح دائمًا بالامتثال المثالي. إذا قررت خرق أحد القواعد الثلاث الأولى للتطوير، تأكد من أن تطبيقك يتوقع أي مشاكل يمكن أن تحدث، مثل تكرار البيانات والاعتماديات غير المتسقة.
 
-Here are some advantages of normalization:
+## التجانس
 
-- Reduces data redundancy.
-- Better data design.
-- Increases data consistency.
-- Enforces referential integrity.
+التجانس هو تقنية تحسين قاعدة البيانات تنطوي على إضافة بيانات مكررة في جدول واحد أو أكثر. يمكن أن يساعد هذا في تجنب الانضمامات المكلفة في قاعدة بيانات ذات صلة. يحاول التجانس تحسين أداء القراءة على حساب بعض أداء الكتابة. يتم كتابة نسخ مكررة من البيانات في جداول متعددة لتجنب الانضمامات المكلفة.
 
-### Disadvantages
+بمجرد أن تصبح البيانات منتشرة باستخدام تقنيات مثل التجزئة والتجزئة، يزيد إدارة الانضمامات عبر الشبكة من تعقيدات المزيد. قد يتجنب التجانس الحاجة إلى الانضمامات المعقدة.
 
-Let's look at some disadvantages of normalization:
+_ملاحظة: التجانس لا يعني عكس التطوير._
 
-- Data design is complex.
-- Slower performance.
-- Maintenance overhead.
-- Require more joins.
+### المزايا
 
-## Denormalization
+دعونا نلقي نظرة على بعض المزايا للتجانس:
 
-Denormalization is a database optimization technique in which we add redundant data to one or more tables. This can help us avoid costly joins in a relational database. It attempts to improve read performance at the expense of some write performance. Redundant copies of the data are written in multiple tables to avoid expensive joins.
+- تُسرِّع استرداد البيانات.
+- يُسهِّل كتابة الاستعلامات.
+- تقليل عدد الجداول.
+- سهل الإدارة.
 
-Once data becomes distributed with techniques such as federation and sharding, managing joins across the network further increases complexity. Denormalization might circumvent the need for such complex joins.
+### العيوب
 
-_Note: Denormalization does not mean reversing normalization._
+فيما يلي بعض العيوب للتجانس:
 
-### Advantages
-
-Let's look at some advantages of denormalization:
-
-- Retrieving data is faster.
-- Writing queries is easier.
-- Reduction in number of tables.
-- Convenient to manage.
-
-### Disadvantages
-
-Below are some disadvantages of denormalization:
-
-- Expensive inserts and updates.
-- Increases complexity of database design.
-- Increases data redundancy.
-- More chances of data inconsistency.
+- يُكلِّف إدخالات وتحديثات.
+- زيادة تعقيد تصميم قاعدة البيانات.
+- زيادة تكرار البيانات.
+- زيادة فرص عدم الاتساق في البيانات.
 
 # ACID and BASE consistency models
 
