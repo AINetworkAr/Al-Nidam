@@ -1316,31 +1316,31 @@ NoSQL هي فئة واسعة تشمل أي قاعدة بيانات لا تستخ
 
 بالمقابل، يقوم الاستنساخ غير المتزامن بنسخ البيانات إلى النسخة المكررة بعد كتابة البيانات بالفعل إلى التخزين الأساسي. على الرغم من أن عملية الاستنساخ قد تحدث في الوقت الحقيقي، إلا أنه من الأكثر شيوعاً أن تحدث الاستنساخ بناءً على جدول زمني وهو أكثر فعالية من حيث التكلفة.
 
-# Indexes
+# الفهارس
 
-Indexes are well known when it comes to databases, they are used to improve the speed of data retrieval operations on the data store. An index makes the trade-offs of increased storage overhead, and slower writes (since we not only have to write the data but also have to update the index) for the benefit of faster reads. Indexes are used to quickly locate data without having to examine every row in a database table. Indexes can be created using one or more columns of a database table, providing the basis for both rapid random lookups and efficient access to ordered records.
+الفهارس معروفة جيدًا عندما يتعلق الأمر بقواعد البيانات، حيث تُستخدم لتحسين سرعة عمليات استرداد البيانات من مخزن البيانات. تعمل الفهارس على تحسين القراءات السريعة على حساب زيادة تكاليف التخزين وبطء عمليات الكتابة (نظرًا لأننا يجب أن نكتب البيانات ونحدث الفهرس أيضًا). تُستخدم الفهارس لتحديد موقع البيانات بسرعة دون الحاجة إلى فحص كل صف في جدول قاعدة بيانات. يمكن إنشاء الفهارس باستخدام عمود واحد أو أكثر من جدول قاعدة بيانات، وذلك لتوفير الأساس للبحث العشوائي السريع والوصول الفعال إلى السجلات المرتبة.
 
-![indexes](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/indexes/indexes.png)
+![الفهارس](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/indexes/indexes.png)
 
-An index is a data structure that can be perceived as a table of contents that points us to the location where actual data lives. So when we create an index on a column of a table, we store that column and a pointer to the whole row in the index. Indexes are also used to create different views of the same data. For large data sets, this is an excellent way to specify different filters or sorting schemes without resorting to creating multiple additional copies of the data.
+الفهرس هو هيكل بيانات يمكن أن يُعتبر كجدول فهرس يُشير إلينا إلى المكان الذي توجد فيه البيانات الفعلية. لذا عندما نقوم بإنشاء فهرس على عمود في جدول، نقوم بتخزين ذلك العمود ومؤشر إلى الصف كله في الفهرس. تُستخدم الفهارس أيضًا لإنشاء آراء مختلفة لنفس البيانات. بالنسبة لمجموعات البيانات الكبيرة، هذه طريقة ممتازة لتحديد مرشحات مختلفة أو مخططات الترتيب دون اللجوء إلى إنشاء نسخ إضافية متعددة من البيانات.
 
-One quality that database indexes can have is that they can be **dense** or **sparse**. Each of these index qualities comes with its own trade-offs. Let's look at how each index type would work:
+إحدى الخصائص التي يمكن أن تكون بها فهارس قاعدة البيانات هي أنها يمكن أن تكون **كثيفة** أو **منقطعة**. يأتي كل من هذه الخصائص مع تجاربه الخاصة. دعنا نلقي نظرة على كيفية عمل كل نوع من الفهارس:
 
-## Dense Index
+## الفهرس الكثيف
 
-In a dense index, an index record is created for every row of the table. Records can be located directly as each record of the index holds the search key value and the pointer to the actual record.
+في الفهرس الكثيف، يتم إنشاء سجل فهرس لكل صف في الجدول. يمكن تحديد السجلات مباشرةً حيث يحتوي كل سجل في الفهرس على قيمة مفتاح البحث والمؤشر إلى السجل الفعلي.
 
-![dense-index](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/indexes/dense-index.png)
+![الفهرس الكثيف](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/indexes/dense-index.png)
 
-Dense indexes require more maintenance than sparse indexes at write-time. Since every row must have an entry, the database must maintain the index on inserts, updates, and deletes. Having an entry for every row also means that dense indexes will require more memory. The benefit of a dense index is that values can be quickly found with just a binary search. Dense indexes also do not impose any ordering requirements on the data.
+تتطلب الفهارس الكثيفة صيانة أكثر من الفهارس المنقطعة عند وقت الكتابة. نظرًا لأن كل صف يجب أن يكون لديه إدخال، يجب أن تقوم قاعدة البيانات بإدارة الفهرس عند الإدخال والتحديث والحذف. يتطلب وجود إدخال لكل صف أيضًا أن تستهلك الفهارس الكثيفة المزيد من الذاكرة. تتمثل فائدة الفهرس الكثيف في أنه يمكن العثور على القيم بسرعة مع البحث الثنائي فقط. لا تفرض الفهارس الكثيفة أيضًا أية متطلبات ترتيب على البيانات.
 
-## Sparse Index
+## الفهرس المنقطع
 
-In a sparse index, records are created only for some of the records.
+في الفهرس المنقطع، يتم إنشاء سجلات فهرس فقط لبعض السجلات.
 
-![sparse-index](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/indexes/sparse-index.png)
+![الفهرس المنقطع](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/indexes/sparse-index.png)
 
-Sparse indexes require less maintenance than dense indexes at write-time since they only contain a subset of the values. This lighter maintenance burden means that inserts, updates, and deletes will be faster. Having fewer entries also means that the index will use less memory. Finding data is slower since a scan across the page typically follows the binary search. Sparse indexes are also optional when working with ordered data.
+الفهارس المنقطعة تتطلب صيانة أقل من الفهارس الكثيفة عند وقت الكتابة حيث تحتوي فقط على مجموعة من القيم. هذا العبء الأخف يعني أن الإدخالات والتحديثات والحذف سيكونون أسرع. بالنظر إلى أنها تحتوي على عدد أقل من الإدخالات أيضًا، فإن ذلك يعني أن الفهرس سيستخدم ذا
 
 # Normalization and Denormalization
 
