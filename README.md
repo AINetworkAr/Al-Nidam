@@ -1208,63 +1208,66 @@ NoSQL هي فئة واسعة تشمل أي قاعدة بيانات لا تستخ
 - [Azure Cosmos DB](https://azure.microsoft.com/en-in/services/cosmos-db)
 - [Couchbase](https://www.couchbase.com)
 
-# SQL vs NoSQL databases
+# قواعد بيانات SQL مقابل قواعد بيانات NoSQL
 
-In the world of databases, there are two main types of solutions, SQL (relational) and NoSQL (non-relational) databases. Both of them differ in the way they were built, the kind of information they store, and how they store it. Relational databases are structured and have predefined schemas while non-relational databases are unstructured, distributed, and have a dynamic schema.
+في عالم قواعد البيانات، هناك نوعان رئيسيان من الحلول، وهما قواعد بيانات SQL (العلاقية) وقواعد بيانات NoSQL (غير العلاقية). تختلف كل منهما في الطريقة التي بُني بها، ونوع المعلومات التي يخزنها، وكيفية تخزينها. تتميز قواعد البيانات العلاقية بأنها مُنظَّمة ولها مخططات محددة مسبقًا، بينما تكون قواعد بيانات NoSQL غير منظمة وموزعة ولديها مخطط ديناميكي.
 
-## High-level differences
+## الاختلافات على المستوى العالي
 
-Here are some high-level differences between SQL and NoSQL:
+فيما يلي بعض الاختلافات على المستوى العالي بين قواعد البيانات SQL وقواعد البيانات NoSQL:
 
-### Storage
+### التخزين
 
-SQL stores data in tables, where each row represents an entity and each column represents a data point about that entity.
+تخزن قواعد البيانات SQL البيانات في جداول، حيث يُمثل كل صف كيانًا ويُمثل كل عمود نقطة بيانات عن ذلك الكيان.
 
-NoSQL databases have different data storage models such as key-value, graph, document, etc.
+تحتوي قواعد بيانات NoSQL على نماذج تخزين بيانات مختلفة مثل مفتاح-قيمة، الرسم، الوثيقة، وما إلى ذلك.
 
-### Schema
+### المخطط
 
-In SQL, each record conforms to a fixed schema, meaning the columns must be decided and chosen before data entry and each row must have data for each column. The schema can be altered later, but it involves modifying the database using migrations.
+في قواعد البيانات SQL، يتوافق كل سجل مع مخطط ثابت، مما يعني أنه يجب أن يتم تحديد الأعمدة واختيارها قبل إدخال البيانات ويجب أن يحتوي كل صف على بيانات لكل عمود. يمكن تعديل المخطط لاحقًا، ولكن ذلك ينطوي على تعديل قاعدة البيانات باستخدام عمليات الترحيل.
 
-Whereas in NoSQL, schemas are dynamic. Fields can be added on the fly, and each _record_ (or equivalent) doesn't have to contain data for each _field_.
+أما في قواعد بيانات NoSQL، فالمخططات ديناميكية. يمكن إضافة الحقول على الطاير، ولا يجب أن يحتوي كل سجل (أو ما يعادله) على بيانات لكل حقل.
 
-### Querying
+### الاستعلام
 
-SQL databases use SQL (structured query language) for defining and manipulating the data, which is very powerful.
+تستخدم قواعد بيانات SQL لغة الاستعلام المهيكلة (SQL) لتعريف وتلاعب البيانات، وهي قوية جدًا.
 
-In a NoSQL database, queries are focused on a collection of documents. Different databases have different syntax for querying.
+في قاعدة بيانات NoSQL، تتركز الاستعلامات على مجموعة من الوثائق. تختلف قواعد البيانات المختلفة في بناء جملة الاستعلام.
 
-### Scalability
+### التوسعية
 
-In most common situations, SQL databases are vertically scalable, which can get very expensive. It is possible to scale a relational database across multiple servers, but this is a challenging and time-consuming process.
+في معظم الحالات الشائعة، تكون قواعد بيانات SQL قابلة للتوسع بشكل رأسي، مما قد يكلف الكثير من المال. يمكن توسيع قاعدة بيانات علاقية عبر خوادم متعددة، لكن هذه عملية تحدية وتستغرق الكثير من الوقت.
 
-On the other hand, NoSQL databases are horizontally scalable, meaning we can add more servers easily to our NoSQL database infrastructure to handle large traffic. Any cheap commodity hardware or cloud instances can host NoSQL databases, thus making it a lot more cost-effective than vertical scaling. A lot of NoSQL technologies also distribute data across servers automatically.
+من ناحية أخرى، ت
 
-### Reliability
+كون قواعد بيانات NoSQL قابلة للتوسع بشكل أفقي، مما يعني أنه يمكننا إضافة المزيد من الخوادم بسهولة إلى بنية قاعدة بيانات NoSQL لمعالجة حركة المرور الكبيرة. يمكن لأي جهاز أو حاسوب سحابي رخيص أن يستضيف قواعد بيانات NoSQL، مما يجعلها أكثر كفاءة من حيث التكلفة من التوسع الرأسي. كما توزع العديد من تقنيات NoSQL البيانات تلقائياً عبر الخوادم.
 
-The vast majority of relational databases are ACID compliant. So, when it comes to data reliability and a safe guarantee of performing transactions, SQL databases are still the better bet.
+### الموثوقية
 
-Most of the NoSQL solutions sacrifice ACID compliance for performance and scalability.
+غالبية قواعد البيانات العلاقية متوافقة مع نموذج ACID. لذا، عندما يتعلق الأمر بموثوقية البيانات وضمان أداء العمليات بأمان، تظل قواعد البيانات SQL هي الاختيار الأفضل.
 
-## Reasons
+يتنازل معظم حلول NoSQL عن الامتثال لمعيار ACID من أجل الأداء والتوسعية.
 
-As always we should always pick the technology that fits the requirements better. So, let's look at some reasons for picking SQL or NoSQL based database:
+## الأسباب
 
-**For SQL**
+كما هو الحال دائمًا، يجب أن نختار التقنية التي تناسب المتطلبات بشكل أفضل. لذا، دعنا نلقي نظرة على بعض الأسباب لاختيار قاعدة بيانات بناءً على SQL أو NoSQL:
 
-- Structured data with strict schema
-- Relational data
-- Need for complex joins
-- Transactions
-- Lookups by index are very fast
+**لقواعد البيانات SQL**
 
-**For NoSQL**
+- البيانات المُنظَّمة بمخطط صارم
+- البيانات العلاقية
+- الحاجة للانضمامات المعقدة
+- المعاملات
+- استرجاع البيانات بالفهرس سريع جداً
 
-- Dynamic or flexible schema
-- Non-relational data
-- No need for complex joins
-- Very data-intensive workload
-- Very high throughput for IOPS
+**لقواعد البيانات NoSQL**
+
+- مخطط ديناميكي أو مرن
+- البيانات غير العلاقية
+- عدم الحاجة للانضمامات المعقدة
+- العبء الكبير جداً للبيانات
+- الإنتاجية العالية جداً للمداخل والمخارج لكل ثانية (IOPS)
+
 
 # Database Replication
 
