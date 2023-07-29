@@ -1585,60 +1585,62 @@ _ملاحظة: التجانس لا يعني عكس التطوير._
 
 
 
-# PACELC Theorem
+# نظرية PACELC
 
-The PACELC theorem is an extension of the CAP theorem. The CAP theorem states that in the case of network partitioning (P) in a distributed system, one has to choose between Availability (A) and Consistency (C).
+نظرية PACELC هي توسيع لنظرية CAP. تنص نظرية CAP على أنه في حالة تجزء الشبكة في نظام موزع، يجب على الشخص الاختيار بين التوفر (A) والتجانس (C).
 
-PACELC extends the CAP theorem by introducing latency (L) as an additional attribute of a distributed system. The theorem states that else (E), even when the system is running normally in the absence of partitions, one has to choose between latency (L) and consistency (C).
+توسع نظرية PACELC نظرية CAP عن طريق إدخال التأخير (L) كسمة إضافية للنظام الموزع. تنص النظرية على أنه على الرغم من غياب التجزء، يجب على الشخص الاختيار بين التأخير (L) والتجانس (C).
 
-_The PACELC theorem was first described by [Daniel J. Abadi](https://scholar.google.com/citations?user=zxeEF2gAAAAJ)._
+_وصفت نظرية PACELC لأول مرة من قبل [دانيال جي. أبادي](https://scholar.google.com/citations?user=zxeEF2gAAAAJ)._
 
-![pacelc-theorem](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/pacelc-theorem/pacelc-theorem.png)
+![نظرية-PACELC](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/pacelc-theorem/pacelc-theorem.png)
 
-PACELC theorem was developed to address a key limitation of the CAP theorem as it makes no provision for performance or latency.
+تم تطوير نظرية PACELC لمعالجة نقطة ضعف رئيسية في نظرية CAP حيث لا تتيح أي احتمالية للأداء أو التأخير.
 
-For example, according to the CAP theorem, a database can be considered Available if a query returns a response after 30 days. Obviously, such latency would be unacceptable for any real-world application.
+على سبيل المثال، وفقًا لنظرية CAP، يمكن اعتبار قاعدة بيانات متاحة إذا كانت الاستعلام يرجع استجابة بعد 30 يومًا. من الواضح أن مثل هذا التأخير سيكون غير مقبول لأي تطبيق في العالم الحقيقي.
 
-# Transactions
+# العمليات النقل
 
-A transaction is a series of database operations that are considered to be a _"single unit of work"_. The operations in a transaction either all succeed, or they all fail. In this way, the notion of a transaction supports data integrity when part of a system fails. Not all databases choose to support ACID transactions, usually because they are prioritizing other optimizations that are hard or theoretically impossible to implement together.
+العملية النقل هي سلسلة من عمليات قاعدة البيانات التي يتم اعتبارها "وحدة عمل واحدة". تنجح العمليات في العملية النقل بالكامل، أو تفشل تمامًا. بهذه الطريقة، تدعم مفهوم العملية النقل سلامة البيانات عند فشل جزء من النظام. ليست كل قواعد البيانات تختار دعم العمليات النقل ACID، غالبًا لأنهم يفضلون الأولويات الأخرى التي يصعب أو لا يمكن تنفيذها معًا نظريًا.
 
-_Usually, relational databases support ACID transactions, and non-relational databases don't (there are exceptions)._
+_عادة، تدعم قواعد البيانات العلائقية العمليات النقل ACID، ولا تدعم قواعد البيانات غير العلائقية (هناك استثناءات)._
 
-## States
+## الحالات
 
-A transaction in a database can be in one of the following states:
+يمكن أن تكون العملية النقل في قاعدة البيانات في إحدى الحالات التالية:
 
-![transaction-states](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/transactions/transaction-states.png)
+![حالات-العملية-النقل](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/transactions/transaction-states.png)
 
-### Active
+### نشط
 
-In this state, the transaction is being executed. This is the initial state of every transaction.
+في هذه الحالة، يتم تنفيذ العملية النقل. هذه هي الحالة الأولية لكل عملية نقل.
 
-### Partially Committed
+### تم الاستكمال جزئيًا
 
-When a transaction executes its final operation, it is said to be in a partially committed state.
+عند تنفيذ العملية النهائية للعملية النقل، يكون في حالة استكمال جزئي.
 
-### Committed
+### تم الاستكمال
 
-If a transaction executes all its operations successfully, it is said to be committed. All its effects are now permanently established on the database system.
+إذا نفذت العملية النقل جميع عملياتها بنجاح، يكون في حالة استكمال. يتم تأكيد جميع تأثيراتها بشكل دائم على نظام قاعدة البيانات.
 
-### Failed
+### فشل
 
-The transaction is said to be in a failed state if any of the checks made by the database recovery system fails. A failed transaction can no longer proceed further.
+تكون العملية النقل في حالة فشل إذا فشل أي من الفحوصات التي أجرتها نظام استرداد قاعدة البيانات. لا يمكن للعملية النقل التي فشلت الاستمرار في التقدم.
 
-### Aborted
+### ملغى
 
-If any of the checks fail and the transaction has reached a failed state, then the recovery manager rolls back all its write operations on the database to bring the database back to its original state where it was prior to the execution of the transaction. Transactions in this state are aborted.
+إذا فشل أي من الفحوصات ووصلت العملية النقل إلى حالة فشل، يقوم مدير الاسترداد بإلغاء جميع عمليات الكتابة على قا
 
-The database recovery module can select one of the two operations after a transaction aborts:
+عدة البيانات ليعيد قاعدة البيانات إلى حالتها الأصلية قبل تنفيذ العملية النقل. تُلغى العمليات النقل في هذه الحالة.
 
-- Restart the transaction
-- Kill the transaction
+يمكن لوحدة استرداد قاعدة البيانات اختيار إحدى العمليتين بعد إلغاء العملية النقل:
 
-### Terminated
+- إعادة تشغيل العملية النقل.
+- إنهاء العملية النقل.
 
-If there isn't any roll-back or the transaction comes from the _committed state_, then the system is consistent and ready for a new transaction and the old transaction is terminated.
+### انتهى
+
+إذا لم يكن هناك أي تراجع أو جاءت العملية النقل من الحالة المستكملة، فإن النظام متسق وجاهز لعملية نقل جديدة وتم إنهاء العملية القديمة.
 
 # Distributed Transactions
 
