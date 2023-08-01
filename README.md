@@ -2066,38 +2066,40 @@ $$
 - مكلفة حيث سيكون لكل طبقة تكلفة أجهزتها الخاصة.
 - من الصعب إدارة أمان الشبكة.
 
-# Message Brokers
+# وسطاء الرسائل
 
-A message broker is a software that enables applications, systems, and services to communicate with each other and exchange information. The message broker does this by translating messages between formal messaging protocols. This allows interdependent services to _"talk"_ with one another directly, even if they were written in different languages or implemented on different platforms.
+وسيط الرسائل هو برنامج يمكن التطبيقات والأنظمة والخدمات من التواصل مع بعضها البعض وتبادل المعلومات. يقوم وسيط الرسائل بذلك من خلال ترجمة الرسائل بين بروتوكولات الرسائل الرسمية. وهذا يتيح للخدمات المتعاونة التحدث مع بعضها البعض مباشرة، حتى إذا كانت مكتوبة بلغات مختلفة أو مُنفَّذَة على منصات مختلفة.
 
-![message-broker](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/message-brokers/message-broker.png)
+![وسيط الرسائل](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/message-brokers/message-broker.png)
 
-Message brokers can validate, store, route, and deliver messages to the appropriate destinations. They serve as intermediaries between other applications, allowing senders to issue messages without knowing where the receivers are, whether or not they are active, or how many of them there are. This facilitates the decoupling of processes and services within systems.
+يمكن لوسطاء الرسائل التحقق من صحة الرسائل وتخزينها وتوجيهها وتسليمها إلى الوجهات المناسبة. يعملون كوسطاء بين التطبيقات الأخرى، مما يسمح للمرسلين بإصدار الرسائل دون معرفة مكان المستقبلين، سواء كانوا نشطين أم لا أو عددهم. ويُسهِّل ذلك الفصل بين العمليات والخدمات ضمن الأنظمة.
 
-## Models
+## النماذج
 
-Message brokers offer two basic message distribution patterns or messaging styles:
+تقدم وسطاء الرسائل نمطين أساسيين لتوزيع الرسائل أو أنماط الرسائل:
 
-- **[Point-to-Point messaging](https://karanpratapsingh.com/courses/system-design/message-queues)**: This is the distribution pattern utilized in message queues with a one-to-one relationship between the message's sender and receiver.
-- **[Publish-subscribe messaging](https://karanpratapsingh.com/courses/system-design/publish-subscribe)**: In this message distribution pattern, often referred to as _"pub/sub"_, the producer of each message publishes it to a topic, and multiple message consumers subscribe to topics from which they want to receive messages.
+- **[توزيع النقاط إلى النقاط](https://karanpratapsingh.com/courses/system-design/message-queues)**: هذا هو نمط التوزيع المستخدم في طوابير الرسائل مع علاقة واحد-إلى-واحد بين مرسل الرسالة والمستقبل.
+- **[توزيع النشر-الاشتراك](https://karanpratapsingh.com/courses/system-design/publish-subscribe)**: في هذا النمط التوزيعي للرسائل، المعروف أيضًا بـ "النشر/الاشتراك"، يقوم منتج كل رسالة بنشرها إلى موضوع، ويشترك عدة مستهلكين للرسائل في المواضيع التي يرغبون في استقبال الرسائل منها.
 
-_We will discuss these messaging patterns in detail in the later tutorials._
+_سنناقش هذه الأنماط التوزيعية للرسائل بالتفصيل في الدروس التالية._
 
-## Message brokers vs Event streaming
+## وسطاء الرسائل مقابل منصات تدفق الأحداث
 
-Message brokers can support two or more messaging patterns, including message queues and pub/sub, while event streaming platforms only offer pub/sub-style distribution patterns. Designed for use with high volumes of messages, event streaming platforms are readily scalable. They're capable of ordering streams of records into categories called _topics_ and storing them for a predetermined amount of time. Unlike message brokers, however, event streaming platforms cannot guarantee message delivery or track which consumers have received the messages.
+يمكن لوسطاء الرسائل دعم نمطين أو أكثر لتوزيع الرسائل، بما في ذلك طوابير الرسائل والنشر/الاشتراك، بينما تقدم منصات تدفق الأحداث نماذج توزيع نشر/الاشتراك فقط. صُممت منصات تدفق الأحداث للاستخدام مع حجم كبير من الرسائل، وهي قابلة للتوسعة بسهولة. يمكنها ترتيب تدفقات السجلات إلى فئات تُسمى "المواضيع" وتخزينها لفترة زمنية محددة. على عكس وسطاء الرسائل، إلا أن منصات تدفق الأحداث لا يمكنها ضمان تسليم الرسائل أو تتبع المستهلكين الذين تلقوا الرسائل.
 
-Event streaming platforms offer more scalability than message brokers but fewer features that ensure fault tolerance like message resending, as well as more limited message routing and queueing capabilities.
+تقدم منصات تدفق الأحداث مزيدًا من القابلية للتوسعة من وسطاء الرسائل ولكنها تحتوي على مزيد من الميزات التي تضمن القدرة على التحمل من الأخطاء مثل إعادة إرسال الرسائل، بالإضافة إلى إمكانيات توجيه الرسائل وتكوين الطوابير المحدودة.
 
-## Message brokers vs Enterprise Service Bus (ESB)
+## وسطاء الرسائل مقابل حافلة خدمات الأعمال (ESB)
 
-[Enterprise Service Bus (ESB)](https://karanpratapsingh.com/courses/system-design/enterprise-service-bus) infrastructure is complex and can be challenging to integrate and expensive to maintain. It's difficult to troubleshoot them when problems occur in production environments, they're not easy to scale, and updating is tedious.
+[بنية حافلة خدمات الأعمال (ESB)](https://karanpratapsingh.com/courses/system-design/enterprise-service-bus) معقدة ويمكن أن تكون صعبة التكامل ومكلفة التطوير. يُعَدُّ عملية تحديد المشكلات عند حدوث مشاكل في بيئات الإنتاج صعبة، وليس سهلا
 
-Whereas message brokers are a _"lightweight"_ alternative to ESBs that provide similar functionality, a mechanism for inter-service communication, at a lower cost. They're well-suited for use in the [microservices architectures](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) that have become more prevalent as ESBs have fallen out of favor.
+ً القيام بالتوسع والتحديث.
 
-## Examples
+بينما تعتبر وسطاء الرسائل بديلًا "خفيف الوزن" لبنية ESB توفر وظائف مماثلة، وهي آلية للاتصال بين الخدمات، وبتكلفة أقل. إنها مناسبة تمامًا للاستخدام في [هندسة بنية الميكروسيرفس](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) التي أصبحت أكثر انتشارًا مع تراجع شعبية بنية ESB.
 
-Here are some commonly used message brokers:
+## أمثلة
+
+فيما يلي بعض وسطاء الرسائل الشائعة المستخدمة:
 
 - [NATS](https://nats.io)
 - [Apache Kafka](https://kafka.apache.org)
