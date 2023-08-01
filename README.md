@@ -1971,43 +1971,45 @@ $$
 - تجزئة البيانات في [Apache Cassandra](https://cassandra.apache.org).
 - توزيع الحمل عبر مضيفي تخزين متعددين في [Amazon DynamoDB](https://aws.amazon.com/dynamodb).
 
-# Database Federation
+# التجزئة القاعدة
 
-Federation (or functional partitioning) splits up databases by function. The federation architecture makes several distinct physical databases appear as one logical database to end-users.
+التجزئة (أو التجزئة الوظيفية) تقسم قواعد البيانات حسب الوظيفة. تعمل هندسة التجزئة على جعل العديد من قواعد البيانات الفعلية المتميزة تظهر كقاعدة بيانات منطقية واحدة للمستخدمين النهائيين.
 
-All of the components in a federation are tied together by one or more federal schemas that express the commonality of data throughout the federation. These federated schemas are used to specify the information that can be shared by the federation components and to provide a common basis for communication among them.
+يتم ربط جميع المكونات في التجزئة بمخططات فيدرالية واحدة أو أكثر تعبر عن التشابه في البيانات في جميع أنحاء التجزئة. تُستخدم هذه المخططات الفدرالية لتحديد المعلومات التي يمكن مشاركتها بواسطة مكونات التجزئة وتوفير أساس مشترك للتواصل بينهم.
 
-![database-federation](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/database-federation/database-federation.png)
+![تجزئة القاعدة](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/database-federation/database-federation.png)
 
-Federation also provides a cohesive, unified view of data derived from multiple sources. The data sources for federated systems can include databases and various other forms of structured and unstructured data.
+توفر التجزئة أيضًا رؤية متماسكة وموحدة للبيانات المستمدة من مصادر متعددة. يمكن أن تتضمن مصادر البيانات للأنظمة المتجزئة قواعد البيانات وأشكالًا مختلفة من البيانات المهيكلة وغير المهيكلة.
 
-## Characteristics
+## السمات
 
-Let's look at some key characteristics of a federated database:
+لنلقِ نظرة على بعض السمات الرئيسية لقاعدة بيانات متجزئة:
 
-- **Transparency**: Federated database masks user differences and implementations of underlying data sources. Therefore, the users do not need to be aware of where the data is stored.
-- **Heterogeneity**: Data sources can differ in many ways. A federated database system can handle different hardware, network protocols, data models, etc.
-- **Extensibility**: New sources may be needed to meet the changing needs of the business. A good federated database system needs to make it easy to add new sources.
-- **Autonomy**: A Federated database does not change existing data sources, interfaces should remain the same.
-- **Data integration**: A federated database can integrate data from different protocols, database management systems, etc.
+- **الشفافية**: تخفي قاعدة البيانات المتجزئة اختلافات المستخدم وتنفيذات مصادر البيانات الأساسية. لذلك لا يحتاج المستخدمون إلى أن يكونوا على دراية بمكان تخزين البيانات.
+- **التباين**: قد تختلف مصادر البيانات في العديد من الطرق. يمكن لنظام قاعدة البيانات المتجزئة التعامل مع أجهزة مختلفة وبروتوكولات الشبكة ونماذج البيانات وغيرها.
+- **القابلية للتوسعة**: قد يكون هناك حاجة لمصادر جديدة لتلبية احتياجات الأعمال المتغيرة. يجب أن يجعل نظام قاعدة بيانات متجزئة جيد تكوين مصادر جديدة بسهولة.
+- **الاستقلالية**: قاعدة بيانات متجزئة لا تغير مصادر البيانات الحالية، وواجهاتها يجب أن تظل كما هي.
+- **تكامل البيانات**: يمكن لقاعدة بيانات متجزئة أن تدمج البيانات من بروتوكولات مختلفة وأنظمة إدارة قواعد البيانات وغيرها.
 
-## Advantages
+## المزايا
 
-Here are some advantages of federated databases:
+إليك بعض المزايا لقواعد البيانات المتجزئة:
 
-- Flexible data sharing.
-- Autonomy among the database components.
-- Access heterogeneous data in a unified way.
-- No tight coupling of applications with legacy databases.
+- مشاركة البيانات المرن
 
-## Disadvantages
+ة.
+- الاستقلالية بين مكونات قاعدة البيانات.
+- الوصول إلى البيانات المتباينة بطريقة موحدة.
+- عدم الارتباط القوي بين التطبيقات وقواعد البيانات القديمة.
 
-Below are some disadvantages of federated databases:
+## العيوب
 
-- Adds more hardware and additional complexity.
-- Joining data from two databases is complex.
-- Dependence on autonomous data sources.
-- Query performance and scalability.
+وفيما يلي بعض العيوب لقواعد البيانات المتجزئة:
+
+- يزيد من تعقيد الأجهزة والتعقيد الإضافي.
+- تعقيد دمج البيانات من قاعدتي بيانات.
+- الاعتماد على مصادر بيانات مستقلة.
+- أداء الاستعلام وقابلية التوسعة.
 
 # N-tier architecture
 
