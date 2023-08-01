@@ -2182,62 +2182,62 @@ _سنناقش هذه الأنماط التوزيعية للرسائل بالتف
 
 ل الإنتاج العالي وأوقات الاستجابة الجيدة للوظائف الموجودة بالفعل في الطابور. عندما يمتلئ الطابور، يحصل العملاء على رمز حالة انشغال الخادم أو HTTP 503 للمحاولة مرة أخرى في وقت لاحق. يمكن للعملاء إعادة المحاولة في وقت لاحق، ربما باستخدام استراتيجية العكسيَّة التعايضيَّة.
 
-# Publish-Subscribe
+# النشر والاشتراك
 
-Similar to a message queue, publish-subscribe is also a form of service-to-service communication that facilitates asynchronous communication. In a pub/sub model, any message published to a topic is pushed immediately to all the subscribers of the topic.
+بشكل مماثل لطابور الرسائل، يعد النشر والاشتراك أيضًا نوعًا من التواصل بين الخدمات الذي يسهل التواصل الغير متزامن. في نموذج النشر والاشتراك، يتم دفع أي رسالة مُنشَرة على موضوع (توبيك) فورًا إلى جميع المشتركين في هذا الموضوع.
 
-![publish-subscribe](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/publish-subscribe/publish-subscribe.png)
+المشتركين في موضوع الرسالة غالبًا ما يؤدون وظائف مختلفة، ويمكن لكل منهم أن يقوم بشيء مختلف بالرسالة بشكل متوازي. المُنشئ لا يحتاج لمعرفة من يستخدم المعلومات التي يتم بثها، والمشتركون لا يحتاجون لمعرفة مصدر الرسالة. هذا النمط من التواصل مختلف قليلاً عن طوابير الرسائل، حيث يعرف المكوِّن الذي يرسل الرسالة غالبًا الوجهة التي يتم إرسالها إليها.
 
-The subscribers to the message topic often perform different functions, and can each do something different with the message in parallel. The publisher doesn't need to know who is using the information that it is broadcasting, and the subscribers don't need to know where the message comes from. This style of messaging is a bit different than message queues, where the component that sends the message often knows the destination it is sending to.
+## كيفية العمل
 
-## Working
+على عكس طوابير الرسائل التي تجمع الرسائل حتى يتم استردادها، تقوم مواضيع الرسائل بنقل الرسائل مع قليل أو بدون انتظار وتدفعها على الفور إلى جميع المشتركين. إليك كيفية العمل:
 
-Unlike message queues, which batch messages until they are retrieved, message topics transfer messages with little or no queuing and push them out immediately to all subscribers. Here's how it works:
+- يوفر موضوع الرسالة آلية خفيفة الوزن لبث إشعارات الأحداث الغير متزامنة والنقاط النهائية التي تسمح للمكونات البرمجية بالاتصال بالموضوع لإرسال واستقبال هذه الرسائل.
+- لبث رسالة، يُدفع مكوِّن يُسمَّى "الناشر" ببساطة رسالة إلى الموضوع.
+- سيتلقى جميع المكوِّنات المشتركة في الموضوع (المعروفة باسم "المشتركين") كل رسالة تم بثها.
 
-- A message topic provides a lightweight mechanism to broadcast asynchronous event notifications and endpoints that allow software components to connect to the topic in order to send and receive those messages.
-- To broadcast a message, a component called a _publisher_ simply pushes a message to the topic.
-- All components that subscribe to the topic (known as _subscribers_) will receive every message that was broadcasted.
+## المزايا
 
-## Advantages
+استكمالًا لذلك، دعنا نتناول المزيد من المزايا في استخدام النشر والاشتراك:
 
-Let's discuss some advantages of using publish-subscribe:
+- **توزيع الحمل**: يتيح نمط النشر والاشتراك التوزيع الفوري للإشعارات الأحداثية، وهو مفيد جدًا في التطبيقات التي تحتاج إلى معالجة كميات كبيرة من الأحداث بسرعة. حيث يُمكن للمشتركين تجزئة العمل ومعالجة الإشعارات المتوفرة بالتوازي، مما يزيد من كفاءة المعالجة ويسرع من الاستجابة.
+- **التوجيه الديناميكي والاكتشاف التلقائي**: تمكننا نماذج النشر والاشتراك من الاكتشاف التلقائي للخدمات والتواصل معها بشكل أسهل وأكثر طبيعية وأقل عرضة للأخطاء. يمكن للناشر أن ينشر الرسائل على الموضوع بسهولة دون الحاجة إلى معرفة مين يستخدم المعلومات التي يتم بثها. وعندئذٍ، يمكن لأي طرف مهتم أن يشترك بنقطة النهاية الخاصة به إلى الموضوع وبدء تلقي هذه الرسائل. يمكن للمشتركين التغيير والترقية والتضاعف أو الاختفاء، ويقوم النظام بضبط نفسه بشكل ديناميكي وفقًا لذلك.
+- **فصل البرمجيات وتوسيعها بشكل مستقل**: يعزل نمط النشر والاشتراك الناشرين والمشتركين ويسمح لهم بالعمل بشكل مستقل عن بعضهم البعض، مما يتيح لنا تطويرهم وتوسيعهم بشكل منفصل. هذا يساعد على الحد من الترابط الزائد بين المكونات ويجعل النظام أكثر مرونة وسهل الصيانة.
+- **تبسيط التواصل**: يقلل نمط النشر والاشتراك من التعقيد بشكل عام. عوضًا عن إدارة الاتصالات بين المرسل والمستقبل بشكل مباشر ومنفرد، يُدار التواصل من خلال موضوع الرسالة الواحد الذي يُدير الاشتراكات ويقرر أي رسائل يجب تسليمها إلى أي من المشتركين.
 
-- **Eliminate Polling**: Message topics allow instantaneous, push-based delivery, eliminating the need for message consumers to periodically check or _"poll"_ for new information and updates. This promotes faster response time and reduces the delivery latency which can be particularly problematic in systems where delays cannot be tolerated.
-- **Dynamic Targeting**: Pub/Sub makes the discovery of services easier, more natural, and less error-prone. Instead of maintaining a roster of peers where an application can send messages, a publisher will simply post messages to a topic. Then, any interested party will subscribe its endpoint to the topic, and start receiving these messages. Subscribers can change, upgrade, multiply or disappear and the system dynamically adjusts.
-- **Decoupled and Independent Scaling**: Publishers and subscribers are decoupled and work independently from each other, which allows us to develop and scale them independently.
-- **Simplify Communication**: The Publish-Subscribe model reduces complexity by removing all the point-to-point connections with a single connection to a message topic, which will manage subscriptions and decide what messages should be delivered to which endpoints.
+## الميزات
 
-## Features
+لنتحدث الآن عن بعض الميزات المطلوبة في نمط النشر والاشتراك:
 
-Now, let's discuss some desired features of publish-subscribe:
+### تسليم الدفع
 
-### Push Delivery
+تقدم رسائل النشر والاشتراك إشعارات الأحداث الغير متزامنة على الفور عند نشر الرسائل إلى موضوع الرسالة. يتم إخطار المشتركين عند توفُّر رسالة.
 
-Pub/Sub messaging instantly pushes asynchronous event notifications when messages are published to the message topic. Subscribers are notified when a message is available.
+### بروتوكولات ت
 
-### Multiple Delivery Protocols
+سليم متعددة
 
-In the Publish-Subscribe model, topics can typically connect to multiple types of endpoints, such as message queues, serverless functions, HTTP servers, etc.
+في نمط النشر والاشتراك، يمكن لمواضيع الرسائل الاتصال بأنواع متعددة من النقاط النهائية، مثل طوابير الرسائل ووظائف بلا سيرفر وخوادم HTTP وغيرها.
 
-### Fanout
+### النشر الشامل
 
-This scenario happens when a message is sent to a topic and then replicated and pushed to multiple endpoints. Fanout provides asynchronous event notifications which in turn allows for parallel processing.
+يحدث هذا السيناريو عندما يتم إرسال رسالة إلى موضوع ومن ثم تكرارها ودفعها إلى العديد من النقاط النهائية. يوفر النشر الشامل إشعارات أحداث غير متزامنة والتي تتيح المعالجة المتوازية.
 
-### Filtering
+### التصفية
 
-This feature empowers the subscriber to create a message filtering policy so that it will only get the notifications it is interested in, as opposed to receiving every single message posted to the topic.
+تسمح هذه الميزة للمشترك بإنشاء سياسة تصفية الرسالة بحيث تحصل على الإشعارات التي تهمه فقط، بدلاً من استلام كل رسالة فردية يتم نشرها إلى الموضوع.
 
-### Durability
+### المتانة
 
-Pub/Sub messaging services often provide very high durability, and at least once delivery, by storing copies of the same message on multiple servers.
+يقدم خدمات رسائل النشر والاشتراك عادةً متانة عالية جدًا، وتوصيل مرة واحدة على الأقل، من خلال حفظ نسخ من نفس الرسالة على العديد من الخوادم.
 
-### Security
+### الأمان
 
-Message topics authenticate applications that try to publish content, this allows us to use encrypted endpoints and encrypt messages in transit over the network.
+تقوم مواضيع الرسائل بتوثيق التطبيقات التي تحاول نشر المحتوى، وهذا يسمح لنا باستخدام نقاط نهاية مشفرة وتشفير الرسائل أثناء الانتقال عبر الشبكة.
 
-## Examples
+## الأمثلة
 
-Here are some commonly used publish-subscribe technologies:
+فيما يلي بعض التقنيات المستخدمة على نطاق واسع في رسائل النشر والاشتراك:
 
 - [Amazon SNS](https://aws.amazon.com/sns)
 - [Google Pub/Sub](https://cloud.google.com/pubsub)
