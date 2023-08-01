@@ -2011,58 +2011,60 @@ $$
 - الاعتماد على مصادر بيانات مستقلة.
 - أداء الاستعلام وقابلية التوسعة.
 
-# N-tier architecture
+# بنية الطبقات N-Tier
 
-N-tier architecture divides an application into logical layers and physical tiers. Layers are a way to separate responsibilities and manage dependencies. Each layer has a specific responsibility. A higher layer can use services in a lower layer, but not the other way around.
+تقسم بنية الطبقات N-Tier التطبيق إلى طبقات منطقية وأطباق مادية. الطبقات هي طريقة لفصل المسؤوليات وإدارة التبعيات. تحمل كل طبقة مسؤولية محددة. يمكن للطبقة العلوية استخدام الخدمات في الطبقة الأدنى، لكن ليس العكس.
 
-![n-tier-architecture](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/n-tier-architecture/n-tier-architecture.png)
+![بنية الطبقات N-Tier](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/n-tier-architecture/n-tier-architecture.png)
 
-Tiers are physically separated, running on separate machines. A tier can call to another tier directly, or use asynchronous messaging. Although each layer might be hosted in its own tier, that's not required. Several layers might be hosted on the same tier. Physically separating the tiers improves scalability and resiliency and adds latency from the additional network communication.
+تفصل الأطباق بشكل مادي وتعمل على أجهزة منفصلة. يمكن للطبقة أن تستدعي طبقة أخرى مباشرة، أو تستخدم الرسائل اللاحقة. على الرغم من أنه يمكن أن يتم استضافة كل طبقة في طبقة منفصلة، إلا أن ذلك ليس مطلوبًا. قد تتم استضافة عدة طبقات على نفس الطبقة. يحسن فصل الأطباق ماديًا القابلية للتوسع والصلابة ويضيف تأخيرًا من التواصل الشبكي الإضافي.
 
-An N-tier architecture can be of two types:
+يمكن أن تكون بنية الطبقات N-Tier من نوعين:
 
-- In a closed layer architecture, a layer can only call the next layer immediately down.
-- In an open layer architecture, a layer can call any of the layers below it.
+- في بنية الطبقات المغلقة، يمكن للطبقة استدعاء الطبقة التالية مباشرة أدناها فقط.
+- في بنية الطبقات المفتوحة، يمكن للطبقة استدعاء أي من الطبقات أدناها.
 
-A closed-layer architecture limits the dependencies between layers. However, it might create unnecessary network traffic, if one layer simply passes requests along to the next layer.
+تحد من بنية الطبقات المغلقة التبعيات بين الطبقات. ومع ذلك، قد يؤدي ذلك إلى إنشاء حركة مرور عبر الشبكة غير ضرورية، إذا قامت طبقة واحدة بنقل الطلبات إلى الطبقة التالية فقط.
 
-## Types of N-Tier architectures
+## أنواع بنية الطبقات N-Tier
 
-Let's look at some examples of N-Tier architecture:
+لنلقِ نظرة على بعض أمثلة بنية الطبقات N-Tier:
 
-### 3-Tier architecture
+### بنية الطبقات 3-Tier
 
-3-Tier is widely used and consists of the following different layers:
+تُستخدم بنية 3-Tier على نطاق واسع وتتكون من الطبقات التالية المختلفة:
 
-- **Presentation layer**: Handles user interactions with the application.
-- **Business Logic layer**: Accepts the data from the application layer, validates it as per business logic and passes it to the data layer.
-- **Data Access layer**: Receives the data from the business layer and performs the necessary operation on the database.
+- **طبقة العرض**: تتعامل مع تفاعلات المستخدم مع التطبيق.
+- **طبقة المنطق التجاري**: تقبل البيانات من طبقة التطبيق، وتتحقق من صحتها وفقًا لمنطق الأعمال وتمررها إلى طبقة الوصول إلى البيانات.
+- **طبقة الوصول إلى البيانات**: تستقبل البيانات من طبقة المنطق التجاري وتنفذ العمليات اللازمة على قاعدة البيانات.
 
-### 2-Tier architecture
+### بنية الطبقات 2-Tier
 
-In this architecture, the presentation layer runs on the client and communicates with a data store. There is no business logic layer or immediate layer between client and server.
+في هذه البنية، تعمل طبقة العرض على العميل وتتواصل مع مخزن البيانات. لا توجد طبقة منطق التجارة أو طبقة فورية بين العميل والخادم.
 
-### Single Tier or 1-Tier architecture
+### بنية طبقة واحدة أو 1-Tier
 
-It is the simplest one as it is equivalent to running the application on a personal computer. All of the required components for an application to run are on a single application or server.
+هو النوع الأبسط حيث يكون مكافئًا لتشغيل التطبيق على جهاز كمبيوتر شخصي. يتواجد جميع المكونات اللازمة لتشغيل التطبيق على تطبيق واحد أو خادم واحد.
 
-## Advantages
+## المزايا
 
-Here are some advantages of using N-tier architecture:
+إليك بعض المزايا لاستخدام بنية الطبقات N-Tier:
 
-- Can improve availability.
-- Better security as layers can behave like a firewall.
-- Separate tiers allow us to scale them as needed.
-- Improve maintenance as different people can manage different tiers.
+- يمكن تحسين التوافر.
+- أفضل أمان حيث يمكن للطبقات أن تتصرف كحاجز نار.
+- تتيح لنا الطبقات المنفصلة توسيعها حسب الحاجة.
+- يحسن الصيانة حيث يم
 
-## Disadvantages
+كن لأشخاص مختلفين إدارة طبقات مختلفة.
 
-Below are some disadvantages of N-tier architecture:
+## العيوب
 
-- Increased complexity of the system as a whole.
-- Increased network latency as the number of tiers increases.
-- Expensive as every tier will have its own hardware cost.
-- Difficult to manage network security.
+وفيما يلي بعض العيوب لبنية الطبقات N-Tier:
+
+- تزيد من تعقيد النظام ككل.
+- تزيد من تأخير الشبكة مع زيادة عدد الطبقات.
+- مكلفة حيث سيكون لكل طبقة تكلفة أجهزتها الخاصة.
+- من الصعب إدارة أمان الشبكة.
 
 # Message Brokers
 
