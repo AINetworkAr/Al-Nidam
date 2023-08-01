@@ -1820,152 +1820,156 @@ _عادة، تدعم قواعد البيانات العلائقية العملي
 - عندما يكون هناك حاجة للمزيد من الاتصالات المتزامنة.
 
 
-# Consistent Hashing
+# الهاش المتسق (Consistent Hashing)
 
-Let's first understand the problem we're trying to solve.
+دعنا نفهم أولاً المشكلة التي نحاول حلها.
 
-## Why do we need this?
+## لماذا نحتاج إلى ذلك؟
 
-In traditional hashing-based distribution methods, we use a hash function to hash our partition keys (i.e. request ID or IP). Then if we use the modulo against the total number of nodes (server or databases). This will give us the node where we want to route our request.
+في أساليب توزيع البيانات القائمة على الهاش التقليدية، نستخدم دالة الهاش لعمل هاش لمفاتيح التجزئة (مثل معرّف الطلب أو عنوان IP). ثم إذا استخدمنا العملية الباقي عند قسمة عدد المعالجات النهائي (الخادم أو قواعد البيانات). سيكون هذا لنا العقدة التي نريد توجيه طلبنا إليها.
 
-![simple-hashing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/consistent-hashing/simple-hashing.png)
+![الهاش البسيط](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/consistent-hashing/simple-hashing.png)
 
 $$
 \begin{align*}
-& Hash(key_1) \to H_1 \bmod N = Node_0 \\
-& Hash(key_2) \to H_2 \bmod N = Node_1 \\
-& Hash(key_3) \to H_3 \bmod N = Node_2 \\
+& هاش(المفتاح_1) \to موقع_1 \bmod N = العقدة_0 \\
+& هاش(المفتاح_2) \to موقع_2 \bmod N = العقدة_1 \\
+& هاش(المفتاح_3) \to موقع_3 \bmod N = العقدة_2 \\
 & ... \\
-& Hash(key_n) \to H_n \bmod N = Node_{n-1}
+& هاش(المفتاح_n) \to موقع_n \bmod N = العقدة_{n-1}
 \end{align*}
 $$
 
-Where,
+حيث:
 
-`key`: Request ID or IP.
+`المفتاح`: معرّف الطلب أو عنوان IP.
 
-`H`: Hash function result.
+`الهاش`: نتيجة دالة الهاش.
 
-`N`: Total number of nodes.
+`N`: إجمالي عدد العقد.
 
-`Node`: The node where the request will be routed.
+`العقدة`: العقدة التي سيتم توجيه الطلب إليها.
 
-The problem with this is if we add or remove a node, it will cause `N` to change, meaning our mapping strategy will break as the same requests will now map to a different server. As a consequence, the majority of requests will need to be redistributed which is very inefficient.
+المشكلة مع هذا النهج هو إذا أضفنا أو أزلنا عقدة، فسوف يتسبب ذلك في تغيير `N`، مما يعني أن استراتيجية التعيين لدينا ستتعطل حيث ستكون نفس الطلبات الآن تتم تعيينها إلى خادم مختلف. وبناءً على ذلك، سيتعين علينا إعادة توزيع الغالبية من الطلبات مما يكون غير كفوء جدًا.
 
-We want to uniformly distribute requests among different nodes such that we should be able to add or remove nodes with minimal effort. Hence, we need a distribution scheme that does not depend directly on the number of nodes (or servers), so that, when adding or removing nodes, the number of keys that need to be relocated is minimized.
+نريد توزيع الطلبات بشكل متساوٍ على العقد المختلفة بحيث يمكننا إضافة أو إزالة العقد بأدنى مجهود. لذلك، نحتاج إلى نظام توزيع لا يعتمد مباشرة على عدد العقد (أو الخوادم) بحيث عند إضافة أو إزالة العقد، يتم تقليل عدد المفاتيح التي يجب إعادة توزيعها إلى أدنى حد.
 
-Consistent hashing solves this horizontal scalability problem by ensuring that every time we scale up or down, we do not have to re-arrange all the keys or touch all the servers.
+يحل الهاش المتسق هذه المشكلة القابلية للتوسع الأفقي من خلال ضمان أنه في كل مرة نقوم فيها بالتوسع أو التضاءل، لا يتعين علينا إعادة ترتيب جميع المفاتيح أو لمس جميع الخوادم.
 
-Now that we understand the problem, let's discuss consistent hashing in detail.
+الآن بعد أن فهمنا المشكلة، دعونا نناقش الهاش المتسق بالتفصيل.
 
-## How does it work
+## كيف يعمل؟
 
-Consistent Hashing is a distributed hashing scheme that operates independently of the number of nodes in a distributed hash table by assigning them a position on an abstract circle, or hash ring. This allows servers and objects to scale without affecting the overall system.
+الهاش المتسق هو نظام هاش موزع يعمل بشكل مستقل عن عدد العقد في جدول الهاش الموزع عن طريق تعيينهم موضعًا على دائرة مجردة أو حلقة هاش. يتيح ذلك توسيع الخوادم والكائنات دون التأثير على النظام الكلي.
 
-![consistent-hashing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/consistent-hashing/consistent-hashing.png)
+![الهاش المتسق](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/consistent-hashing/consistent-hashing.png)
 
-Using consistent hashing, only `K/N` data would require re-distributing.
+باستخدام الهاش المتسق، سيتطلب إعادة التوزيع فقط `K/N` من البيانات.
 
 $$
 R = K/N
 $$
 
-Where,
+حيث:
 
-`R`: Data that would require re-distribution.
+`R`: البيانات التي ستتطلب إعادة توزيعها.
 
-`K`: Number of partition keys.
+`K`: عدد مفاتيح التجزئة.
 
-`N`: Number of nodes.
+`N`: عدد العقد.
 
-The output of the hash function is a range let's say `0...m-1` which we can represent on our hash ring. We hash the requests and distribute them on the ring depending on what the output was. Similarly, we also hash the node and distribute them on the same ring as well.
+مخرج دالة الهاش هو نطاق يسمى `0...m-1` والذي يمكننا تمثيله على حلقة الهاش. نحن نقوم بعمل هاش للطلبات وتوزيعها على الحلقة اعتمادًا على ناتج الهاش. ب
+
+المثل، نقوم أيضًا بعمل هاش للعقد وتوزيعها على نفس الحلقة أيضًا.
 
 $$
 \begin{align*}
-& Hash(key_1) = P_1 \\
-& Hash(key_2) = P_2 \\
-& Hash(key_3) = P_3 \\
+& هاش(المفتاح_1) = الموضع_1 \\
+& هاش(المفتاح_2) = الموضع_2 \\
+& هاش(المفتاح_3) = الموضع_3 \\
 & ... \\
-& Hash(key_n) = P_{m-1}
+& هاش(المفتاح_n) = الموضع_{m-1}
 \end{align*}
 $$
 
-Where,
+حيث:
 
-`key`: Request/Node ID or IP.
+`المفتاح`: معرف الطلب/العقدة أو عنوان IP.
 
-`P`: Position on the hash ring.
+`الموضع`: الموضع على حلقة الهاش.
 
-`m`: Total range of the hash ring.
+`m`: إجمالي نطاق حلقة الهاش.
 
-Now, when the request comes in we can simply route it to the closest node in a clockwise (can be counterclockwise as well) manner. This means that if a new node is added or removed, we can use the nearest node and only a _fraction_ of the requests need to be re-routed.
+الآن، عندما يأتي الطلب نستطيع ببساطة توجيهه إلى أقرب عقدة باتجاه عقارب الساعة (يمكن أن تكون عكس عقارب الساعة أيضًا). وهذا يعني أنه عند إضافة عقدة جديدة أو إزالتها، يمكننا استخدام العقدة الأقرب ويتعين إعادة توجيه كسرعة جزء من الطلبات فقط.
 
-In theory, consistent hashing should distribute the load evenly however it doesn't happen in practice. Usually, the load distribution is uneven and one server may end up handling the majority of the request becoming a _hotspot_, essentially a bottleneck for the system. We can fix this by adding extra nodes but that can be expensive.
+من الناحية النظرية، يجب أن يوزع الهاش المتسق الحمل بشكل متساوٍ ولكنه لا يحدث في الواقع. عادةً ما يكون توزيع الحمل غير متساوٍ وقد تنتهي الخادمة بالتعامل مع الغالبية من الطلبات لتصبح مركزًا للنظام. يمكننا حل هذه المشكلة عن طريق إضافة عقدة إضافية ولكن ذلك قد يكون مكلفًا.
 
-Let's see how we can address these issues.
+دعونا نرى كيف يمكننا التعامل مع هذه المشكلات.
 
-## Virtual Nodes
+## العقدات الافتراضية
 
-In order to ensure a more evenly distributed load, we can introduce the idea of a virtual node, sometimes also referred to as a VNode.
+من أجل ضمان توزيع الحمل بشكل أكثر تساوٍ، يمكننا إدخال فكرة العقدة الافتراضية، المعروفة أيضًا بـ VNode.
 
-Instead of assigning a single position to a node, the hash range is divided into multiple smaller ranges, and each physical node is assigned several of these smaller ranges. Each of these subranges is considered a VNode. Hence, virtual nodes are basically existing physical nodes mapped multiple times across the hash ring to minimize changes to a node's assigned range.
+بدلاً من تعيين موضع واحد لعقدة واحدة، يتم تقسيم نطاق الهاش إلى مجموعات أصغر ويتم تعيين كل عقدة فعلية عدة من هذه المجموعات الأصغر. يُعتبر كل هذه النطاقات الفرعية عقدة افتراضية. بالتالي، العقدات الافتراضية هي عمليا عقدات فعلية موضوعة مرات متعددة عبر حلقة الهاش لتقليل التغييرات على نطاق المعين للعقدة.
 
-![virtual-nodes](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/consistent-hashing/virtual-nodes.png)
+![العقدات الافتراضية](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-II/consistent-hashing/virtual-nodes.png)
 
-For this, we can use `k` number of hash functions.
+لهذا، يمكننا استخدام عدد `k` من دوال الهاش.
 
 $$
 \begin{align*}
-& Hash_1(key_1) = P_1 \\
-& Hash_2(key_2) = P_2 \\
-& Hash_3(key_3) = P_3 \\
+& هاش_1(المفتاح_1) = الموضع_1 \\
+& هاش_2(المفتاح_2) = الموضع_2 \\
+& هاش_3(المفتاح_3) = الموضع_3 \\
 & . . . \\
-& Hash_k(key_n) = P_{m-1}
+& هاش_k(المفتاح_n) = الموضع_{m-1}
 \end{align*}
 $$
 
-Where,
+حيث:
 
-`key`: Request/Node ID or IP.
+`المفتاح`: معرف الطلب/العقدة أو عنوان IP.
 
-`k`: Number of hash functions.
+`k`: عدد دوال الهاش.
 
-`P`: Position on the hash ring.
+`الموضع`: الموضع على حلقة الهاش.
 
-`m`: Total range of the hash ring.
+`m`: إجمالي نطاق حلقة الهاش.
 
-As VNodes help spread the load more evenly across the physical nodes on the cluster by diving the hash ranges into smaller subranges, this speeds up the re-balancing process after adding or removing nodes. This also helps us reduce the probability of hotspots.
+مع المساعدة من العقدات الافتراضية، يمكننا توزيع الحمل بشكل أكثر تساوٍ عبر العقدات الفعلية في المجموعة عن طريق تقسيم نطاقات الهاش إلى مجموعات فرعية أصغر. يتسرع عملية إعادة التوازن بعد إضافة أو إزالة العقدة. وهذا أيضًا يساعدنا على تقليل احتمالية نقاط الانفجار.
 
-## Data Replication
+## التكرار البيانات
 
-To ensure high availability and durability, consistent hashing replicates each data item on multiple `N` nodes in the system where the value `N` is equivalent to the _replication factor_.
+لضمان توفير الاتاحة العالية والمتانة، يقوم الهاش المتسق بتكرار كل عنصر بيانات على عدة عقد (N) في النظ
 
-The replication factor is the number of nodes that will receive the copy of the same data. In eventually consistent systems, this is done asynchronously.
+ام حيث قيمة `N` مكافئة لـ_عامل التكرار_.
 
-## Advantages
+عامل التكرار هو عدد العقدات التي ستتلقى نسخة من نفس البيانات. في أنظمة الاعتدال النهائي، يتم ذلك بطريقة غير متزامنة.
 
-Let's look at some advantages of consistent hashing:
+## المزايا
 
-- Makes rapid scaling up and down more predictable.
-- Facilitates partitioning and replication across nodes.
-- Enables scalability and availability.
-- Reduces hotspots.
+لنلقي نظرة على بعض المزايا للهاش المتسق:
 
-## Disadvantages
+- يجعل التوسع السريع لأعلى ولأسفل أكثر تنبؤا.
+- ييسّر التجزئة والتكرار عبر العقدات.
+- يمكن القابلية للتوسع والاتاحة.
+- يقلل من نقاط الانفجار.
 
-Below are some disadvantages of consistent hashing:
+## العيوب
 
-- Increases complexity.
-- Cascading failures.
-- Load distribution can still be uneven.
-- Key management can be expensive when nodes transiently fail.
+فيما يلي بعض العيوب للهاش المتسق:
 
-## Examples
+- يزيد من التعقيد.
+- الفشل التتابعي.
+- موزع الحمل ممكن أن يظل غير متساوٍ.
+- يمكن أن يكون إدارة المفاتيح مكلفة عندما يفشل العقد مؤقتًا.
 
-Let's look at some examples where consistent hashing is used:
+## الأمثلة
 
-- Data partitioning in [Apache Cassandra](https://cassandra.apache.org).
-- Load distribution across multiple storage hosts in [Amazon DynamoDB](https://aws.amazon.com/dynamodb).
+لنلقي نظرة على بعض الأمثلة حيث يُستخدم الهاش المتسق:
+
+- تجزئة البيانات في [Apache Cassandra](https://cassandra.apache.org).
+- توزيع الحمل عبر مضيفي تخزين متعددين في [Amazon DynamoDB](https://aws.amazon.com/dynamodb).
 
 # Database Federation
 
