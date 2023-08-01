@@ -2242,33 +2242,31 @@ _سنناقش هذه الأنماط التوزيعية للرسائل بالتف
 - [Amazon SNS](https://aws.amazon.com/sns)
 - [Google Pub/Sub](https://cloud.google.com/pubsub)
 
-# Enterprise Service Bus (ESB)
+# سيّر الخدمات المؤسسي (ESB)
 
-An Enterprise Service Bus (ESB) is an architectural pattern whereby a centralized software component performs integrations between applications. It performs transformations of data models, handles connectivity, performs message routing, converts communication protocols, and potentially manages the composition of multiple requests. The ESB can make these integrations and transformations available as a service interface for reuse by new applications.
+سيّر الخدمات المؤسسي (ESB) هو نمط معماري يقوم بتنفيذ التكاملات بين التطبيقات من خلال مكون برمجي مركزي. يقوم ESB بتحويل نماذج البيانات، ويتعامل مع الاتصالات، وينفذ توجيه الرسائل، ويحول بين بروتوكولات الاتصال، وقد يدير تركيب طلبات متعددة. يمكن للESB جعل هذه التكاملات والتحويلات متاحة على شكل واجهة خدمة لإعادة الاستخدام من قبل التطبيقات الجديدة.
 
-![enterprise-service-bus](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/enterprise-service-bus/enterprise-service-bus.png)
+## المزايا
 
-## Advantages
+نظريًا، يقدم ESB المركزي إمكانية توحيد وتبسيط التواصل والرسائل والتكامل بين الخدمات عبر المؤسسة بشكل كبير. وإليك بعض المزايا في استخدام ESB:
 
-In theory, a centralized ESB offers the potential to standardize and dramatically simplify communication, messaging, and integration between services across the enterprise. Here are some advantages of using an ESB:
+- **تحسين إنتاجية المطورين**: يمكّن المطورين من دمج التقنيات الجديدة في جزء واحد من التطبيق دون لمس باقي التطبيق.
+- **توسيع أسهل وأكثر فعالية من حيث التكلفة**: يمكن توسيع المكونات بشكل مستقل عن الآخرين.
+- **مرونة أكبر**: فشل مكون واحد لا يؤثر على الآخرين، ويمكن لكل خدمة صغيرة أن تلتزم بمتطلبات التوفر الخاصة بها دون المخاطرة بتوفر العناصر الأخرى في النظام.
 
-- **Improved developer productivity**: Enables developers to incorporate new technologies into one part of an application without touching the rest of the application.
-- **Simpler, more cost-effective scalability**: Components can be scaled independently of others.
-- **Greater resilience**: Failure of one component does not impact the others, and each microservice can adhere to its own availability requirements without risking the availability of other components in the system.
+## العيوب
 
-## Disadvantages
+بينما نجحت نظم ESB في العديد من المؤسسات، أصبحت ESB في العديد من المؤسسات معروضة كعامل قيد. وإليك بعض العيوب في استخدام ESB:
 
-While ESBs were deployed successfully in many organizations, in many other organizations the ESB came to be seen as a bottleneck. Here are some disadvantages of using an ESB:
+- يمكن أن تؤدي القيام بتغييرات أو تحسينات في التكامل إلى تأثير آخرين يستخدمون نفس التكامل.
+- يمكن أن يؤدي فشل نقطة واحدة إلى تعطيل جميع الاتصالات.
+- يؤثر التحديثات على ESB عادةً على التكاملات الحالية، وبالتالي يتطلب إجراء اختبارات كبيرة لأداء أي تحديث.
+- يتم إدارة ESB بشكل مركزي مما يجعل التعاون بين الفرق التقنية أمرًا تحديًا.
+- تعقيد التكوين والصيانة عالي.
 
-- Making changes or enhancements to one integration could destabilize others who use that same integration.
-- A single point of failure can bring down all communications.
-- Updates to the ESB often impact existing integrations, so there is significant testing required to perform any update.
-- ESB is centrally managed which makes cross-team collaboration challenging.
-- High configuration and maintenance complexity.
+## الأمثلة
 
-## Examples
-
-Below are some widely used Enterprise Service Bus (ESB) technologies:
+وفيما يلي بعض تقنيات سيّر الخدمات المؤسسي (ESB) المستخدمة على نطاق واسع:
 
 - [Azure Service Bus](https://azure.microsoft.com/en-in/services/service-bus)
 - [IBM App Connect](https://www.ibm.com/in-en/cloud/app-connect)
