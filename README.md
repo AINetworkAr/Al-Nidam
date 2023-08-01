@@ -2418,74 +2418,73 @@ _سنناقش هذه الأنماط التوزيعية للرسائل بالتف
 
 لذلك، من المهم فهم بعمق إذا كانت شركتك حقًا تحتاج إلى الخدمات المتناهية الصغر. ما أحاول قوله هو أن الخدمات المتناهية الصغر هي حلاً للقضايا المعقدة وإذا لم تكن لشركتك قضايا معقدة، فلست بحاجة إليها.
 
-# Event-Driven Architecture (EDA)
+# التصميم المعماري المستند إلى الأحداث (EDA)
 
-Event-Driven Architecture (EDA) is about using events as a way to communicate within a system. Generally, leveraging a message broker to publish and consume events asynchronously. The publisher is unaware of who is consuming an event and the consumers are unaware of each other. Event-Driven Architecture is simply a way of achieving loose coupling between services within a system.
+التصميم المعماري المستند إلى الأحداث (EDA) يتعلق باستخدام الأحداث كوسيلة للتواصل داخل نظام معين. عمومًا، يتم استخدام وسيط رسائل لنشر الأحداث واستهلاكها بشكل غير متزامن. المُنشئ لا يعلم من يستهلك الحدث، والمستهلكون لا يعرفون بعضهم البعض. التصميم المعماري المستند إلى الأحداث هو ببساطة وسيلة لتحقيق ارتباط فضفاض بين الخدمات داخل النظام.
 
-## What is an event?
+## ما هو الحدث؟
 
-An event is a data point that represents state changes in a system. It doesn't specify what should happen and how the change should modify the system, it only notifies the system of a particular state change. When a user makes an action, they trigger an event.
+الحدث هو نقطة بيانات تُمثل تغييرات الحالة في النظام. لا يحدد ما يجب أن يحدث وكيفية تعديل النظام، بل يُخطِّر النظام بتغيير حالة معينة. عندما يقوم المستخدم بإجراء إجراء، يُحفِّز حدثًا.
 
-## Components
+## المكونات
 
-Event-driven architectures have three key components:
+تحتوي التصميمات المعمارية المستندة إلى الأحداث على ثلاثة مكونات رئيسية:
 
-- **Event producers**: Publishes an event to the router.
-- **Event routers**: Filters and pushes the events to consumers.
-- **Event consumers**: Uses events to reflect changes in the system.
+- **منتجو الأحداث**: ينشرون حدثًا للموجه.
+- **الموجه الحدث**: يقوم بتصفية الأحداث ودفعها إلى المستهلكين.
+- **مستهلكو الأحداث**: يستخدمون الأحداث لتعكس التغييرات في النظام.
 
-![event-driven-architecture](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/event-driven-architecture/event-driven-architecture.png)
+![التصميم المعماري المستند إلى الأحداث](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/event-driven-architecture/event-driven-architecture.png)
 
-_Note: Dots in the diagram represents different events in the system._
+_ملاحظة: النقاط في الرسم البياني تمثل أحداثًا مختلفة في النظام._
 
-## Patterns
+## الأنماط
 
-There are several ways to implement the event-driven architecture, and which method we use depends on the use case but here are some common examples:
+هناك العديد من الطرق لتنفيذ التصميم المعماري المستند إلى الأحداث، والطريقة التي نستخدمها تعتمد على حالة الاستخدام، ولكن هنا بعض الأمثلة الشائعة:
 
-- [Sagas](https://karanpratapsingh.com/courses/system-design/distributed-transactions#sagas)
-- [Publish-Subscribe](https://karanpratapsingh.com/courses/system-design/publish-subscribe)
-- [Event Sourcing](https://karanpratapsingh.com/courses/system-design/event-sourcing)
-- [Command and Query Responsibility Segregation (CQRS)](https://karanpratapsingh.com/courses/system-design/command-and-query-responsibility-segregation)
+- [الملحمات](https://karanpratapsingh.com/courses/system-design/distributed-transactions#sagas)
+- [النشر والاشتراك](https://karanpratapsingh.com/courses/system-design/publish-subscribe)
+- [تخزين الأحداث](https://karanpratapsingh.com/courses/system-design/event-sourcing)
+- [القيام بالأوامر وتوزيع مسؤولية الاستعلام (CQRS)](https://karanpratapsingh.com/courses/system-design/command-and-query-responsibility-segregation)
 
-_Note: Each of these methods is discussed separately._
+_ملاحظة: يتم مناقشة كل من هذه الأساليب بشكل منفصل._
 
-## Advantages
+## المزايا
 
-Let's discuss some advantages:
+دعونا نناقش بعض المزايا:
 
-- Decoupled producers and consumers.
-- Highly scalable and distributed.
-- Easy to add new consumers.
-- Improves agility.
+- فصل المنتجين والمستهلكين.
+- مُقيم جدًا وموزَّع.
+- سهولة إضافة مستهلكين جدد.
+- يحسن الرشاقة.
 
-## Challenges
+## التحديات
 
-Here are some challenges of event-drive architecture:
+فيما يلي بعض التحديات المتعلقة بالتصميم المعماري المستند إلى الأحداث:
 
-- Guaranteed delivery.
-- Error handling is difficult.
-- Event-driven systems are complex in general.
-- Exactly once, in-order processing of events.
+- توصيل مضمون.
+- من الصعب التعامل مع الأخطاء.
+- أنظمة مستندة إلى الأحداث هي معقدة بشكل عام.
+- معالجة الأحداث بدقة مرة واحدة، بترتيبها.
 
-## Use cases
+## الحالات الاستخدامية
 
-Below are some common use cases where event-driven architectures are beneficial:
+فيما يلي بعض حالات الاستخدام الشائعة حيث تكون التصاميم المعمارية المستندة إلى الأحداث مفيدة:
 
-- Metadata and metrics.
-- Server and security logs.
-- Integrating heterogeneous systems.
-- Fanout and parallel processing.
+- البيانات الوصفية والمقاييس.
+- سجلات الخادم والأمان.
+- دمج الأنظمة غير المتجانسة.
+- النشر على نطاق وتجهيز متوازي.
 
-## Examples
+## الأمثلة
 
-Here are some widely used technologies for implementing event-driven architectures:
+فيما يلي بعض التقنيات المستخدمة على نطاق واسع لتنفيذ التصاميم المعمارية المستندة إلى الأحداث:
 
 - [NATS](https://nats.io)
 - [Apache Kafka](https://kafka.apache.org)
 - [Amazon EventBridge](https://aws.amazon.com/eventbridge)
 - [Amazon SNS](https://aws.amazon.com/sns)
 - [Google PubSub](https://cloud.google.com/pubsub)
-
 # Event Sourcing
 
 Instead of storing just the current state of the data in a domain, use an append-only store to record the full series of actions taken on that data. The store acts as the system of record and can be used to materialize the domain objects.
