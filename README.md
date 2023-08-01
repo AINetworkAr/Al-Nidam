@@ -2106,86 +2106,81 @@ _سنناقش هذه الأنماط التوزيعية للرسائل بالتف
 - [RabbitMQ](https://www.rabbitmq.com)
 - [ActiveMQ](https://activemq.apache.org)
 
-# Message Queues
+# طوابير الرسائل
 
-A message queue is a form of service-to-service communication that facilitates asynchronous communication. It asynchronously receives messages from producers and sends them to consumers.
+طوابير الرسائل هي شكل من أشكال التواصل بين الخدمات يُمكّن التواصل الغير متزامن. تستقبل بشكل غير متزامن الرسائل من المُرسلين وتُرسلها للمستهلكين.
 
-Queues are used to effectively manage requests in large-scale distributed systems. In small systems with minimal processing loads and small databases, writes can be predictably fast. However, in more complex and large systems writes can take an almost non-deterministic amount of time.
+تُستخدم الطوابير لإدارة الطلبات بشكل فعال في أنظمة التوزيع الضخمة. في الأنظمة الصغيرة التي تحمل أحمال معالجة وقواعد بيانات صغيرة، يمكن أن تكون الكتابات سريعة بشكل متوقع. ومع ذلك، في الأنظمة المعقدة والكبيرة يمكن أن تستغرق الكتابات فترة زمنية غير محددة تقريبًا.
 
-![message-queue](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/message-queues/message-queue.png)
+![طوابير الرسائل](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/message-queues/message-queue.png)
 
-## Working
+## كيفية العمل
 
-Messages are stored in the queue until they are processed and deleted. Each message is processed only once by a single consumer. Here's how it works:
+تُخزن الرسائل في الطابور حتى تُعالَج وتُحذَف. يتم معالجة كل رسالة مرة واحدة فقط بواسطة مستهلك واحد. فيما يلي كيفية عملها:
 
-- A producer publishes a job to the queue, then notifies the user of the job status.
-- A consumer picks up the job from the queue, processes it, then signals that the job is complete.
+- ينشر المُرسل وظيفة إلى الطابور، ثم يُعلم المُستخدم بحالة الوظيفة.
+- يقوم المُستهلك بالحصول على الوظيفة من الطابور، ومعالجتها، ثم يُعلِن أن الوظيفة مُكتَمَلة.
 
-## Advantages
+## المزايا
 
-Let's discuss some advantages of using a message queue:
+دعونا نناقش بعض المزايا في استخدام طوابير الرسائل:
 
-- **Scalability**: Message queues make it possible to scale precisely where we need to. When workloads peak, multiple instances of our application can add all requests to the queue without the risk of collision.
-- **Decoupling**: Message queues remove dependencies between components and significantly simplify the implementation of decoupled applications.
-- **Performance**: Message queues enable asynchronous communication, which means that the endpoints that are producing and consuming messages interact with the queue, not each other. Producers can add requests to the queue without waiting for them to be processed.
-- **Reliability**: Queues make our data persistent, and reduce the errors that happen when different parts of our system go offline.
+- **قابلية التوسع**: تُمكِّن طوابير الرسائل التوسع بالضبط حيث نحتاج إليه. عندما تتزايد أعباء العمل، يمكن للعديد من نسخ التطبيق الخاص بنا أن تضيف كل الطلبات إلى الطابور دون خطر التصادُم.
+- **فصل الأجزاء**: تُزيل طوابير الرسائل التبعية بين الأجزاء وتُبسِّط بشكل كبير تنفيذ التطبيقات المفصولة.
+- **الأداء**: تُمكِّن طوابير الرسائل التواصل غير المتزامن، مما يعني أن النقاط النهائية التي تنتج وتستهلك الرسائل تتفاعل مع الطابور وليس مع بعضها البعض. يمكن للمنتجين إضافة الطلبات إلى الطابور دون الانتظار لاستكمالها.
+- **الموثوقية**: تجعل الطوابير بياناتنا دائمة وتُقَلِّل من الأخطاء التي تحدث عندما تنقطع أجزاء مختلفة من نظامنا عن العمل.
 
-## Features
+## الميزات
 
-Now, let's discuss some desired features of message queues:
+لنناقش الآن بعض الميزات المطلوبة في طوابير الرسائل:
 
-### Push or Pull Delivery
+### تسليم بواسطة الدفع أو الجلب
 
-Most message queues provide both push and pull options for retrieving messages. Pull means continuously querying the queue for new messages. Push means that a consumer is notified when a message is available. We can also use long-polling to allow pulls to wait a specified amount of time for new messages to arrive.
+توفر معظم طوابير الرسائل الخيارين لاسترداد الرسائل، وال
 
-### FIFO (First-In-First-Out) Queues
+دفع والجلب. الجلب يعني الاستعلام المتواصل عن الطابور للحصول على رسائل جديدة. الدفع يعني أن المُستهلك يُعلِم عندما تكون هناك رسالة مُتاحة. يمكن أن نستخدم أيضًا الجلب للسماح للمستلمين بالانتظار لوقت محدد لوصول رسائل جديدة.
 
-In these queues, the oldest (or first) entry, sometimes called the _"head"_ of the queue, is processed first.
+### طوابير التسلسل الأول في الدخول أولاً (FIFO)
 
-### Schedule or Delay Delivery
+في هذه الطوابير، يتم معالجة أقدم (أو أول) إدخال، يُطلق عليه أحيانًا اسم "الرأس" من الطابور، أولاً.
 
-Many message queues support setting a specific delivery time for a message. If we need to have a common delay for all messages, we can set up a delay queue.
+### جدولة أو تأجيل التسليم
 
-### At-Least-Once Delivery
+تدعم طوابير الرسائل العديد منها إعداد وقت تسليم محدد للرسالة. إذا كان لدينا تأجيل مشترك لجميع الرسائل، فيمكننا إعداد طابور تأخير.
 
-Message queues may store multiple copies of messages for redundancy and high availability, and resend messages in the event of communication failures or errors to ensure they are delivered at least once.
+### التسليم مرة واحدة على الأقل
 
-### Exactly-Once Delivery
+قد تخزن طوابير الرسائل عدة نسخ من الرسائل لضمان التوفر العالي، وإعادة إرسال الرسائل في حالة فشل الاتصال أو وجود أخطاء لضمان أنها تُسلَّم مرة واحدة على الأقل.
 
-When duplicates can't be tolerated, FIFO (first-in-first-out) message queues will make sure that each message is delivered exactly once (and only once) by filtering out duplicates automatically.
+### التسليم بالضبط مرة واحدة
 
-### Dead-letter Queues
+عندما لا يمكن تحمُّل التكرارات، ستضمن طوابير الرسائل من نوع FIFO (التسلسل الأول في الدخول أولاً) أن يتم توصيل كل رسالة بالضبط مرة واحدة (وفقًا للتسلسل) من خلال تصفية التكرارات تلقائيًا.
 
-A dead-letter queue is a queue to which other queues can send messages that can't be processed successfully. This makes it easy to set them aside for further inspection without blocking the queue processing or spending CPU cycles on a message that might never be consumed successfully.
+### طوابير الرسائل ذات الرسائل الخاطئة
 
-### Ordering
+طابور الرسائل ذات الرسائل الخاطئة هو طابور يُرسل له رسائل لا يمكن مُعالجتها بنجاح من طوابير أخرى. يُسهِّل ذلك إرسالها جانبًا للفحص اللاحق دون حجب معالجة الطابور أو إنفاق دورات وحدة المعالجة المركزية على رسالة قد لا يتم استهلاكها بنجاح.
 
-Most message queues provide best-effort ordering which ensures that messages are generally delivered in the same order as they're sent and that a message is delivered at least once.
+### الترتيب
 
-### Poison-pill Messages
+توفر معظم طوابير الرسائل الترتيب الذي يُضمِن تسليم الرسائل بنفس الترتيب الذي تم إرسالها تقريبًا، وأن يتم تسليم الرسالة على الأقل مرة واحدة.
 
-Poison pills are special messages that can be received, but not processed. They are a mechanism used in order to signal a consumer to end its work so it is no longer waiting for new inputs, and are similar to closing a socket in a client/server model.
+### رسائل الأقراص السامة
 
-### Security
+رسائل الأقراص السامة هي رسائل خاصة يمكن استقبالها، لكنها لا يمكن معالجتها. إنها آلية تُستخدم للإشارة إلى المستهلك بإنهاء عمله حتى لا يكون في انتظار مدخلات جديدة بعد الآن، وتشبه إغلاق مقبس في نموذج العميل/الخادم.
 
-Message queues will authenticate applications that try to access the queue, this allows us to encrypt messages over the network as well as in the queue itself.
+### الأمان
 
-### Task Queues
+تُوثِّق طوابير الرسائل التطبيقات التي تُحاول الوصول إلى الطابور، وهذا يسمح لنا بتشفير الرسائل عبر الشبكة وفي الطابور نفسه.
 
-Tasks queues receive tasks and their related data, run them, then deliver their results. They can support scheduling and can be used to run computationally-intensive jobs in the background.
+### طوابير المهام
 
-## Backpressure
+تتلقَّى طوابير المهام المهام والبيانات المرتبطة بها، تُشغِّلها ثم تسلِّم نتائجها. يمكن أن تدعم جداول المهام الجدولة ويمكن استخدامها لتشغيل المهام المكثفة في الحساب في الخلفية.
 
-If queues start to grow significantly, the queue size can become larger than memory, resulting in cache misses, disk reads, and even slower performance. Backpressure can help by limiting the queue size, thereby maintaining a high throughput rate and good response times for jobs already in the queue. Once the queue fills up, clients get a server busy or HTTP 503 status code to try again later. Clients can retry the request at a later time, perhaps with [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) strategy.
+## التحكُّم في العكسيَّة
 
-## Examples
+إذا بدأت الطوابير تنمو بشكل كبير، فإن حجم الطابور يمكن أن يصبح أكبر من الذاكرة، مما يؤدي إلى فقدان ذاكرة التخزين المؤقت وقراءات القرص وحتى أداءًا أبطأ. يمكن أن يساعد التحكُّم في العكسيَّة عن طريق تحديد حجم الطابور، وبالتالي الحفاظ على معد
 
-Following are some widely used message queues:
-
-- [Amazon SQS](https://aws.amazon.com/sqs)
-- [RabbitMQ](https://www.rabbitmq.com)
-- [ActiveMQ](https://activemq.apache.org)
-- [ZeroMQ](https://zeromq.org)
+ل الإنتاج العالي وأوقات الاستجابة الجيدة للوظائف الموجودة بالفعل في الطابور. عندما يمتلئ الطابور، يحصل العملاء على رمز حالة انشغال الخادم أو HTTP 503 للمحاولة مرة أخرى في وقت لاحق. يمكن للعملاء إعادة المحاولة في وقت لاحق، ربما باستخدام استراتيجية العكسيَّة التعايضيَّة.
 
 # Publish-Subscribe
 
