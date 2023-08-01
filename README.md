@@ -2273,150 +2273,150 @@ _سنناقش هذه الأنماط التوزيعية للرسائل بالتف
 - [Apache Camel](https://camel.apache.org)
 - [Fuse ESB](https://www.redhat.com/en/technologies/jboss-middleware/fuse)
 
-# Monoliths and Microservices
+# التمثيلات النمطية والخدمات المتناهية الصغر
 
-## Monoliths
+## التمثيلات النمطية
 
-A monolith is a self-contained and independent application. It is built as a single unit and is responsible for not just a particular task, but can perform every step needed to satisfy a business need.
+التمثيل النمطي هو تطبيق مستقل ومستقل ذاتيًا. يتم بناؤه كوحدة واحدة وهو مسؤول ليس فقط عن مهمة معينة، بل يمكنه أداء كل الخطوات المطلوبة لتلبية احتياج الأعمال.
 
-![monolith](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/monoliths-microservices/monolith.png)
+## المزايا
 
-### Advantages
+فيما يلي بعض المزايا للتمثيلات النمطية:
 
-Following are some advantages of monoliths:
+- سهولة التطوير أو التصحيح.
+- تواصل سريع وموثوق.
+- رصد واختبار سهل.
+- دعم عمليات النقل الداخلي (ACID).
 
-- Simple to develop or debug.
-- Fast and reliable communication.
-- Easy monitoring and testing.
-- Supports ACID transactions.
+## العيوب
 
-### Disadvantages
+بعض العيوب الشائعة للتمثيلات النمطية:
 
-Some common disadvantages of monoliths are:
+- يصبح الصيانة صعبة عندما ينمو حجم قاعدة الشفرة.
+- تطبيق مرتبط تمامًا وصعب التوسع.
+- يتطلب الالتزام بتكنولوجيا محددة.
+- في كل تحديث، يتم إعادة نشر التطبيق بأكمله.
+- يقلل من الموثوقية حيث يمكن لعلة واحدة أن تتسبب في تعطيل النظام بأكمله.
+- صعوبة في التوسع أو اعتماد التقنيات الجديدة.
 
-- Maintenance becomes hard as the codebase grows.
-- Tightly coupled application, hard to extend.
-- Requires commitment to a particular technology stack.
-- On each update, the entire application is redeployed.
-- Reduced reliability as a single bug can bring down the entire system.
-- Difficult to scale or adopt new technologies.
+## التمثيلات النمطية القابلة للتجزئة
 
-## Modular Monoliths
+التمثيل النمطي القابل للتجزئة هو نهج نبني وننفذ من خلاله تطبيقًا واحدًا (هذا هو الجزء "التمثيل النمطي")، ولكننا نبنيه بطريقة تقسم فيها الشفرة إلى وحدات مستقلة لكل الميزات المطلوبة في تطبيقنا.
 
-A Modular Monolith is an approach where we build and deploy a single application (that's the _Monolith_ part), but we build it in a way that breaks up the code into independent modules for each of the features needed in our application.
+يقلل هذا النهج من التبعية الناتجة عن وحدة بحيث يمكننا تحسين أو تغيير وحدة دون التأثير على الوحدات الأخرى. عندما يتم القيام به بشكل صحيح، يمكن أن يكون هذا مفيدًا حقًا على المدى الطويل حيث يقلل من التعقيد الناتج عن الحفاظ على التمثيل النمطي عندما ينمو النظام.
 
-This approach reduces the dependencies of a module in such as way that we can enhance or change a module without affecting other modules. When done right, this can be really beneficial in the long term as it reduces the complexity that comes with maintaining a monolith as the system grows.
+## الخدمات المتناهية الصغر
 
-## Microservices
+تتألف معمارية الخدمات المتناهية الصغر من مجموعة من الخدمات الصغيرة والمستقلة حيث يكون لكل خدمة مجموعة من القدرات التجارية والمحددة ضمن سياق محدد. يعتبر السياق المحدد تقسيمًا طبيعيًا للمنطق التجاري يوفر حدًا واضحًا داخله يوجد نموذج مجال.
 
-A microservices architecture consists of a collection of small, autonomous services where each service is self-contained and should implement a single business capability within a bounded context. A bounded context is a natural division of business logic that provides an explicit boundary within which a domain model exists.
+لكل خدمة قا
 
-![microservices](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/monoliths-microservices/microservices.png)
+عدة شفرة منفصلة يمكن إدارتها بواسطة فريق تطوير صغير. يمكن نشر الخدمات بشكل مستقل ويمكن للفريق تحديث خدمة موجودة دون إعادة بناء التطبيق بأكمله ونشره.
 
-Each service has a separate codebase, which can be managed by a small development team. Services can be deployed independently and a team can update an existing service without rebuilding and redeploying the entire application.
+تكون الخدمات مسؤولة عن الاحتفاظ ببياناتها الخاصة أو الحالة الخارجية (قاعدة بيانات لكل خدمة). يختلف ذلك عن النموذج التقليدي، حيث يتم التعامل مع الاحتفاظ بالبيانات.
 
-Services are responsible for persisting their own data or external state (database per service). This differs from the traditional model, where a separate data layer handles data persistence.
+## السمات
 
-### Characteristics
+يتميز نمط الخدمات المتناهية الصغر بالخصائص التالية:
 
-The microservices architecture style has the following characteristics:
+- **ترابط فضفاض**: يجب أن تكون الخدمات مرتبطة فضفاضة حتى يمكن نشرها وتوجيهها بشكل مستقل. سيؤدي ذلك إلى فك تمركز فرق التطوير وبالتالي يمكنهم تطوير ونشر بسرعة مع حد أدنى من القيود والتبعيات التشغيلية.
+- **صغيرة ومركزة**: إنها تتعلق بالنطاق والمسؤوليات وليس بالحجم، يجب أن تكون الخدمة مركزة على مشكلة محددة. ببساطة، "إنها تقوم بشيء واحد وتفعله بشكل جيد". في الواقع، يمكن أن تكون مستقلة عن التطبيق الأساسي.
+- **مصممة للأعمال التجارية**: يتم تنظيم معمارية الخدمات المتناهية الصغر عادة حول قدرات وأولويات الأعمال التجارية.
+- **المرونة والتحمل**: يجب تصميم الخدمات بطريقة تضمن استمرارية العمل في حالة الفشل أو الأخطاء. في البيئات التي تتم فيها تنفيذ الخدمات بشكل مستقل، تحمل الفشل أمرًا بالغ الأهمية.
+- **قابلية الصيانة العالية**: يجب أن تكون الخدمة سهلة الصيانة والاختبار لأن الخدمات التي لا يمكن الصيانة لها ستكتب مرة أخرى.
 
-- **Loosely coupled**: Services should be loosely coupled so that they can be independently deployed and scaled. This will lead to the decentralization of development teams and thus, enabling them to develop and deploy faster with minimal constraints and operational dependencies.
-- **Small but focused**: It's about scope and responsibilities and not size, a service should be focused on a specific problem. Basically, _"It does one thing and does it well"_. Ideally, they can be independent of the underlying architecture.
-- **Built for businesses**: The microservices architecture is usually organized around business capabilities and priorities.
-- **Resilience & Fault tolerance**: Services should be designed in such a way that they still function in case of failure or errors. In environments with independently deployable services, failure tolerance is of the highest importance.
-- **Highly maintainable**: Service should be easy to maintain and test because services that cannot be maintained will be rewritten.
+## المزايا
 
-### Advantages
+فيما يلي بعض المزايا لمعمارية الخدمات المتناهية الصغر:
 
-Here are some advantages of microservices architecture:
+- خدمات فضفاضة الترابط.
+- يمكن نشر الخدمات بشكل مستقل.
+- مرنة لأكثر من فريق تطوير.
+- تحسين تحمل الأخطاء وعزل البيانات.
+- تحسين قابلية التوسع حيث يمكن توسيع كل خدمة بشكل مستقل.
+- يلغي التزامًا طويل الأمد بتكنولوجيا محددة.
 
-- Loosely coupled services.
-- Services can be deployed independently.
-- Highly agile for multiple development teams.
-- Improves fault tolerance and data isolation.
-- Better scalability as each service can be scaled independently.
-- Eliminates any long-term commitment to a particular technology stack.
+## العيوب
 
-### Disadvantages
+معمارية الخدمات المتناهية الصغر تحمل مجموعة من التحديات الخاصة بها:
 
-Microservices architecture brings its own set of challenges:
+- تعقيد النظام الموزع.
+- اختبار أكثر صعوبة.
+- مكلفة للصيانة (الخوادم الفردية وقواعد البيانات وما إلى ذلك).
+- التواصل بين الخدمات له تحدياته الخاصة.
+- سلامة واتساق البيانات.
+- ازدحام الشبكة وتأخير البيانات.
 
-- Complexity of a distributed system.
-- Testing is more difficult.
-- Expensive to maintain (individual servers, databases, etc.).
-- Inter-service communication has its own challenges.
-- Data integrity and consistency.
-- Network congestion and latency.
+## أفضل الممارسات
 
-### Best practices
+دع
 
-Let's discuss some microservices best practices:
+ونا نناقش بعض أفضل الممارسات لمعمارية الخدمات المتناهية الصغر:
 
-- Model services around the business domain.
-- Services should have loose coupling and high functional cohesion.
-- Isolate failures and use resiliency strategies to prevent failures within a service from cascading.
-- Services should only communicate through well-designed APIs. Avoid leaking implementation details.
-- Data storage should be private to the service that owns the data
-- Avoid coupling between services. Causes of coupling include shared database schemas and rigid communication protocols.
-- Decentralize everything. Individual teams are responsible for designing and building services. Avoid sharing code or data schemas.
-- Fail fast by using a [circuit breaker](https://karanpratapsingh.com/courses/system-design/circuit-breaker) to achieve fault tolerance.
-- Ensure that the API changes are backward compatible.
+- نمذجة الخدمات حول المجال التجاري.
+- يجب أن تكون الخدمات فضفاضة الترابط وذات تماسك وظيفي عالي.
+- عزل الأخطاء واستخدام استراتيجيات مرونة لمنع تأثير الأخطاء داخل الخدمة من التوسع.
+- يجب أن تتواصل الخدمات فقط من خلال واجهات برمجة تطبيق مصممة بشكل جيد. تجنب تسريب تفاصيل التنفيذ.
+- يجب أن تكون تخزين البيانات خاصة بالخدمة التي تمتلك البيانات.
+- تجنب الارتباط بين الخدمات. يمكن أن تسبب الارتباطات قاعدة بيانات مشتركة وبروتوكولات اتصال صارمة.
+- تفكيك كل شيء. تعتبر الفرق الفردية مسؤولة عن تصميم وبناء الخدمات. تجنب مشاركة الشفرة أو نماذج البيانات.
+- الفشل السريع باستخدام [مفتاح الكهرباء](https://karanpratapsingh.com/courses/system-design/circuit-breaker) لتحقيق التحمل من الأخطاء.
+- التأكد من أن تغييرات واجهة البرمجة التطبيقية متوافقة مع الإصدار السابق.
 
-### Pitfalls
+## الفخاخ
 
-Below are some common pitfalls of microservices architecture:
+فيما يلي بعض الفخاخ الشائعة لمعمارية الخدمات المتناهية الصغر:
 
-- Service boundaries are not based on the business domain.
-- Underestimating how hard is to build a distributed system.
-- Shared database or common dependencies between services.
-- Lack of Business Alignment.
-- Lack of clear ownership.
-- Lack of idempotency.
-- Trying to do everything [ACID instead of BASE](https://karanpratapsingh.com/courses/system-design/acid-and-base-consistency-models).
-- Lack of design for fault tolerance may result in cascading failures.
+- تحديد حدود الخدمة بناءً على المجال التجاري.
+- الاستهانة بمدى صعوبة بناء نظام موزع.
+- قاعدة بيانات مشتركة أو تبعيات مشتركة بين الخدمات.
+- نقص الالتزام التجاري.
+- نقص الملكية الواضحة.
+- نقص الهوية.
+- محاولة فعل كل شيء [ACID بدلاً من BASE](https://karanpratapsingh.com/courses/system-design/acid-and-base-consistency-models).
+- نقص التصميم للتحمل من الأخطاء قد يؤدي إلى حدوث فشل تدريجي.
 
-## Beware of the distributed monolith
+## الحذر من التمثيل النمطي الموزع
 
-Distributed Monolith is a system that resembles the microservices architecture but is tightly coupled within itself like a monolithic application. Adopting microservices architecture comes with a lot of advantages. But while making one, there are good chances that we might end up with a distributed monolith.
+التمثيل النمطي الموزع هو نظام يشبه معمارية الخدمات المتناهية الصغر ولكنه مرتبط تمامًا ضمن نفسه مثل التطبيق الأحادي. يأتي اعتماد معمارية الخدمات المتناهية الصغر مع الكثير من المزايا. ولكن أثناء القيام بذلك، هناك فرص جيدة أننا قد ننتهي بالتمثيل النمطي الموزع.
 
-Our microservices are just a distributed monolith if any of these apply to it:
+تكون خدماتنا فقط نمطي موزع إذا تطبق أي من هذه النقاط عليه:
 
-- Requires low latency communication.
-- Services don't scale easily.
-- Dependency between services.
-- Sharing the same resources such as databases.
-- Tightly coupled systems.
+- يتطلب التواصل بين الخد
 
-One of the primary reasons to build an application using microservices architecture is to have scalability. Therefore, microservices should have loosely coupled services which enable every service to be independent. The distributed monolith architecture takes this away and causes most components to depend on one another, increasing design complexity.
+مات وقت استجابة قليل.
+- الخدمات لا تتحمل بسهولة.
+- الاعتمادية بين الخدمات.
+- مشاركة نفس الموارد مثل قواعد البيانات.
+- أنظمة تعتمد على بعضها بقوة.
 
-## Microservices vs Service-oriented architecture (SOA)
+أحد الأسباب الرئيسية لبناء تطبيق باستخدام معمارية الخدمات المتناهية الصغر هو الحصول على قابلية للتوسعة. لذلك، يجب أن تكون الخدمات فضفاضة الترابط لتمكين كل خدمة من التمتع بالاستقلالية. تنفق معمارية التمثيل النمطي الموزع هذا وتسبب في أن يعتمد معظم المكونات على بعضها البعض، مما يزيد من تعقيد التصميم. 
 
-You might have seen _Service-oriented architecture (SOA)_ mentioned around the internet, sometimes even interchangeably with microservices, but they are different from each other and the main distinction between the two approaches comes down to _scope_.
+## معمارية الخدمات المتناهية الصغر مقابل العمارة الموجهة للخدمة (SOA)
 
-Service-oriented architecture (SOA) defines a way to make software components reusable via service interfaces. These interfaces utilize common communication standards and focus on maximizing application service reusability whereas microservices are built as a collection of various smallest independent service units focused on team autonomy and decoupling.
+قد تكون قد شاهدت مصطلح "معمارية الخدمة الموجهة للخدمة (SOA)" في الإنترنت أحيانًا، وحتى ربما قد يتم استخدامها بشكل متبادل مع الخدمات المتناهية الصغر، ولكنهما مختلفان عن بعضهما البعض، والفرق الرئيسي بين النهجين يتمثل في "النطاق".
 
-## Why you don't need microservices
+تعرف معمارية الخدمات الموجهة للخدمة (SOA) طريقة لجعل مكونات البرنامج قابلة لإعادة الاستخدام من خلال واجهات الخدمة. تستخدم هذه الواجهات معايير الاتصال المشتركة وتركز على تحقيق أقصى قدر من إعادة استخدام الخدمة التطبيقية بينما تكون الخدمات المتناهية الصغر هي مجموعة من وحدات الخدمة الصغيرة المستقلة التي تركز على استقلالية الفريق وفصل الأجزاء.
 
-![architecture-range](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/monoliths-microservices/architecture-range.png)
+## لماذا لا تحتاج إلى الخدمات المتناهية الصغر
 
-So, you might be wondering, monoliths seem like a bad idea to begin with, why would anyone use that?
+في النهاية، قد تكون تتساءل، يبدو أن التمثيلات النمطية فكرة سيئة للبدء، لماذا يستخدمها أحد؟
 
-Well, it depends. While each approach has its own advantages and disadvantages, it is advised to start with a monolith when building a new system. It is important to understand, that microservices are not a silver bullet, instead, they solve an organizational problem. Microservices architecture is about your organizational priorities and team as much as it's about technology.
+حسنًا، الأمر يعتمد. على الرغم من أن كل نهج له مزاياه وعيوبه الخاصة، يُنصح بالبدء بالتمثيل النمطي عند بناء نظام جديد. إنه أمر مهم أن نفهم أن الخدمات المتناهية الصغر ليست بالضرورة حلاً لكل المشاكل، بدلاً من ذلك، فهي تحل مشكلة تنظيمية. إن معمارية الخدمات المتناهية الصغر هي بشكل رئيسي حول أولوياتك التنظيمية وفريقك بقدر ما هي عن التقنية.
 
-Before making the decision to move to microservices architecture, you need to ask yourself questions like:
+قبل اتخاذ قرار التحول إلى معمارية الخدمات المتناهية الصغر، يجب عليك طرح أسئلة مثل:
 
-- _"Is the team too large to work effectively on a shared codebase?"_
-- _"Are teams blocked on other teams?"_
-- _"Does microservices deliver clear business value for us?"_
-- _"Is my business mature enough to use microservices?"_
-- _"Is our current architecture limiting us with communication overhead?"_
+- "هل يكون فريق التطوير كبيرًا للعمل بفعالية على قاعدة شفرة مشتركة؟"
+- "هل يتم حجب الفرق بسبب الفرق الأخرى؟"
+- "هل تقدم الخدمات المتناهية الصغر قيمة تجارية واضحة لنا؟"
+- "هل يكون نظامي الأعمال ناضجًا بما يكفي لاستخدام الخدمات المتناهية الصغر؟"
+- "هل الهندسة المعمارية الحالية تقيدنا بفوق الرأس الاتصال؟"
 
-If your application does not require to be broken down into microservices, you don't need this. There is no absolute necessity that all applications should be broken down into microservices.
+إذا لم تتطلب تطبيقك تقسيمه إلى خدمات متناهية الصغر، فليس هناك حاجة لذلك. لا يوجد ضرورة مطلقة لأن يتم تقسيم كل التطبيقات إلى خدمات متناهية الصغر. غالبًا ما نستلهم الإلهام من الشركات مثل نيتفليكس واستخدامها لخدمات متناهية الصغر، ولكن نتجاهل حق
 
-We frequently draw inspiration from companies such as Netflix and their use of microservices, but we overlook the fact that we are not Netflix. They went through a lot of iterations and models before they had a market-ready solution, and this architecture became acceptable for them when they identified and solved the problem they were trying to tackle.
+يقة أننا لسنا نيتفليكس. إنهم مرروا بالعديد من التجارب والنماذج قبل أن يحصلوا على حلاً جاهزًا للسوق، وأصبحت هذه الهندسة المعمارية مقبولة بالنسبة لهم عندما حددوا المشكلة التي كانوا يحاولون معالجتها.
 
-That's why it's essential to understand in-depth if your business _actually_ needs microservices. What I'm trying to say is microservices are solutions to complex concerns and if your business doesn't have complex issues, you don't need them.
+لذلك، من المهم فهم بعمق إذا كانت شركتك حقًا تحتاج إلى الخدمات المتناهية الصغر. ما أحاول قوله هو أن الخدمات المتناهية الصغر هي حلاً للقضايا المعقدة وإذا لم تكن لشركتك قضايا معقدة، فلست بحاجة إليها.
 
 # Event-Driven Architecture (EDA)
 
