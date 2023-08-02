@@ -2629,153 +2629,157 @@ _[GraphQL](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#
 - نريد تحسين الجزء الخلفي لمتطلبات واجهة محددة.
 - يتم إجراء تخصيصات على جزء خلفي عام لاستيعاب واجهات متعددة.
 
-# REST, GraphQL, gRPC
+# REST وGraphQL وgRPC
 
-A good API design is always a crucial part of any system. But it is also important to pick the right API technology. So, in this tutorial, we will briefly discuss different API technologies such as REST, GraphQL, and gRPC.
+تصميم واجهة برمجة التطبيقات (API) جيدة هو دائمًا جزء حاسم من أي نظام. ولكن من المهم أيضًا اختيار التكنولوجيا المناسبة للAPI. لذلك، في هذا البرنامج التعليمي، سنناقش بإيجاز مختلف تقنيات API مثل REST وGraphQL وgRPC.
 
-## What's an API?
+## ما هي واجهة برمجة التطبيقات؟
 
-Before we even get into API technologies, let's first understand what is an API.
+قبل أن ندخل في تقنيات واجهة برمجة التطبيقات، دعنا نفهم أولاً ما هي واجهة برمجة التطبيقات.
 
-API stands for Application Programming Interface. It is a set of definitions and protocols for building and integrating application software. It's sometimes referred to as a contract between an information provider and an information user establishing the content required from the producer and the content required by the consumer.
+واجهة برمجة التطبيقات (API) هي مجموعة من التعريفات والبروتوكولات لبناء ودمج برمجيات التطبيق. يُشار إليها أحيانًا باسم اتفاقية بين مُزوِّد المعلومات ومُستخدِم المعلومات لتحديد المحتوى المطلوب من المنتج والمحتوى المطلوب من المستهلك.
 
-In other words, if you want to interact with a computer or system to retrieve information or perform a function, an API helps you communicate what you want to that system so it can understand and complete the request.
+ببساطة، إذا كنت ترغب في التفاعل مع جهاز كمبيوتر أو نظام لاسترداد المعلومات أو تنفيذ وظيفة ما، تساعدك واجهة برمجة التطبيقات على التواصل مع هذا النظام حتى يفهم وينفذ الطلب.
 
 ## REST
 
-A [REST API](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) (also known as RESTful API) is an application programming interface that conforms to the constraints of REST architectural style and allows for interaction with RESTful web services. REST stands for Representational State Transfer and it was first introduced by [Roy Fielding](https://roy.gbiv.com) in the year 2000.
+واجهة برمجة التطبيقات القائمة على نمط REST (تُعرف أيضًا بواجهة RESTful API) هي واجهة برمجة التطبيقات تتوافق مع قيود نمط REST المعماري وتسمح بالتفاعل مع خدمات الويب القائمة على REST. تعني REST "نقل الحالة التمثيلية" وتم تقديمها لأول مرة من قبل [روي فيلدينغ](https://roy.gbiv.com) في عام 2000.
 
-_In REST API, the fundamental unit is a resource._
+_في واجهة برمجة التطبيقات القائمة على REST، الوحدة الأساسية هي المورد._
 
-### Concepts
+### المفاهيم
 
-Let's discuss some concepts of a RESTful API.
+دعنا نناقش بعض المفاهيم المتعلقة بواجهة RESTful.
 
-**Constraints**
+**القيود**
 
-In order for an API to be considered _RESTful_, it has to conform to these architectural constraints:
+لكي يُعتبر API "RESTful"، يجب أن يتوافق مع القيود المعمارية التالية:
 
-- **Uniform Interface**: There should be a uniform way of interacting with a given server.
-- **Client-Server**: A client-server architecture managed through HTTP.
-- **Stateless**: No client context shall be stored on the server between requests.
-- **Cacheable**: Every response should include whether the response is cacheable or not and for how much duration responses can be cached at the client-side.
-- **Layered system**: An application architecture needs to be composed of multiple layers.
-- **Code on demand**: Return executable code to support a part of your application. _(optional)_
+- **واجهة موحدة**: يجب أن يكون هناك طريقة موحدة للتفاعل مع خادم معين.
+- **العميل - الخادم**: هيكل عميل - خادم يُدار عبر HTTP.
+- **بدون حالة**: لا يتم تخزين سياق العميل على الخادم بين الطلبات.
+- **قابل للتخزين المؤقت**: يجب أن يتضمن كل استجابة ما إذا كانت قابلة للتخزين المؤقت أو لا وكم من الوقت يمكن تخزين الاستجابات في جانب العميل.
+- **نظام متعدد الطبقات**: يجب أن يتكون تصميم التطبيق من طبقات متعددة.
+- **الكود عند الطلب**: إرجاع الكود القابل للتنفيذ لدعم جزء من تطبيقك. _(اختياري)_
 
-**HTTP Verbs**
+**أفعال HTTP**
 
-HTTP defines a set of request methods to indicate the desired action to be performed for a given resource. Although they can also be nouns, these request methods are sometimes referred to as _HTTP verbs_. Each of them implements a different semantic, but some common features are shared by a group of them.
+يحدد بروتوكول HTTP مجموعة من طرق الطلب للإشارة إلى الإجراء المرغوب في أدائه لمورد معين. على الرغم من أنها يمكن أن تكون أيضًا اسماء أشياء، إلا أن هذه الطرق طلب يُشار إليها أحيانًا باسم "أفعال HTTP". تنفذ كل منها دلالة مختلفة، ولكن يتم مشاركة بعض الميزات المشتركة بين مجموعة منها.
 
-Below are some commonly used HTTP verbs:
+وفيما يلي بعض أفعال HTTP المستخدمة بشكل شائع:
 
-- **GET**: Request a representation of the specified resource.
-- **HEAD**: Response is identical to a `GET` request, but without the response body.
-- **POST**: Submits an entity to the specified resource, often causing a change in state or side effects on the server.
-- **PUT**: Replaces all current representations of the target resource with the request payload.
-- **DELETE**: Deletes the specified resource.
-- **PATCH**: Applies partial modifications to a resource.
+- **GET**: طلب تمثيل المورد المحدد.
+- **HEAD**: الاستجابة مماثلة لطلب `GET`، ولكن بدون هيئة الاستجابة.
+- **POST**: يُرسل كيانًا إلى المورد المحدد، مما يتسبب في تغيير الحالة أو الآثار الجانبية على الخادم.
+- **PUT**: استبدل جميع تمثيلات الم
 
-**HTTP response codes**
+ورد المستهدف بحمولة الطلب.
+- **DELETE**: حذف المورد المحدد.
+- **PATCH**: تطبيق التعديلات الجزئية على المورد.
 
-[HTTP response status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) indicate whether a specific HTTP request has been successfully completed.
+**أكواد استجابة HTTP**
 
-There are five classes defined by the standard:
+تُشير أكواد استجابة نظام بروتوكول نقل النص الفائق (HTTP) إلى ما إذا تم إكمال طلب HTTP المحدد بنجاح.
 
-- 1xx - Informational responses.
-- 2xx - Successful responses.
-- 3xx - Redirection responses.
-- 4xx - Client error responses.
-- 5xx - Server error responses.
+هناك خمس فئات محددة في المعيار:
 
-For example, HTTP 200 means that the request was successful.
+- 1xx - استجابات إعلامية.
+- 2xx - استجابات ناجحة.
+- 3xx - استجابات إعادة توجيه.
+- 4xx - استجابات خطأ العميل.
+- 5xx - استجابات خطأ الخادم.
 
-### Advantages
+على سبيل المثال، تعني HTTP 200 أن الطلب تم بنجاح.
 
-Let's discuss some advantages of REST API:
+### المزايا
 
-- Simple and easy to understand.
-- Flexible and portable.
-- Good caching support.
-- Client and server are decoupled.
+دعنا نناقش بعض المزايا لواجهة REST API:
 
-### Disadvantages
+- بسيطة وسهلة الفهم.
+- مرنة وقابلة للتنقل.
+- دعم جيد للتخزين المؤقت.
+- العميل والخادم غير مرتبطين بشكل وثيق.
 
-Let's discuss some disadvantages of REST API:
+### العيوب
 
-- Over-fetching of data.
-- Sometimes multiple round trips to the server are required.
+دعنا نناقش بعض العيوب لواجهة REST API:
 
-### Use cases
+- زيادة في جلب البيانات.
+- في بعض الأحيان يتطلب جولات متعددة إلى الخادم.
 
-REST APIs are pretty much used universally and are the default standard for designing APIs. Overall REST APIs are quite flexible and can fit almost all scenarios.
+### الحالات الاستخدامية
 
-### Example
+تُستخدم واجهات REST API تقريبًا عالميًا وهي المعيار الافتراضي لتصميم الAPIs. بصفة عامة، تعتبر واجهات REST API مرنة جدًا ويمكن أن تناسب تقريبًا جميع السيناريوهات.
 
-Here's an example usage of a REST API that operates on a **users** resource.
+### المثال
 
-| URI           | HTTP verb | Description         |
-| ------------- | --------- | ------------------- |
-| /users        | GET       | Get all users       |
-| /users/\{id\} | GET       | Get a user by id    |
-| /users        | POST      | Add a new user      |
-| /users/\{id\} | PATCH     | Update a user by id |
-| /users/\{id\} | DELETE    | Delete a user by id |
+فيما يلي مثال على استخدام واجهة REST API التي تعمل على المورد **المستخدمين**.
 
-_There is so much more to learn when it comes to REST APIs, I will highly recommend looking into [Hypermedia as the Engine of Application State (HATEOAS)](https://en.wikipedia.org/wiki/HATEOAS)._
+| URI           | طريقة HTTP | الوصف                         |
+| ------------- | ----------- | ------------------------------ |
+| /users        | GET         | الحصول على جميع المستخدمين   |
+| /users/\{id\} | GET         | الحصول على مستخدم بالمعرف   |
+| /users        | POST        | إضافة مستخدم جديد            |
+| /users/\{id\} | PATCH       | تحديث مستخدم بالمعرف        |
+| /users/\{id\} | DELETE      | حذف مستخدم بالمعرف          |
+
+_هناك الكثير للتعلم عندما يتعلق الأمر بواجهات REST API، يوصى بشدة بالبحث عن [Hypermedia as the Engine of Application State (HATEOAS)](https://en.wikipedia.org/wiki/HATEOAS)._
 
 ## GraphQL
 
-[GraphQL](https://graphql.org) is a query language and server-side runtime for APIs that prioritizes giving clients exactly the data they request and no more. It was developed by [Facebook](https://engineering.fb.com) and later open-sourced in 2015.
+[GraphQL](https://graphql.org) هو لغة استعلام ووقت تشغيل لخدمات واجهة برمجة التطبيقات (API) التي تُعطي العملاء بالضبط البيانات التي يطلبونها ولا شيء أكثر. تم تطويره بواسطة [فيسبوك](https://engineering.fb.com) وصدر كشف مصدره في عام 2015.
 
-GraphQL is designed to make APIs fast, flexible, and developer-friendly. Additionally, GraphQL gives API maintainers the flexibility to add or deprecate fields without impacting existing queries. Developers can build APIs with whatever methods they prefer, and the GraphQL specification will ensure they function in predictable ways to clients.
+تم تصميم GraphQL لجعل واجهات البرمجة التطبيقات سريعة ومرنة وسهلة الاستخدام للمطورين. بالإضافة إلى ذلك، يمنح GraphQL مُشغلي الAPI المرونة لإضافة أو إسقاط الحقول دون التأثير على الاستعلامات الحالية. يمكن للمطورين بناء واجهات برمجة تطبيقات بأي طرق يفضلون، وسيضمن المواصفات GraphQL أنها ستعمل بطرق متوقعة للعملاء.
 
-_In GraphQL, the fundamental unit is a query._
+_في GraphQL، الوحدة الأساسية هي الاستعلام._
 
-### Concepts
+### المفاهيم
 
-Let's briefly discuss some key concepts in GraphQL:
+دعنا نناقش بإيجاز بعض المفاهيم الرئيسية في GraphQL:
 
-**Schema**
+**المخطط (Schema)**
 
-A GraphQL schema describes the functionality clients can utilize once they connect to the GraphQL server.
+يصف المخطط في GraphQL الوظائف التي يمكن للعملاء الاستفادة منها عند الاتصال بخادم GraphQL.
 
-**Queries**
+**الاستعلامات (Queries)**
 
-A query is a request made by the client. It can consist of fields and arguments for the query. The operation type of a query can also be a [mutation](https://graphql.org/learn/queries/#mutations) which provides a way to modify server-side data.
+الاستعلام هو طلب يتم إجراؤه بواسطة العميل. يمكن أن يتألف من حقول ومعاملات للاستعلام. يمكن أن يكون نوع العملية في الاستعلام أيضًا [طرح](https://graphql.org/learn/queries/#mutations) يوفر وسيلة لتعديل بيانات الخادم.
 
-**Resolvers**
+**المحللون (Resolvers)**
 
-Resolver is a collection of functions that generate responses for a GraphQL query. In simple terms, a resolver acts as a GraphQL query handler.
+المحلل هو مجموعة من الوظائف التي تنشئ استج
 
-### Advantages
+ابات للاستعلام في GraphQL. ببساطة، يعمل المحلل كمعالج للاستعلام GraphQL.
 
-Let's discuss some advantages of GraphQL:
+### المزايا
 
-- Eliminates over-fetching of data.
-- Strongly defined schema.
-- Code generation support.
-- Payload optimization.
+دعنا نناقش بعض المزايا لGraphQL:
 
-### Disadvantages
+- يزيل جلب البيانات الزائد.
+- مخطط معرف بشكل قوي.
+- دعم توليد الشفرة.
+- تحسين الحمولة.
 
-Let's discuss some disadvantages of GraphQL:
+### العيوب
 
-- Shifts complexity to server-side.
-- Caching becomes hard.
-- Versioning is ambiguous.
-- N+1 problem.
+دعنا نناقش بعض العيوب لGraphQL:
 
-### Use cases
+- يحول التعقيد إلى جانب الخادم.
+- يصعب تخزين البيانات المؤقتة.
+- الإصدار غامض.
+- مشكلة N+1.
 
-GraphQL proves to be essential in the following scenarios:
+### الحالات الاستخدامية
 
-- Reducing app bandwidth usage as we can query multiple resources in a single query.
-- Rapid prototyping for complex systems.
-- When we are working with a graph-like data model.
+يثبت GraphQL أهميته في الحالات التالية:
 
-### Example
+- تقليل استخدام عرض النطاق الترددي في التطبيق حيث يمكننا استعلام موارد متعددة في استعلام واحد.
+- إنشاء نماذج أولية سريعة للأنظمة المعقدة.
+- عند العمل مع نموذج بيانات شبيه بالرسم البياني.
 
-Here's a GraphQL schema that defines a `User` type and a `Query` type.
+### المثال
+
+فيما يلي مخطط GraphQL يحدد نوعًا `User` ونوعًا `Query`.
 
 ```graphql
 type Query {
@@ -2790,7 +2794,7 @@ type User {
 }
 ```
 
-Using the above schema, the client can request the required fields easily without having to fetch the entire resource or guess what the API might return.
+باستخدام المخطط أعلاه، يمكن للعميل طلب الحقول المطلوبة بسهولة دون الحاجة إلى جلب المورد بأكمله أو تخمين ما قد ترجعه واجهة الAPI.
 
 ```graphql
 {
@@ -2802,7 +2806,7 @@ Using the above schema, the client can request the required fields easily withou
 }
 ```
 
-This will give the following response to the client.
+سيعطي ذلك الاستعلام الاستجابة التالية للعميل.
 
 ```json
 {
@@ -2814,54 +2818,54 @@ This will give the following response to the client.
 }
 ```
 
-_Learn more about GraphQL at [graphql.org](https://graphql.org)._
+_تعرف على المزيد حول GraphQL على [graphql.org](https://graphql.org)._
 
 ## gRPC
 
-[gRPC](https://grpc.io) is a modern open-source high-performance [Remote Procedure Call (RPC)](https://en.wikipedia.org/wiki/Remote_procedure_call) framework that can run in any environment. It can efficiently connect services in and across data centers with pluggable support for load balancing, tracing, health checking, authentication and much more.
+[gRPC](https://grpc.io) هو إطار عمل عالي الأداء مفتوح المصدر وحديث لـ [استدعاء الإجراءات عن بُعد (RPC)](https://en.wikipedia.org/wiki/Remote_procedure_call) يمكن تشغيله في أي بيئة. يمكنه الاتصال بكفاءة بالخدمات داخل وخارج مراكز البيانات مع دعم قابل للتوصيل للتوازن والتتبع وفحص الصحة والمصادقة والمزيد بحسب الاحتياجات.
 
-### Concepts
+### المفاهيم
 
-Let's discuss some key concepts of gRPC.
+دعنا نناقش بعض المفاهيم الرئيسية لـ gRPC.
 
-**Protocol buffers**
+**بروتوكولات البيانات**
 
-Protocol buffers provide a language and platform-neutral extensible mechanism for serializing structured data in a forward and backward-compatible way. It's like JSON, except it's smaller and faster, and it generates native language bindings.
+توفر بروتوكولات البيانات آلية قابلة للتوسيع لتسلسل البيانات المنظمة بشكل هيكلي بطريقة متوافقة في اتجاهين. إنها مثل JSON، باستثناء أنها أصغر وأسرع، وتُولد الروابط اللغوية الأصلية.
 
-**Service definition**
+**تعريف الخدمة**
 
-Like many RPC systems, gRPC is based on the idea of defining a service and specifying the methods that can be called remotely with their parameters and return types. gRPC uses protocol buffers as the [Interface Definition Language (IDL)](https://en.wikipedia.org/wiki/Interface_description_language) for describing both the service interface and the structure of the payload messages.
+مثل العديد من نظم RPC، يستند gRPC إلى فكرة تعريف خدمة وتحديد الطرق التي يمكن استدعاؤها عن بُعد مع معاملاتها وأنواع العودة.
 
-### Advantages
+### المزايا
 
-Let's discuss some advantages of gRPC:
+دعنا نناقش بعض المزايا لـ gRPC:
 
-- Lightweight and efficient.
-- High performance.
-- Built-in code generation support.
-- Bi-directional streaming.
+- خفيف الوزن وفعال.
+- أداء عالٍ.
+- دعم توليد الشفرة المدمجة.
+- تدفق ثنائي الاتجاه.
 
-### Disadvantages
+### العيوب
 
-Let's discuss some disadvantages of gRPC:
+دعنا نناقش بعض العيوب لـ gRPC:
 
-- Relatively new compared to REST and GraphQL.
-- Limited browser support.
-- Steeper learning curve.
-- Not human readable.
+- جديد نسبيًا مقارنة بـ REST وGraphQL.
+- دعم المتصفح محدود.
+- منحنى التعلم شديد الانحدار.
+- غير قابل للقراءة بالنسبة للإنسان.
 
-### Use cases
+### الحالات الاستخدامية
 
-Below are some good use cases for gRPC:
+فيما يلي بعض حالات الاستخدام الجيدة لـ gRPC:
 
-- Real-time communication via bi-directional streaming.
-- Efficient inter-service communication in microservices.
-- Low latency and high throughput communication.
-- Polyglot environments.
+- الاتصال الزمني الحقيقي عبر التدفق الثنائي الاتجاهي.
+- التواصل بين الخدمات بكفاءة في الخدمات الميكرو.
+- التواصل منخفض التأخير وعالي الإنتاجية.
+- البيئات متعددة اللغات.
 
-### Example
+### المثال
 
-Here's a basic example of a gRPC service defined in a `*.proto` file. Using this definition, we can easily code generate the `HelloService` service in the programming language of our choice.
+فيما يلي مثال أساسي لخدمة gRPC تم تعريفها في ملف `*.proto`. باستخدام هذا التعريف، يمكننا بسهولة توليد الشفرة لخدمة `HelloService` بلغة البرمجة التي نفضلها.
 
 ```protobuf
 service HelloService {
@@ -2877,28 +2881,28 @@ message HelloResponse {
 }
 ```
 
-## REST vs GraphQL vs gRPC
+## REST مقابل GraphQL مقابل gRPC
 
-Now that we know how these API designing techniques work, let's compare them based on the following parameters:
+الآن بعد أن عرفنا كيف تعمل هذه التقنيات لتصميم الAPI، دعنا نقارن بينهم بناءً على المعايير التالية:
 
-- Will it cause tight coupling?
-- How _chatty_ (distinct API calls to get needed information) are the APIs?
-- What's the performance like?
-- How complex is it to integrate?
-- How well does the caching work?
-- Built-in tooling and code generation?
-- What's API discoverability like?
-- How easy is it to version APIs?
+- هل سيتسبب في الارتباط القوي؟
+- كيف هي الحاجة للاتصالات المستقلة (API الاستدعاءات المميزة للحصول على المعلومات المطلوبة؟)
+- كيف هي الأداء؟
+- مدى تعقيد التكامل؟
+- كيف يعمل التخزين المؤقت؟
+- دعم الأدوات المدمجة وتوليد الشفرة؟
+- مدى اكتشافية الAPI؟
+- مدى سهولة إصدار الAPI؟
 
-| Type    | Coupling | Chattiness | Performance | Complexity | Caching | Codegen | Discoverability | Versioning |
-| ------- | -------- | ---------- | ----------- | ---------- | ------- | ------- | --------------- | ---------- |
-| REST    | Low      | High       | Good        | Medium     | Great   | Bad     | Good            | Easy       |
-| GraphQL | Medium   | Low        | Good        | High       | Custom  | Good    | Good            | Custom     |
-| gRPC    | High     | Medium     | Great       | Low        | Custom  | Great   | Bad             | Hard       |
+| النوع    | الارتباط | الاتصالات | الأداء | التكامل | التخزين المؤقت | توليد الشفرة | اكتشافية الAPI | إصدار الAPI |
+| ------- | -------- | ---------- | ------- | -------- | --------------- | ------------ | --------------- | ---------- |
+| REST    | منخفض   | عالي       | جيد    | متوسط   | جيد           | سيء            | جيد            | سهل       |
+| GraphQL | متوسط    | منخفض      | جيد    | عالي     | مخصص          | جيد            | جيد            | مخصص      |
+| gRPC    | عالي     | متوسط      | عظيم    | منخفض   | مخصص          | عظيم          | سيء            | صعب       |
 
-### Which API technology is better?
+### أي تكنولوجيا API أفضل؟
 
-Well, the answer is none of them. There is no silver bullet as each of these technologies has its own advantages and disadvantages. Users only care about using our APIs in a consistent way, so make sure to focus on your domain and requirements when designing your API.
+حسنًا، الجواب ليس أي منهم. لا يوجد حلاً سحريًا حيث لكل من هذه التقنيات مزاياها وعيوبها. يهتم المستخدمون فقط باستخدام API بطريقة متسقة، لذلك تأكد من التركيز على مجالك ومتطلباتك عند تصميم API الخاص بك.
 
 # Long polling, WebSockets, Server-Sent Events (SSE)
 
