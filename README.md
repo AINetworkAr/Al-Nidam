@@ -2516,49 +2516,50 @@ _ملاحظة: يتم مناقشة كل من هذه الأساليب بشكل م
 - يتطلب طريقة موثوقة للتحكم في تنسيق الرسائل، مثل سجل النطاق.
 - ستحتوي الأحداث المختلفة على حمولات مختلفة.
 
-# Command and Query Responsibility Segregation (CQRS)
+# الفصل بين المسؤولية للأوامر والاستعلامات (CQRS)
 
-Command Query Responsibility Segregation (CQRS) is an architectural pattern that divides a system's actions into commands and queries. It was first described by [Greg Young](https://twitter.com/gregyoung).
+الفصل بين المسؤولية للأوامر والاستعلامات (CQRS) هو نمط معماري يقسم أوامر النظام إلى أوامر واستعلامات. وقد وصف لأول مرة من قبل [Greg Young](https://twitter.com/gregyoung).
 
-In CQRS, a _command_ is an instruction, a directive to perform a specific task. It is an intention to change something and doesn't return a value, only an indication of success or failure. And, a _query_ is a request for information that doesn't change the system's state or cause any side effects.
+في CQRS، الأمر هو تعليم، توجيه لأداء مهمة محددة. إنها نية لتغيير شيء ما ولا تعيد قيمة، بل توضح فقط نجاح أو فشل التنفيذ. والاستعلام هو طلب للحصول على معلومات لا يتغير حالة النظام أو يسبب أي تأثير جانبي.
 
-![command-and-query-responsibility-segregation](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/command-and-query-responsibility-segregation/command-and-query-responsibility-segregation.png)
+![الفصل-بين-المسؤولية-للأوامر-والاستعلامات](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/command-and-query-responsibility-segregation/command-and-query-responsibility-segregation.png)
 
-The core principle of CQRS is the separation of commands and queries. They perform fundamentally different roles within a system, and separating them means that each can be optimized as needed, which distributed systems can really benefit from.
+المبدأ الأساسي لـ CQRS هو الفصل بين الأوامر والاستعلامات. إنهما يؤديان أدوارًا مختلفة بشكل جوهري داخل النظام، وفصلهما يعني أنه يمكن تحسين كل منهما حسب الحاجة، ومن هنا يمكن أن تستفيد الأنظمة الموزعة بشكل كبير.
 
-## CQRS with Event Sourcing
+## CQRS مع التخزين بالأحداث
 
-The CQRS pattern is often used along with the Event Sourcing pattern. CQRS-based systems use separate read and write data models, each tailored to relevant tasks and often located in physically separate stores.
+غالبًا ما يتم استخدام نمط CQRS جنبًا إلى جنب مع نمط التخزين بالأحداث. تستخدم الأنظمة التي تعتمد على CQRS نماذج بيانات قراءة وكتابة منفصلة، مصممة للمهام ذات الصلة وعادة ما تكون موجودة في مخازن منفصلة بشكل فعلي.
 
-When used with the Event Sourcing pattern, the store of events is the write model and is the official source of information. The read model of a CQRS-based system provides materialized views of the data, typically as highly denormalized views.
+عند استخدامها مع نمط التخزين بالأحداث، يعتبر مخزن الأحداث هو النموذج الكتابة وهو المصدر الرسمي للمعلومات. يوفر النموذج القراءة في نظام CQRS المشتقات المتعاملة مع البيانات، عادةً على شكل مشاهدات مجسمة بشكل كبير.
 
-## Advantages
+## المزايا
 
-Let's discuss some advantages of CQRS:
+لنتناقش عن بعض المزايا في CQRS:
 
-- Allows independent scaling of read and write workloads.
-- Easier scaling, optimizations, and architectural changes.
-- Closer to business logic with loose coupling.
-- The application can avoid complex joins when querying.
-- Clear boundaries between the system behavior.
+- يسمح بتوازن مستقل لأعباء العمليات والاستعلامات.
+- تسهيل التوسع، والتحسينات، والتغييرات المعمارية.
+- أقرب إلى منطق الأعمال مع فصل فعال.
+- يمكن للتطبيق تجنب الانضمامات المعقدة عند الاستعلام.
 
-## Disadvantages
+## العيوب
 
-Below are some disadvantages of CQRS:
+هذه هي العيوب التي تتضمنها CQRS:
 
-- More complex application design.
-- Message failures or duplicate messages can occur.
-- Dealing with eventual consistency is a challenge.
-- Increased system maintenance efforts.
+- تصميم تطبيق أكثر تعقيدا.
+- قد تحدث فشل الرسائل أو تكرار الرسائل.
+- التعامل مع الاتساق المستقبلي يشكل تحديا.
+- زيادة جهود صيانة النظام.
 
-## Use cases
+## الاستخدام
 
-Here are some scenarios where CQRS will be helpful:
+ات
 
-- The performance of data reads must be fine-tuned separately from the performance of data writes.
-- The system is expected to evolve over time and might contain multiple versions of the model, or where business rules change regularly.
-- Integration with other systems, especially in combination with event sourcing, where the temporal failure of one subsystem shouldn't affect the availability of the others.
-- Better security to ensure that only the right domain entities are performing writes on the data.
+فيما يلي بعض السيناريوهات التي يمكن أن يكون فيها CQRS مفيدًا:
+
+- يجب ضبط أداء قراءة البيانات بشكل منفصل عن أداء كتابة البيانات.
+- من المتوقع أن يتطور النظام مع مرور الوقت وقد يحتوي على عدة إصدارات للنموذج، أو حيث تتغير القواعد التجارية بانتظام.
+- التكامل مع أنظمة أخرى، خصوصاً بالاقتران مع التخزين بالأحداث، حيث لا يجب أن يؤثر الفشل الزمني لنظام فرعي واحد على توفر الآخرين.
+- تحسين الأمان للتأكد من أن الجهات المختصة بالنطاق الصحيح تقوم بالكتابة على البيانات.
 
 # API Gateway
 
