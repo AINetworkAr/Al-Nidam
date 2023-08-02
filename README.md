@@ -2485,36 +2485,36 @@ _ملاحظة: يتم مناقشة كل من هذه الأساليب بشكل م
 - [Amazon EventBridge](https://aws.amazon.com/eventbridge)
 - [Amazon SNS](https://aws.amazon.com/sns)
 - [Google PubSub](https://cloud.google.com/pubsub)
-# Event Sourcing
+# التخزين بالأحداث
 
-Instead of storing just the current state of the data in a domain, use an append-only store to record the full series of actions taken on that data. The store acts as the system of record and can be used to materialize the domain objects.
+بدلاً من تخزين الحالة الحالية للبيانات في مجال معين، يمكن استخدام متجر يسجل سلسلة كاملة من الإجراءات التي تم اتخاذها على تلك البيانات. يعمل المتجر كنظام تسجيل ويمكن استخدامه لتجسيد كائنات المجال.
 
 ![event-sourcing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/event-sourcing/event-sourcing.png)
 
-This can simplify tasks in complex domains, by avoiding the need to synchronize the data model and the business domain, while improving performance, scalability, and responsiveness. It can also provide consistency for transactional data, and maintain full audit trails and history that can enable compensating actions.
+يمكن أن يبسط هذا المفهوم المهام في المجالات المعقدة، من خلال تجنب الحاجة إلى مزامنة نموذج البيانات ومجال الأعمال، مع تحسين الأداء والقابلية للتوسع والاستجابة. يمكن أن يوفر أيضًا الاستقرار للبيانات التي تخضع للمعاملات، والحفاظ على سجلات مراجعة كاملة وتاريخ يمكن أن يمكّن الإجراءات التعويضية.
 
-## Event sourcing vs Event-Driven Architecture (EDA)
+## التخزين بالأحداث مقابل الهندسة المعمارية المدفوعة بالأحداث
 
-Event sourcing is seemingly constantly being confused with [Event-driven Architecture (EDA)](https://karanpratapsingh.com/courses/system-design/event-driven-architecture). Event-driven architecture is about using events to communicate between service boundaries. Generally, leveraging a message broker to publish and consume events asynchronously within other boundaries.
+يبدو أن العديد من الأشخاص يخلطون بين التخزين بالأحداث و [الهندسة المعمارية المدفوعة بالأحداث (EDA)](https://karanpratapsingh.com/courses/system-design/event-driven-architecture). الهندسة المعمارية المدفوعة بالأحداث تتعلق باستخدام الأحداث للتواصل بين حدود الخدمة. عمومًا، يتم استغلال وسيط الرسائل لنشر الأحداث واستهلاكها بشكل غير متزامن في حدود أخرى.
 
-Whereas, event sourcing is about using events as a state, which is a different approach to storing data. Rather than storing the current state, we're instead going to be storing events. Also, event sourcing is one of the several patterns to implement an event-driven architecture.
+بينما التخزين بالأحداث يتعلق باستخدام الأحداث كحالة، وهو نهج مختلف لتخزين البيانات. بدلاً من تخزين الحالة الحالية، سنقوم بدلاً من ذلك بتخزين الأحداث. أيضًا، التخزين بالأحداث هو واحد من الأنماط المختلفة لتنفيذ الهندسة المعمارية المدفوعة بالأحداث.
 
-## Advantages
+## المزايا
 
-Let's discuss some advantages of using event sourcing:
+لنتناقش عن بعض المزايا في استخدام التخزين بالأحداث:
 
-- Excellent for real-time data reporting.
-- Great for fail-safety, data can be reconstituted from the event store.
-- Extremely flexible, any type of message can be stored.
-- Preferred way of achieving audit logs functionality for high compliance systems.
+- ممتاز لتقارير البيانات في الوقت الحقيقي.
+- رائع للسلامة من الفشل، حيث يمكن إعادة تجسيد البيانات من مخزن الأحداث.
+- مرن للغاية، حيث يمكن تخزين أي نوع من الرسائل.
+- الطريقة المفضلة لتحقيق وظيفة السجلات التدقيق للأنظمة عالية الامتثال.
 
-## Disadvantages
+## العيوب
 
-Following are the disadvantages of event sourcing:
+هذه هي العيوب التي تتضمنها التخزين بالأحداث:
 
-- Requires an extremely efficient network infrastructure.
-- Requires a reliable way to control message formats, such as a schema registry.
-- Different events will contain different payloads.
+- يتطلب بنية شبكة فعالة للغاية.
+- يتطلب طريقة موثوقة للتحكم في تنسيق الرسائل، مثل سجل النطاق.
+- ستحتوي الأحداث المختلفة على حمولات مختلفة.
 
 # Command and Query Responsibility Segregation (CQRS)
 
