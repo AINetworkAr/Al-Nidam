@@ -2561,80 +2561,73 @@ _ملاحظة: يتم مناقشة كل من هذه الأساليب بشكل م
 - التكامل مع أنظمة أخرى، خصوصاً بالاقتران مع التخزين بالأحداث، حيث لا يجب أن يؤثر الفشل الزمني لنظام فرعي واحد على توفر الآخرين.
 - تحسين الأمان للتأكد من أن الجهات المختصة بالنطاق الصحيح تقوم بالكتابة على البيانات.
 
-# API Gateway
+# بوابة واجهة برمجة التطبيقات (API Gateway)
 
-The API Gateway is an API management tool that sits between a client and a collection of backend services. It is a single entry point into a system that encapsulates the internal system architecture and provides an API that is tailored to each client. It also has other responsibilities such as authentication, monitoring, load balancing, caching, throttling, logging, etc.
+بوابة واجهة برمجة التطبيقات (API Gateway) هي أداة إدارة واجهة برمجة التطبيقات تقع بين العميل ومجموعة من خدمات الخلفية. إنها نقطة دخول واحدة إلى النظام تجمع بين الهندسة الداخلية للنظام وتوفر واجهة برمجة التطبيقات التي تتناسب مع كل عميل. كما أن لها مسؤوليات أخرى مثل المصادقة، والرصد، والتوازن، والتخزين المؤقت، وتنظيم السرعة، وتسجيل الأحداث، وغيرها.
 
-![api-gateway](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/api-gateway/api-gateway.png)
+![بوابة-واجهة-برمجة-التطبيقات](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/api-gateway/api-gateway.png)
 
-## Why do we need an API Gateway?
+## لماذا نحتاج إلى بوابة واجهة برمجة التطبيقات؟
 
-The granularity of APIs provided by microservices is often different than what a client needs. Microservices typically provide fine-grained APIs, which means that clients need to interact with multiple services. Hence, an API gateway can provide a single entry point for all clients with some additional features and better management.
+تكون حبيبات واجهات برمجة التطبيقات الناتجة عن الخدمات الميكروسيرفيسز غالبًا مختلفة عن ما يحتاجه العميل. توفر الخدمات الميكروسيرفيسز عادة واجهات برمجة التطبيقات متناهية الدقة، مما يعني أن العملاء يحتاجون للتفاعل مع العديد من الخدمات. ولذلك، يمكن أن توفر بوابة واجهة برمجة التطبيقات نقطة دخول واحدة لجميع العملاء مع بعض الميزات الإضافية وإدارة أفضل.
 
-## Features
+## الميزات
 
-Below are some desired features of an API Gateway:
+فيما يلي بعض الميزات المطلوبة لبوابة واجهة برمجة التطبيقات:
 
-- Authentication and Authorization
-- [Service discovery](https://karanpratapsingh.com/courses/system-design/service-discovery)
-- [Reverse Proxy](https://karanpratapsingh.com/courses/system-design/proxy#reverse-proxy)
-- [Caching](https://karanpratapsingh.com/courses/system-design/caching)
-- Security
-- Retry and [Circuit breaking](https://karanpratapsingh.com/courses/system-design/circuit-breaker)
-- [Load balancing](https://karanpratapsingh.com/courses/system-design/load-balancing)
-- Logging, Tracing
-- API composition
-- [Rate limiting](https://karanpratapsingh.com/courses/system-design/rate-limiting) and throttling
-- Versioning
-- Routing
-- IP whitelisting or blacklisting
+- المصادقة والتصريح.
+- [اكتشاف الخدمة](https://karanpratapsingh.com/courses/system-design/service-discovery).
+- [الوكيل العكسي](https://karanpratapsingh.com/courses/system-design/proxy#reverse-proxy).
+- [التخزين المؤقت](https://karanpratapsingh.com/courses/system-design/caching).
+- الأمان.
+- إعادة المحاولة و[الكسر الدوائري](https://karanpratapsingh.com/courses/system-design/circuit-breaker).
+- [توازن الحمل](https://karanpratapsingh.com/courses/system-design/load-balancing).
+- تسجيل الأحداث والتعقب.
+- تكوين واجهة برمجة التطبيقات.
+- [تحديد معدل الحد](https://karanpratapsingh.com/courses/system-design/rate-limiting) والتنظيم.
+- التحديثات.
+- التوجيه.
+- تفعيل العناوين البيضاء أو السوداء.
 
-## Advantages
+## المزايا
 
-Let's look at some advantages of using an API Gateway:
+لنلقي نظرة على بعض المزايا في استخدام بوابة واجهة برمجة التطبيقات:
 
-- Encapsulates the internal structure of an API.
-- Provides a centralized view of the API.
-- Simplifies the client code.
-- Monitoring, analytics, tracing, and other such features.
+- تقوم بتجميع الهيكل الداخلي لواجهة برمجة التطبيقات.
+- توفر نظرة مركزية لواجهة برمجة التطبيقات.
+- تبسط كود العميل.
+- تقدم ميزات المراقبة والتحليل والتعقب وغيرها من الميزات المماثلة.
 
-## Disadvantages
+## العيوب
 
-Here are some possible disadvantages of an API Gateway:
+فيما يلي بعض العيوب المحتملة لبوابة واجهة برمجة التطبيقات:
 
-- Possible single point of failure.
-- Might impact performance.
-- Can become a bottleneck if not scaled properly.
-- Configuration can be challenging.
+- قد تكون نقطة فشل واحدة ممكنة.
+- قد تؤثر على الأداء.
+- يمكن أن تصبح ضيق الزاوية إذا لم يتم توزيعها بشكل صحيح.
+- قد يكون تكوينها تحدياً.
 
-## Backend For Frontend (BFF) pattern
+## نمط المستودع الخلفي للواجهة الأمامية (BFF)
 
-In the Backend For Frontend (BFF) pattern, we create separate backend services to be consumed by specific frontend applications or interfaces. This pattern is useful when we want to avoid customizing a single backend for multiple interfaces. This pattern was first described by [Sam Newman](https://samnewman.io).
+في نمط المستودع الخلفي للواجهة الأمامية (BFF)، نقوم بإنشاء خدمات خلفية منفصلة ليتم استهلاكها بواسطة تطبيقات أو واجهات أمامية محددة. يكون هذا النمط مفيدًا عندما نرغب في تجنب تخصيص مستودع واحد لواجهات متعددة. تم وصف هذا النمط لأول مرة بواسطة [سام نيومان](https://samnewman.io).
 
-Also, sometimes the output of data returned by the microservices to the front end is not in the exact format or filtered as needed by the front end. To solve this issue, the frontend should have some logic to reformat the data, and therefore, we can use BFF to shift some of this logic to the intermediate layer.
+أيضًا، في بعض الأحيان، قد
 
-![backend-for-frontend](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/api-gateway/backend-for-frontend.png)
+ لا يكون إخراج البيانات التي يعود بها الخدمات الميكروسيرفيسز إلى واجهة الأمام بالتنسيق الدقيق أو المرشح كما يحتاجه الواجهة الأمامية. لحل هذه المشكلة، يجب أن تحتوي واجهة الأمام على بعض المنطق لإعادة تنسيق البيانات، وبالتالي، يمكننا استخدام نمط BFF لتحويل بعض هذه المنطق إلى الطبقة الوسيطة.
 
-The primary function of the backend for the frontend pattern is to get the required data from the appropriate service, format the data, and sent it to the frontend.
+![المستودع-الخلفي-للواجهة-الأمامية](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/api-gateway/backend-for-frontend.png)
 
-_[GraphQL](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#graphql) performs really well as a backend for frontend (BFF)._
+الوظيفة الرئيسية لنمط المستودع الخلفي للواجهة الأمامية هي الحصول على البيانات المطلوبة من الخدمة المناسبة، وتنسيق البيانات، وإرسالها إلى الواجهة الأمامية.
 
-### When to use this pattern?
+_[GraphQL](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#graphql) يؤدي بشكل جيد جدًا كمستودع خلفي للواجهة الأمامية (BFF)._
 
-We should consider using a Backend For Frontend (BFF) pattern when:
+### متى يجب استخدام هذا النمط؟
 
-- A shared or general purpose backend service must be maintained with significant development overhead.
-- We want to optimize the backend for the requirements of a specific client.
-- Customizations are made to a general-purpose backend to accommodate multiple interfaces.
+يجب أن نفكر في استخدام نمط المستودع الخلفي للواجهة الأمامية (BFF) عندما:
 
-## Examples
-
-Following are some widely used gateways technologies:
-
-- [Amazon API Gateway](https://aws.amazon.com/api-gateway)
-- [Apigee API Gateway](https://cloud.google.com/apigee)
-- [Azure API Gateway](https://azure.microsoft.com/en-in/services/api-management)
-- [Kong API Gateway](https://konghq.com/kong)
+- يجب الحفاظ على خدمة خلفية مشتركة أو ذات غرض عام ويجب أن تتم صيانتها مع هامش تطوير كبير.
+- نريد تحسين الجزء الخلفي لمتطلبات واجهة محددة.
+- يتم إجراء تخصيصات على جزء خلفي عام لاستيعاب واجهات متعددة.
 
 # REST, GraphQL, gRPC
 
