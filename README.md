@@ -3009,91 +3009,95 @@ message HelloResponse {
 - لا يدعم بيانات ثنائية.
 
 
-# Geohashing and Quadtrees
+# ترميز الموقع الجغرافي والأشجار الرباعية
 
-## Geohashing
+## ترميز الموقع الجغرافي
 
-Geohashing is a [geocoding](https://en.wikipedia.org/wiki/Address_geocoding) method used to encode geographic coordinates such as latitude and longitude into short alphanumeric strings. It was created by [Gustavo Niemeyer](https://twitter.com/gniemeyer) in 2008.
+تعد ترميز الموقع الجغرافي (Geohashing) وسيلة لترميز الإحداثيات الجغرافية مثل خط العرض وخط الطول إلى سلاسل أبجدية قصيرة. تم ابتكارها من قبل [جوستافو نيمير](https://twitter.com/gniemeyer) في عام 2008.
 
-For example, San Francisco with coordinates `37.7564, -122.4016` can be represented in geohash as `9q8yy9mf`.
+على سبيل المثال، يمكن تمثيل سان فرانسيسكو بالإحداثيات `37.7564، -122.4016` في ترميز الموقع الجغرافي باستخدام `9q8yy9mf`.
 
-### How does Geohashing work?
+### كيف يعمل ترميز الموقع الجغرافي؟
 
-Geohash is a hierarchical spatial index that uses Base-32 alphabet encoding, the first character in a geohash identifies the initial location as one of the 32 cells. This cell will also contain 32 cells. This means that to represent a point, the world is recursively divided into smaller and smaller cells with each additional bit until the desired precision is attained. The precision factor also determines the size of the cell.
+تعتبر ترميز الموقع الجغرافي مؤشرًا مكانيًا تسلسليًا يستخدم ترميزًا ألفبائيًا من 32 رمزًا. يُعرف الرمز الأول في ترميز الموقع الجغرافي الموقع الأولي كواحد من الخلايا الـ 32. ستحتوي هذه الخلية أيضًا على 32 خليةً أخرى. يعني هذا أن العالم يتم تقسيمه هرميًا إلى خلايا أصغر وأصغر مع كل بت إضافي حتى يتم الحصول على الدقة المطلوبة. يُحدد عامل الدقة أيضًا حجم الخلية.
 
-![geohashing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/geohashing.png)
+![ترميز الموقع الجغرافي](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/geohashing.png)
 
-Geohashing guarantees that points are spatially closer if their Geohashes share a longer prefix which means the more characters in the string, the more precise the location. For example, geohashes `9q8yy9mf` and `9q8yy9vx` are spatially closer as they share the prefix `9q8yy9`.
+تضمن ترميز الموقع الجغرافي أن النقاط أقرب فضائيًا إذا كانت إحداثيات ترميز الموقع الخاصة بها تشترك في بادئة أطول، وهذا يعني أنه كلما زاد عدد الأحرف في السلسلة، زادت الدقة. على سبيل المثال، تعتبر إحداثيات ترميز الموقع `9q8yy9mf` و `9q8yy9vx` أقرب مكانيًا حيث يشتركان في البادئة `9q8yy9`.
 
-Geohashing can also be used to provide a degree of anonymity as we don't need to expose the exact location of the user because depending on the length of the geohash we just know they are somewhere within an area.
+يمكن استخدام ترميز الموقع الجغرافي أيضًا لتوفير درجة من الاستبقاء لأنه لا يلزمنا كشف الموقع الدقيق للمستخدم نظرًا لأننا، اعتمادًا على طول ترميز الموقع، نعلم فقط أنهم في منطقة معينة.
 
-The cell sizes of the geohashes of different lengths are as follows:
+حجم خلايا ترميز الموقع الجغرافي بأطوال مختلفة هو على النحو التالي:
 
-| Geohash length | Cell width | Cell height |
+| طول ترميز الموقع | عرض الخلية | ارتفاع الخلية |
 | -------------- | ---------- | ----------- |
-| 1              | 5000 km    | 5000 km     |
-| 2              | 1250 km    | 1250 km     |
-| 3              | 156 km     | 156 km      |
-| 4              | 39.1 km    | 19.5 km     |
-| 5              | 4.89 km    | 4.89 km     |
-| 6              | 1.22 km    | 0.61 km     |
-| 7              | 153 m      | 153 m       |
-| 8              | 38.2 m     | 19.1 m      |
-| 9              | 4.77 m     | 4.77 m      |
-| 10             | 1.19 m     | 0.596 m     |
-| 11             | 149 mm     | 149 mm      |
-| 12             | 37.2 mm    | 18.6 mm     |
+| 1              | 5000 كم    | 5000 كم     |
+| 2              | 1250 كم    | 1250 كم     |
+| 3              | 156 كم     | 156 كم      |
+| 4              | 39.1 كم    | 19.5 كم     |
+| 5              | 4.89 كم    | 4.89 كم     |
+| 6              | 1.22 كم    | 0.61 كم     |
+| 7              | 153 متر    | 153 متر     |
+| 8              | 38.2 متر   | 19.1 متر    |
+| 9              | 4.77 متر   | 4.77 متر    |
+| 10             | 1.19 متر   | 0.596 متر   |
+| 11             | 149 ملم    | 149 ملم     |
+| 12             | 37.2 ملم   | 18.6 ملم    |
 
-### Use cases
+### حالات الاستخدام
 
-Here are some common use cases for Geohashing:
+فيما يلي بعض حالات استخدام ترميز الموقع الجغرافي الشائعة:
 
-- It is a simple way to represent and store a location in a database.
-- It can also be shared on social media as URLs since it is easier to share, and remember than latitudes and longitudes.
-- We can efficiently find the nearest neighbors of a point through very simple string comparisons and efficient searching of indexes.
+- إنها طريقة بسيطة لتمثيل وتخزين الموقع في قاعدة البيانات.
+- يمكن مشاركتها أيضًا على وسائل التواصل الاجتماعي عبر روابط URL حيث يكون من الأسهل مشاركتها وتذكرها من خطوط العرض وخطوط الطول.
+- يمكننا البحث بكفاءة عن الجيران الأقرب لنقطة من خلال مقارنات سلاسل سهلة والبحث الفعال في الفهارس.
 
-### Examples
+### أمثلة
 
-Geohashing is widely used and it is supported by popular databases.
+يُستخدم ترميز الموقع الجغرافي على نط
+
+اق واسع ويتم دعمه من قبل قواعد البيانات الشهيرة.
 
 - [MySQL](https://www.mysql.com)
 - [Redis](http://redis.io)
 - [Amazon DynamoDB](https://aws.amazon.com/dynamodb)
 - [Google Cloud Firestore](https://cloud.google.com/firestore)
 
-## Quadtrees
+## الأشجار الرباعية
 
-A quadtree is a tree data structure in which each internal node has exactly four children. They are often used to partition a two-dimensional space by recursively subdividing it into four quadrants or regions. Each child or leaf node stores spatial information. Quadtrees are the two-dimensional analog of [Octrees](https://en.wikipedia.org/wiki/Octree) which are used to partition three-dimensional space.
+الأشجار الرباعية هي هيكل بيانات شجري يحتوي كل عقدة داخلية بالضبط على أربعة أبناء. غالبًا ما تُستخدم لتقسيم مساحة ثنائية الأبعاد عن طريق تقسيمها بشكل هرمي إلى أربعة رباعيات أو مناطق. تخزن كل عقدة فرعية أو ورقة معلومات فضائية. تعتبر الأشجار الرباعية التناظر الثنائي للأشجار الثمانية (Octrees) التي تستخدم لتقسيم المساحة ثلاثية الأبعاد.
 
-![quadtree](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree.png)
+![الأشجار الرباعية](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree.png)
 
-### Types of Quadtrees
+### أنواع الأشجار الرباعية
 
-Quadtrees may be classified according to the type of data they represent, including areas, points, lines, and curves. The following are common types of quadtrees:
+يمكن تصنيف الأشجار الرباعية وفقًا لنوع البيانات التي تمثلها، بما في ذلك المناطق، النقاط، الخطوط، والمنحنيات. وفيما يلي بعض أنواع الأشجار الرباعية الشائعة:
 
-- Point quadtrees
-- Point-region (PR) quadtrees
-- Polygonal map (PM) quadtrees
-- Compressed quadtrees
-- Edge quadtrees
+- أشجار النقاط.
+- أشجار النقطة-المنطقة (PR).
+- أشجار الخريطة المضلعة (PM).
+- أشجار الضغط.
+- أشجار الحواف.
 
-### Why do we need Quadtrees?
+### لماذا نحتاج إلى الأشجار الرباعية؟
 
-Aren't latitudes and longitudes enough? Why do we need quadtrees? While in theory using latitude and longitude we can determine things such as how close points are to each other using [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), for practical use cases it is simply not scalable because of its CPU-intensive nature with large data sets.
+أليس خطوط العرض وخطوط الطول كافية؟ لماذا نحتاج إلى الأشجار الرباعية؟ على الرغم من أنه في النظرية يمكننا تحديد مدى قرب النقاط من بعضها البعض باستخدام المسافة الأوروبية، إلا أنه في حالات الاستخدام العملية لا يُعد ذلك مجديًا بسبب طبيعته المكلفة لوحدة المعالجة المركزية عند التعامل مع مجموعات بيانات كبيرة.
 
-![quadtree-subdivision](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree-subdivision.png)
+تتيح لنا الأشجار الرباعية البحث عن النقاط داخل نطاق ثنائي الأبعاد بكفاءة، حيث يتم تعريف هذه النقاط كإحداثيات خط العرض/خط الطول أو كإحداثيات كارتيسية (x، y). بالإضافة إلى ذلك، يمكننا توفير المزيد من الحسابات عن طريق تقسيم العقدة فقط بعد تجاوز عتبة معينة. ومع تطبيق خوارزميات التعيين الفراغي مثل [المنحنى هيلبرت](https://en.wikipedia.org/wiki/Hilbert_curve)، يمكننا تحسين أداء استعلام النطاق بسهولة.
 
-Quadtrees enable us to search points within a two-dimensional range efficiently, where those points are defined as latitude/longitude coordinates or as cartesian (x, y) coordinates. Additionally, we can save further computation by only subdividing a node after a certain threshold. And with the application of mapping algorithms such as the [Hilbert curve](https://en.wikipedia.org/wiki/Hilbert_curve), we can easily improve range query performance.
+### حالات الاستخدام
 
-### Use cases
+فيما يلي بعض استخدامات الأشجار الرباعية الشائعة:
 
-Below are some common uses of quadtrees:
+- تمثيل الصور، ومعالجتها، وضغطها.
+- فهرسة المساحة واستعلامات النطاق.
+- الخدم
 
-- Image representation, processing, and compression.
-- Spacial indexing and range queries.
-- Location-based services like Google Maps, Uber, etc.
-- Mesh generation and computer graphics.
-- Sparse data storage.
+ات المستندة إلى الموقع مثل خرائط جوجل، أوبر، إلخ.
+- توليد الشبكة والرسومات الكمبيوترية.
+- تخزين البيانات الضعيفة.
+
+أرجو أن يكون هذا النص مفيداً لك. إذا كان هناك أي استفسار آخر تود الحصول على إجابة له، فلا تتردد في طرحه!
 
 # Circuit breaker
 
