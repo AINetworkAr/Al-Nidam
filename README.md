@@ -3099,33 +3099,33 @@ message HelloResponse {
 
 أرجو أن يكون هذا النص مفيداً لك. إذا كان هناك أي استفسار آخر تود الحصول على إجابة له، فلا تتردد في طرحه!
 
-# Circuit breaker
+# قاطع الدائرة
 
-The circuit breaker is a design pattern used to detect failures and encapsulates the logic of preventing a failure from constantly recurring during maintenance, temporary external system failure, or unexpected system difficulties.
+قاطع الدائرة هو نمط تصميم يُستخدم لاكتشاف الأخطاء ويحتوي على منطق لمنع تكرار الفشل باستمرار أثناء الصيانة أو فشل النظام الخارجي المؤقت أو صعوبات غير متوقعة في النظام.
 
-![circuit-breaker](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/circuit-breaker/circuit-breaker.png)
+![قاطع الدائرة](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/circuit-breaker/circuit-breaker.png)
 
-The basic idea behind the circuit breaker is very simple. We wrap a protected function call in a circuit breaker object, which monitors for failures. Once the failures reach a certain threshold, the circuit breaker trips, and all further calls to the circuit breaker return with an error, without the protected call being made at all. Usually, we'll also want some kind of monitor alert if the circuit breaker trips.
+الفكرة الأساسية وراء قاطع الدائرة بسيطة جدًا. نقوم بلفّ دعوة وظيفة محمية بكائن قاطع الدائرة، الذي يراقب الأخطاء. بمجرد أن تصل الأخطاء إلى عتبة معينة، يتم تشغيل قاطع الدائرة وتعود كل المكالمات اللاحقة إلى قاطع الدائرة مع خطأ، دون أن يتم عمل الدعوة المحمية على الإطلاق. عادةً، سنرغب أيضًا في الحصول على تنبيه إذا تم تشغيل قاطع الدائرة.
 
-## Why do we need circuit breaking?
+## لماذا نحتاج إلى قاطع الدائرة؟
 
-It's common for software systems to make remote calls to software running in different processes, probably on different machines across a network. One of the big differences between in-memory calls and remote calls is that remote calls can fail, or hang without a response until some timeout limit is reached. What's worse is if we have many callers on an unresponsive supplier, then we can run out of critical resources leading to cascading failures across multiple systems.
+من المشترك أن يقوم أنظمة البرمجيات بإجراءات استدعاء للبرمجيات التي تعمل في عمليات مختلفة، ربما على أجهزة مختلفة عبر شبكة. إحدى الاختلافات الكبيرة بين الاستدعاءات الموجودة في الذاكرة والاستدعاءات البعيدة هي أن الاستدعاءات البعيدة قد تفشل، أو تتعطل دون استجابة حتى يتم الوصول إلى حد الانتهاء المؤقت. والأسوأ من ذلك هو إذا كان لدينا العديد من المستدعين على مورد غير مستجيب، فيمكن أن ننفد من الموارد الحرجة مما يؤدي إلى تعثر الفشل عبر أنظمة متعددة.
 
-## States
+## الحالات
 
-Let's discuss circuit breaker states:
+لنتناقش حول حالات قاطع الدائرة:
 
-### Closed
+### مغلق
 
-When everything is normal, the circuit breakers remain closed, and all the request passes through to the services as normal. If the number of failures increases beyond the threshold, the circuit breaker trips and goes into an open state.
+عندما تكون الأمور طبيعية، يظل قواطع الدائرة مغلقة، وتمر جميع الطلبات إلى الخدمات كالمعتاد. إذا زادت عدد الأخطاء متجاوزة الحد المسموح به، يتم تشغيل قاطع الدائرة ويدخل في حالة مفتوحة.
 
-### Open
+### مفتوح
 
-In this state circuit breaker returns an error immediately without even invoking the services. The Circuit breakers move into the half-open state after a certain timeout period elapses. Usually, it will have a monitoring system where the timeout will be specified.
+في هذه الحالة، يُرجع قاطع الدائرة خطأ على الفور دون استدعاء الخدمات. تنتقل قواطع الدائرة إلى حالة مفتوحة بعد مرور فترة زمنية معينة. عادةً، ستحتوي على نظام مراقبة حيث سيتم تحديد المهلة الزمنية.
 
-### Half-open
+### شبه مفتوح
 
-In this state, the circuit breaker allows a limited number of requests from the service to pass through and invoke the operation. If the requests are successful, then the circuit breaker will go to the closed state. However, if the requests continue to fail, then it goes back to the open state.
+في هذه الحالة، يسمح قاطع الدائرة بعدد محدود من الطلبات من الخدمة للمرور وتنفيذ العملية. إذا كانت الطلبات ناجحة، يتجه قاطع الدائرة إلى الحالة المغلقة. ومع ذلك، إذا استمرت الطلبات في الفشل، فإنه يعود إلى الحالة المفتوحة.
 
 # Rate Limiting
 
