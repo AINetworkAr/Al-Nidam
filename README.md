@@ -2904,107 +2904,110 @@ message HelloResponse {
 
 حسنًا، الجواب ليس أي منهم. لا يوجد حلاً سحريًا حيث لكل من هذه التقنيات مزاياها وعيوبها. يهتم المستخدمون فقط باستخدام API بطريقة متسقة، لذلك تأكد من التركيز على مجالك ومتطلباتك عند تصميم API الخاص بك.
 
-# Long polling, WebSockets, Server-Sent Events (SSE)
+# التدقيق الطويل، نظائر الويب، أحداث الخادم المُرسلة (SSE)
 
-Web applications were initially developed around a client-server model, where the web client is always the initiator of transactions like requesting data from the server. Thus, there was no mechanism for the server to independently send, or push, data to the client without the client first making a request. Let's discuss some approaches to overcome this problem.
+تم تطوير التطبيقات الويب في البداية حول نموذج العميل-الخادم، حيث يكون العميل هو المبادر دائمًا للمعاملات مثل طلب البيانات من الخادم. وبالتالي، لم يكن هناك آلية للخادم لإرسال البيانات بشكل مستقل، أو دفعها، إلى العميل دون أن يقوم العميل أولاً بإجراء طلب. لنناقش بعض الطرق للتغلب على هذه المشكلة.
 
-## Long polling
+## التدقيق الطويل
 
-HTTP Long polling is a technique used to push information to a client as soon as possible from the server. As a result, the server does not have to wait for the client to send a request.
+التدقيق الطويل عبر HTTP هو تقنية تُستخدم لدفع المعلومات إلى العميل في أقرب وقت ممكن من الخادم. وبالتالي، لا يتعين على الخادم الانتظار حتى يُرسل العميل طلبًا.
 
-In Long polling, the server does not close the connection once it receives a request from the client. Instead, the server responds only if any new message is available or a timeout threshold is reached.
+في التدقيق الطويل، لا يُغلق الخادم الاتصال بمجرد استلامه لطلب من العميل. بدلاً من ذلك، يُرد الخادم فقط إذا كان هناك أي رسالة جديدة مُتاحة أو تم الوصول إلى عتبة الانتهاء من الوقت المحدد.
 
 ![long-polling](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/long-polling-websockets-server-sent-events/long-polling.png)
 
-Once the client receives a response, it immediately sends a new request to the server to have a new pending connection to send data to the client, and the operation is repeated. With this approach, the server emulates a real-time server push feature.
+عندما يتلقى العميل استجابة، يُرسل على الفور طلبًا جديدًا إلى الخادم لإنشاء اتصال معلق جديد لإرسال البيانات إلى العميل، ويتم تكرار العملية. بهذا النهج، يحاكي الخادم ميزة دفع الخادم في الوقت الفعلي.
 
-### Working
+### العملية
 
-Let's understand how long polling works:
+دعنا نفهم كيف يعمل التدقيق الطويل:
 
-1. The client makes an initial request and waits for a response.
-2. The server receives the request and delays sending anything until an update is available.
-3. Once an update is available, the response is sent to the client.
-4. The client receives the response and makes a new request immediately or after some defined interval to establish a connection again.
+1. يقوم العميل بإجراء طلبٍ أولي وينتظر استجابة.
+2. يستقبل الخادم الطلب ويؤخر إرسال أي شيء حتى يتوفر تحديث.
+3. بمجرد توفر تحديث، يتم إرسال الاستجابة إلى العميل.
+4. يستقبل العميل الاستجابة ويُجري طلبًا جديدًا فورًا أو بعد فترة زمنية محددة لإعادة إنشاء الاتصال مرة أخرى.
 
-### Advantages
+### المزايا
 
-Here are some advantages of long polling:
+إليك بعض المزايا للتدقيق الطويل:
 
-- Easy to implement, good for small-scale projects.
-- Nearly universally supported.
+- سهل التنفيذ وجيد للمشاريع ذات النطاق الصغير.
+- يتم دعمه تقريبًا من الجميع.
 
-### Disadvantages
+### العيوب
 
-A major downside of long polling is that it is usually not scalable. Below are some of the other reasons:
+السيئ الأساسي للتدقيق الطويل هو أنه عادة لا يكون موسعًا. فيما يلي بعض الأسباب الأخرى:
 
-- Creates a new connection each time, which can be intensive on the server.
-- Reliable message ordering can be an issue for multiple requests.
-- Increased latency as the server needs to wait for a new request.
+- يُنشئ اتصالًا جديدًا في كل مرة، مما قد يكون مكثفًا على الخادم.
+- قد تكون ترتيب الرسائل الموثوق بها مشكلة للطلبات المتعددة.
+- زيادة التأخير حيث يحتاج الخادم إلى الانتظار للطلب الجديد.
 
-## WebSockets
+## نظائر الويب
 
-WebSocket provides full-duplex communication channels over a single TCP connection. It is a persistent connection between a client and a server that both parties can use to start sending data at any time.
+توفر نظائر الويب قنوات اتصال ثنائية الاتجاه عبر اتصال TCP واحد. إنها اتصال دائم بين العميل والخادم يمكن لكلا الطرفين استخدامه لبدء إرسال البيانات في أي وقت.
 
-The client establishes a WebSocket connection through a process known as the WebSocket handshake. If the process succeeds, then the server and client can exchange data in both directions at any time. The WebSocket protocol enables the communication between a client and a server with lower overheads, facilitating real-time data transfer from and to the server.
+يُنشئ العميل اتصالًا نظائر الويب من خلال عملية تعرف باسم مصافحة نظائر الويب. إذا نجحت العملية، يمكن للخادم والعميل تبادل البيانات في كلا الاتجاهين في أي وقت. يُمكّن بروتوكول نظائر الويب التواصل بين العميل والخادم بتكاليف أقل، مما يُيسّر نقل البيانات في الوقت الفعلي من وإلى الخادم.
 
-![websockets](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/long-polling-websockets-server-sent-events/websockets.png)
+![نظائر الويب](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/long-polling-websockets-server-sent
 
-This is made possible by providing a standardized way for the server to send content to the client without being asked and allowing for messages to be passed back and forth while keeping the connection open.
+-events/websockets.png)
 
-### Working
+يتم ذلك عن طريق توفير طريقة موحدة للخادم لإرسال المحتوى إلى العميل دون أن يُطلب منه ذلك والسماح بتمرير الرسائل ذهابًا وإيابًا مع الاحتفاظ بالاتصال مفتوحًا.
 
-Let's understand how WebSockets work:
+### العملية
 
-1. The client initiates a WebSocket handshake process by sending a request.
-2. The request also contains an [HTTP Upgrade](https://en.wikipedia.org/wiki/HTTP/1.1_Upgrade_header) header that allows the request to switch to the WebSocket protocol (`ws://`).
-3. The server sends a response to the client, acknowledging the WebSocket handshake request.
-4. A WebSocket connection will be opened once the client receives a successful handshake response.
-5. Now the client and server can start sending data in both directions allowing real-time communication.
-6. The connection is closed once the server or the client decides to close the connection.
+دعنا نفهم كيف تعمل نظائر الويب:
 
-### Advantages
+1. يبدأ العميل عملية مصافحة نظائر الويب عن طريق إرسال طلب.
+2. يحتوي الطلب أيضًا على رأس [HTTP Upgrade](https://en.wikipedia.org/wiki/HTTP/1.1_Upgrade_header) الذي يسمح للطلب بالتبديل إلى بروتوكول نظائر الويب (`ws://`).
+3. يرسل الخادم استجابة إلى العميل، مع التأكيد على طلب مصافحة نظائر الويب بنجاح.
+4. سيتم فتح اتصال نظائر الويب بمجرد أن يتلقى العميل استجابة ناجحة لعملية المصافحة.
+5. الآن يمكن للعميل والخادم البدء في إرسال البيانات في كلا الاتجاهين مما يُمكن الاتصال في الوقت الفعلي.
+6. يتم إغلاق الاتصال عندما يقرر الخادم أو العميل إغلاق الاتصال.
 
-Below are some advantages of WebSockets:
+### المزايا
 
-- Full-duplex asynchronous messaging.
-- Better origin-based security model.
-- Lightweight for both client and server.
+فيما يلي بعض مزايا نظائر الويب:
 
-### Disadvantages
+- الرسائل الجاهزة للإرسال غير المتزامن.
+- نموذج أمان أفضل يعتمد على المصدر.
+- خفيفة الوزن للعميل والخادم على حد سواء.
 
-Let's discuss some disadvantages of WebSockets:
+### العيوب
 
-- Terminated connections aren't automatically recovered.
-- Older browsers don't support WebSockets (becoming less relevant).
+لنناقش بعض سلبيات نظائر الويب:
 
-## Server-Sent Events (SSE)
+- لا يتم استعادة الاتصالات المُنتهية تلقائيًا.
+- المتصفحات القديمة لا تدعم نظائر الويب (أصبحت ذات أهمية أقل).
 
-Server-Sent Events (SSE) is a way of establishing long-term communication between client and server that enables the server to proactively push data to the client.
+## أحداث الخادم المُرسلة (SSE)
 
-![server-sent-events](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/long-polling-websockets-server-sent-events/server-sent-events.png)
+أحداث الخادم المُرسلة (SSE) هي طريقة لإقامة اتصال طويل الأمد بين العميل والخادم يتيح للخادم دفع البيانات إلى العميل بشكل استباقي.
 
-It is unidirectional, meaning once the client sends the request it can only receive the responses without the ability to send new requests over the same connection.
+![أحداث الخادم المُرسلة](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-III/long-polling-websockets-server-sent-events/server-sent-events.png)
 
-### Working
+إنها اتصال ذو اتجاه واحد، وهذا يعني بمجرد أن يرسل العميل الطلب، يمكنه استقبال الاستجابات فقط دون القدرة على إرسال طلبات جديدة عبر نفس الاتصال.
 
-Let's understand how server-sent events work:
+### العملية
 
-1. The client makes a request to the server.
-2. The connection between client and server is established and it remains open.
-3. The server sends responses or events to the client when new data is available.
+دعنا نفهم كيف تعمل أحداث الخادم المُرسلة:
 
-### Advantages
+1. يقوم العميل بإجراء طلب للخادم.
+2. يتم إنشاء الاتصال بين العميل والخادم ويبقى مفتوحًا.
+3. يقوم الخادم بإرسال الاستجابات أو الأحداث إلى العميل عندما تكون البيانات الجديدة مُتاحة.
 
-- Simple to implement and use for both client and server.
-- Supported by most browsers.
-- No trouble with firewalls.
+### المزايا
 
-### Disadvantages
+- سهلة التنفيذ وسهلة الاستخدام للعميل والخادم على حد سواء.
+- مدعومة من معظم المتصفحات.
+- لا تواجه مشاكل مع جدران الحماية.
 
-- Unidirectional nature can be limiting.
-- Limitation for the maximum number of open connections.
-- Does not support binary data.
+### العيوب
+
+- قد تكون الطبيعة ذات الاتجاه قيدًا.
+- قيود للحد الأقصى لعدد الاتصالات المفتوحة.
+- لا يدعم بيانات ثنائية.
+
 
 # Geohashing and Quadtrees
 
