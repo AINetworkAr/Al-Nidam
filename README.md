@@ -3127,60 +3127,62 @@ message HelloResponse {
 
 في هذه الحالة، يسمح قاطع الدائرة بعدد محدود من الطلبات من الخدمة للمرور وتنفيذ العملية. إذا كانت الطلبات ناجحة، يتجه قاطع الدائرة إلى الحالة المغلقة. ومع ذلك، إذا استمرت الطلبات في الفشل، فإنه يعود إلى الحالة المفتوحة.
 
-# Rate Limiting
+# تحديد الحد الزمني
 
-Rate limiting refers to preventing the frequency of an operation from exceeding a defined limit. In large-scale systems, rate limiting is commonly used to protect underlying services and resources. Rate limiting is generally used as a defensive mechanism in distributed systems, so that shared resources can maintain availability. It also protects our APIs from unintended or malicious overuse by limiting the number of requests that can reach our API in a given period of time.
+تحديد الحد الزمني يشير إلى منع تكرار العملية من تجاوز الحد المحدد. في الأنظمة ذات النطاق الواسع، يتم استخدام تحديد الحد الزمني بشكل شائع لحماية الخدمات والموارد الأساسية. يتم استخدام تحديد الحد الزمني عمومًا كآلية دفاعية في الأنظمة الموزعة، بحيث يمكن للموارد المشتركة الحفاظ على التوفر. كما أنه يحمي واجهات برمجة التطبيقات (APIs) الخاصة بنا من الاستخدام الزائد غير المقصود أو الضار عن طريق تحديد عدد الطلبات التي يمكن أن تصل إلى واجهة برمجة التطبيق في فترة زمنية معينة.
 
-![rate-limiting](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/rate-limiting/rate-limiting.png)
+![تحديد الحد الزمني](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/rate-limiting/rate-limiting.png)
 
-## Why do we need Rate Limiting?
+## لماذا نحتاج إلى تحديد الحد الزمني؟
 
-Rate limiting is a very important part of any large-scale system and it can be used to accomplish the following:
+تحديد الحد الزمني هو جزء مهم جدًا من أي نظام ذو مقياس كبير، ويمكن استخدامه لتحقيق الأهداف التالية:
 
-- Avoid resource starvation as a result of Denial of Service (DoS) attacks.
-- Rate Limiting helps in controlling operational costs by putting a virtual cap on the auto-scaling of resources which if not monitored might lead to exponential bills.
-- Rate limiting can be used as defense or mitigation against some common attacks.
-- For APIs that process massive amounts of data, rate limiting can be used to control the flow of that data.
+- تجنب نقص الموارد نتيجة هجمات حجب الخدمة (DoS).
+- يساعد تحديد الحد الزمني في التحكم في التكاليف التشغيلية من خلال وضع سقف افتراضي على توسعة الموارد، وإلا فقد يؤدي عدم المراقبة إلى فواتير ضخمة.
+- يمكن استخدام تحديد الحد الزمني كآلية دفاعية أو التخفيف من بعض الهجمات المشتركة.
+- بالنسبة لواجهات برمجة التطبيقات التي تعمل على معالجة كميات ضخمة من البيانات، يمكن استخدام تحديد الحد الزمني للتحكم في تدفق تلك البيانات.
 
-## Algorithms
+## الخوارزميات
 
-There are various algorithms for API rate limiting, each with its advantages and disadvantages. Let's briefly discuss some of these algorithms:
+هناك خوارزميات مختلفة لتحديد الحد الزمني للواجهات البرمجية، لكل منها مزاياه وعيوبه. دعنا نناقش بإيجاز بعض هذه الخوارزميات:
 
-### Leaky Bucket
+### دلو المثقبة
 
-Leaky Bucket is an algorithm that provides a simple, intuitive approach to rate limiting via a queue. When registering a request, the system appends it to the end of the queue. Processing for the first item on the queue occurs at a regular interval or first-in, first-out (FIFO). If the queue is full, then additional requests are discarded (or leaked).
+دلو المثقبة هو خوارزمية توفر نهجًا بسيطًا وبديهيًا لتحديد الحد الزمني عبر قائمة انتظار. عند تسجيل طلب، يتم إلحاقه بنهاية القائمة. يحدث معالجة العنصر الأول في القائمة بانتظام أو أولاً داخل أولاً خارج (FIFO). إذا كانت القائمة ممتلئة، فإن الطلبات الإضافية تُتجاوز (أو تسرب).
 
-### Token Bucket
+### دلو الرمز المميز
 
-Here we use a concept of a _bucket_. When a request comes in, a token from the bucket must be taken and processed. The request will be refused if no token is available in the bucket, and the requester will have to try again later. As a result, the token bucket gets refreshed after a certain time period.
+نستخدم هنا مفهوم _الدلو_. عندما يأتي طلب، يجب أن يتم أخذ دلو من المخزون ومعالجته. سيتم رفض الطلب إذا لم يكن هناك دلو متاح في المخزون، وعلى المرسل أن يحاول مرة أخرى لاحقًا. ونتيجة لذلك، يتم تحديث دلو المخزون بعد فترة زمنية معينة.
 
-### Fixed Window
+### النافذة الثابتة
 
-The system uses a window size of `n` seconds to track the fixed window algorithm rate. Each incoming request increments the counter for the window. It discards the request if the counter exceeds a threshold.
+تستخدم النظام نافذة زمنية بحجم `n` ثانية لتتبع معدل خوارزمية النافذة الثابتة. يزيد كل طلب وارد عداد النافذة. يتم رفض الطلب إذا تجاوز عداد النافذة الحد المحدد.
 
-### Sliding Log
+### السجل المنزلق
 
-Sliding Log rate-limiting involves tracking a time-stamped log for each request. The system stores these logs in a time-sorted hash set or table. It also discards logs with timestamps beyond a threshold. When a new request comes in, we calculate the sum of logs to determine the request rate. If the request would exceed the threshold rate, then it is held.
+تتضمن تحديد الحد الزمني السجل المنزلق تتبع سجل محدد بالوقت لكل طلب. يقوم النظام بتخزين هذه السجلات في مجموعة أو جدول مرتب بالوقت. يتم أيضًا رفض السجلات ذات الطوابق الزمنية التي تتجاوز حدًا معينًا. عندما يأتي طلب
 
-### Sliding Window
+ جديد، نحسب مجموع السجلات لتحديد معدل الطلب. إذا كان الطلب سيتجاوز معدل الحد، فإنه يتم تأجيله.
 
-Sliding Window is a hybrid approach that combines the fixed window algorithm's low processing cost and the sliding log's improved boundary conditions. Like the fixed window algorithm, we track a counter for each fixed window. Next, we account for a weighted value of the previous window's request rate based on the current timestamp to smooth out bursts of traffic.
+### النافذة المنزلقة
 
-## Rate Limiting in Distributed Systems
+النافذة المنزلقة هي نهج مختلط يجمع بين التكلفة المعالجة المنخفضة لخوارزمية النافذة الثابتة وتحسين الظروف الحدودية للسجل المنزلق. على غرار خوارزمية النافذة الثابتة، نتتبع عداد لكل نافذة ثابتة. بعد ذلك، نأخذ في الاعتبار قيمة مرجحة لمعدل طلب النافذة السابقة بناءً على الطابع الزمني الحالي لتخفيف اندفاعات حركة المرور.
 
-Rate Limiting becomes complicated when distributed systems are involved. The two broad problems that come with rate limiting in distributed systems are:
+## تحديد الحد الزمني في الأنظمة الموزعة
 
-### Inconsistencies
+يصبح تحديد الحد الزمني معقدًا عندما يتورط الأنظمة الموزعة. المشاكل الرئيسية التي تأتي مع تحديد الحد الزمني في الأنظمة الموزعة هي:
 
-When using a cluster of multiple nodes, we might need to enforce a global rate limit policy. Because if each node were to track its rate limit, a consumer could exceed a global rate limit when sending requests to different nodes. The greater the number of nodes, the more likely the user will exceed the global limit.
+### عدم التسقيم
 
-The simplest way to solve this problem is to use sticky sessions in our load balancers so that each consumer gets sent to exactly one node but this causes a lack of fault tolerance and scaling problems. Another approach might be to use a centralized data store like [Redis](https://redis.io) but this will increase latency and cause race conditions.
+عند استخدام مجموعة من العقد المتعددة، قد نحتاج إلى فرض سياسة حد زمني عالمية. لأنه إذا تعقبت كل عقدة حد زمني خاص بها، فقد يمكن للمستهلك أن يتجاوز الحد الزمني العالمي عند إرسال الطلبات إلى عقدات مختلفة. وكلما زاد عدد العقد، زادت احتمالية تجاوز المستخدم الحد العالمي.
 
-### Race Conditions
+أبسط طريقة لحل هذه المشكلة هو استخدام جلسات لاصقة في توازن الحمل لدينا بحيث يتم إرسال كل مستهلك إلى عقدة واحدة فقط ولكن هذا يسبب نقصًا في التحمل ومشاكل التوازن. يمكن أن يكون النهج الآخر هو استخدام مخزن بيانات مركزي مثل [Redis](https://redis.io) ولكن هذا سيزيد من التأخير ويسبب مشاكل التسابق.
 
-This issue happens when we use a naive _"get-then-set"_ approach, in which we retrieve the current rate limit counter, increment it, and then push it back to the datastore. This model's problem is that additional requests can come through in the time it takes to perform a full cycle of read-increment-store, each attempting to store the increment counter with an invalid (lower) counter value. This allows a consumer to send a very large number of requests to bypass the rate limiting controls.
+### مشاكل التسابق
 
-One way to avoid this problem is to use some sort of distributed locking mechanism around the key, preventing any other processes from accessing or writing to the counter. Though the lock will become a significant bottleneck and will not scale well. A better approach might be to use a _"set-then-get"_ approach, allowing us to quickly increment and check counter values without letting the atomic operations get in the way.
+يحدث هذا المشكل عندما نستخدم نهج _"احصل ثم ضع"_ الساذج، حيث نسترد عداد حد الحد الحالي ونزيد من قيمته، ثم نضغط به مرة أخرى إلى مخزن البيانات. مشكلة هذا النموذج هي أنه يمكن أن تأتي طلبات إضافية خلال الوقت الذي يستغرقه الأمر لأداء دورة كاملة من القراءة والزيادة والتخزين، حيث يحاول كل منها تخزين عداد الزيادة بقيمة عداد غير صالحة (أقل). هذا يتيح للمستهلك إرسال عدد كبير جدًا من الطلبات لتجاوز التحكم في الحد.
+
+طريقة لتجنب هذه المشكلة هي استخدام آلية قفل موزعة حول المفتاح، تمنع أي عمليات أخرى من الوصول إلى العداد أو كتابة قيمة العداد. على الرغم من ذلك، سيصبح القفل عائقًا كبيرًا ولن يتم توسيعه بشكل جيد. يمكن أن يكون النهج الأفضل هو استخدام نموذج _"ضع ثم احصل"_، مما يسمح لنا بزيادة قيم العداد بسرعة والتحقق من قيم العداد بسرعة دون السماح للعمليات الذرية أن تتعارض مع بعضها البعض.
 
 # Service Discovery
 
