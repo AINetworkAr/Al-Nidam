@@ -3184,53 +3184,55 @@ message HelloResponse {
 
 طريقة لتجنب هذه المشكلة هي استخدام آلية قفل موزعة حول المفتاح، تمنع أي عمليات أخرى من الوصول إلى العداد أو كتابة قيمة العداد. على الرغم من ذلك، سيصبح القفل عائقًا كبيرًا ولن يتم توسيعه بشكل جيد. يمكن أن يكون النهج الأفضل هو استخدام نموذج _"ضع ثم احصل"_، مما يسمح لنا بزيادة قيم العداد بسرعة والتحقق من قيم العداد بسرعة دون السماح للعمليات الذرية أن تتعارض مع بعضها البعض.
 
-# Service Discovery
+# اكتشاف الخدمات
 
-Service discovery is the detection of services within a computer network. Service Discovery Protocol (SDP) is a networking standard that accomplishes the detection of networks by identifying resources.
+اكتشاف الخدمات هو اكتشاف الخدمات داخل شبكة الكمبيوتر. بروتوكول اكتشاف الخدمات (SDP) هو معيار للشبكات يقوم بالكشف عن الشبكات من خلال تحديد الموارد.
 
-## Why do we need Service Discovery?
+## لماذا نحتاج إلى اكتشاف الخدمات؟
 
-In a monolithic application, services invoke one another through language-level methods or procedure calls. However, modern microservices-based applications typically run in virtualized or containerized environments where the number of instances of a service and their locations change dynamically. Consequently, we need a mechanism that enables the clients of service to make requests to a dynamically changing set of ephemeral service instances.
+في تطبيق أحادي القطعة، تقوم الخدمات باستدعاء بعضها البعض من خلال أساليب على مستوى اللغة أو استدعاء الإجراءات. ومع ذلك، تعمل تطبيقات الخدمات المعتمدة على الميكروسيرفس بشكل حديث عادةً في بيئات مجازية أو مُحاكاة حيث يتغير عدد نسخ الخدمة ومواقعها بشكل دينامي. وبالتالي، نحتاج إلى آلية تمكن عملاء الخدمات من تقديم طلبات إلى مجموعة متغيرة ديناميًا من نسخ الخدمة العابرة.
 
-## Implementations
+## التنفيذات
 
-There are two main service discovery patterns:
+هناك نمطين رئيسيين لاكتشاف الخدمات:
 
-### Client-side discovery
+### الاكتشاف من الجانب العميل
 
-![client-side-service-discovery](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/service-discovery/client-side-service-discovery.png)
+![الاكتشاف من الجانب العميل](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/service-discovery/client-side-service-discovery.png)
 
-In this approach, the client obtains the location of another service by querying a service registry which is responsible for managing and storing the network locations of all the services.
+في هذا النهج، يحصل العميل على موقع خدمة أخرى عن طريق استعلام سجل الخدمة الذي يتولى إدارة وتخزين مواقع الشبكة لجميع الخدمات.
 
-### Server-side discovery
+### الاكتشاف من الجانب الخادم
 
-![server-side-service-discovery](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/service-discovery/server-side-service-discovery.png)
+![الاكتشاف من الجانب الخادم](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/service-discovery/server-side-service-discovery.png)
 
-In this approach, we use an intermediate component such as a load balancer. The client makes a request to the service via a load balancer which then forwards the request to an available service instance.
+في هذا النهج، نستخدم عنصرًا وسيطيًا مثل توازن الحمل. يقوم العميل بإرسال طلب إلى الخدمة عبر توازن الحمل الذي يمر بدوره بالطلب إلى نسخة خدمة متاحة.
 
-## Service Registry
+## سجل الخدمة
 
-A service registry is basically a database containing the network locations of service instances to which the clients can reach out. A Service Registry must be highly available and up-to-date.
+سجل الخدمة هو في الأساس قاعدة بيانات تحتوي على مواقع شبكة نسخ الخدمة التي يمكن للعملاء الوصول إليها. يجب أن يكون سجل الخدمة متاحًا بشكل كبير وحديثًا.
 
-## Service Registration
+## تسجيل الخدمة
 
-We also need a way to obtain service information, often known as service registration. Let's look at two possible service registration approaches:
+نحتاج أيضًا إلى وسيلة للحصول على معلومات الخدمة، وتُعرف عادة بتسجيل الخدمة. دعونا نلقي نظرة على نهجين ممكنين لتسجيل الخدمة:
 
-### Self-Registration
+### التسجيل الذاتي
 
-When using the self-registration model, a service instance is responsible for registering and de-registering itself in the Service Registry. In addition, if necessary, a service instance sends heartbeat requests to keep its registration alive.
+عند استخدام نموذج التسجيل الذاتي، تكون نسخة الخدمة مسؤولة عن تسجيل نفسها وإلغاء تسجيلها في سجل الخدمة. بالإضافة إلى ذلك، إذا كان ذلك ضروريًا، ترسل
 
-### Third-party Registration
+ نسخة الخدمة طلبات تحقق النبض للحفاظ على تسجيلها حيًا.
 
-The registry keeps track of changes to running instances by polling the deployment environment or subscribing to events. When it detects a newly available service instance, it records it in its database. The Service Registry also de-registers terminated service instances.
+### التسجيل من جهة ثالثة
 
-## Service mesh
+يقوم السجل بتتبع التغييرات في النسخ المشغلة من خلال استطلاع بيئة النشر أو الاشتراك في الأحداث. عند اكتشاف نسخة خدمة متاحة حديثًا، يقوم بتسجيلها في قاعدة بياناته. يقوم سجل الخدمة أيضًا بإلغاء تسجيل نسخ الخدمة المنتهية.
 
-Service-to-service communication is essential in a distributed application but routing this communication, both within and across application clusters, becomes increasingly complex as the number of services grows. Service mesh enables managed, observable, and secure communication between individual services. It works with a service discovery protocol to detect services. [Istio](https://istio.io/latest/about/service-mesh) and [envoy](https://www.envoyproxy.io) are some of the most commonly used service mesh technologies.
+## شبكة الخدمة
 
-## Examples
+الاتصال من خدمة إلى خدمة ضروري في تطبيق موزع، ولكن تصبح توجيه هذا الاتصال، سواء داخل تجمعات التطبيق أو عبرها، معقدًا بشكل متزايد مع زيادة عدد الخدمات. تمكّن شبكة الخدمة التواصل المُدار والمُراقب والآمن بين الخدمات الفردية. تعمل مع بروتوكول اكتشاف الخدمات لاكتشاف الخدمات. [Istio](https://istio.io/latest/about/service-mesh) و [envoy](https://www.envoyproxy.io) هما بعض من تقنيات شبكة الخدمة الأكثر استخدامًا.
 
-Here are some commonly used service discovery infrastructure tools:
+## أمثلة
+
+إليك بعض أدوات بنية اكتشاف الخدمات المستخدمة بشكل شائع:
 
 - [etcd](https://etcd.io)
 - [Consul](https://www.consul.io)
