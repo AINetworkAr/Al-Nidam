@@ -3308,61 +3308,63 @@ _غالبًا ما لا يتم مناقشة استعادة الكوارث بنش
 
 يحتفظ الموقع الساخن بنسخ محدثة من البيانات في جميع الأوقات. يستغرق إعداد المواقع الساخنة وقتًا طويلاً ويكون أكثر تكلفة من المواقع الباردة، ولكنها تقلل بشكل كبير من الوقت التوقف.
 
-# Virtual Machines (VMs) and Containers
+# الآلات الافتراضية (VMs) والحاويات
 
-Before we discuss virtualization vs containerization, let's learn what are virtual machines (VMs) and Containers.
+قبل أن نناقش الافتراض الافتراضي مقابل الحاويات، دعونا نتعرف على مفهوم الآلات الافتراضية (VMs) والحاويات.
 
-## Virtual Machines (VM)
+## الآلات الافتراضية (VM)
 
-A Virtual Machine (VM) is a virtual environment that functions as a virtual computer system with its own CPU, memory, network interface, and storage, created on a physical hardware system. A software called a hypervisor separates the machine's resources from the hardware and provisions them appropriately so they can be used by the VM.
+الآلة الافتراضية (VM) هي بيئة افتراضية تعمل كنظام كمبيوتر افتراضي بمعالجها المركزي الخاص، وذاكرتها، وواجهة الشبكة، والتخزين، والتي تُنشأ على نظام الأجهزة الفعلي. برنامج يُسمى المضيف يفصل موارد الجهاز عن الأجهزة ويخصصها بشكل مناسب حتى يمكن استخدامها من قبل الآلة الافتراضية.
 
-VMs are isolated from the rest of the system, and multiple VMs can exist on a single piece of hardware, like a server. They can be moved between host servers depending on the demand or to use resources more efficiently.
+الآلات الافتراضية معزولة عن بقية النظام، ويمكن أن تكون هناك عدة آلات افتراضية على قطعة واحدة من الأجهزة، مثل خادم. يمكن نقلها بين خوادم المضيف حسب الطلب أو لاستخدام الموارد بكفاءة أكبر.
 
-### What is a Hypervisor?
+### ما هو المضيف؟
 
-A Hypervisor sometimes called a Virtual Machine Monitor (VMM), isolates the operating system and resources from the virtual machines and enables the creation and management of those VMs. The hypervisor treats resources like CPU, memory, and storage as a pool of resources that can be easily reallocated between existing guests or new virtual machines.
+المضيف، المعروف أحيانًا بمراقب الآلات الافتراضية (VMM)، يعزل نظام التشغيل والموارد عن الآلات الافتراضية ويمكن من إنشاء وإدارة تلك الآلات الافتراضية. يعامل المضيف الموارد مثل وحدات المعالجة المركزية والذاكرة والتخزين كمجموعة من الموارد يمكن إعادة تخصيصها بسهولة بين الضيوف الحاليين أو الآلات الافتراضية الجديدة.
 
-### Why use a Virtual Machine?
+### لماذا استخدام آلة افتراضية؟
 
-Server consolidation is a top reason to use VMs. Most operating system and application deployments only use a small amount of the physical resources available. By virtualizing our servers, we can place many virtual servers onto each physical server to improve hardware utilization. This keeps us from needing to purchase additional physical resources.
+الدمج الخادم هو سبب رئيسي لاستخدام الآلات الافتراضية. معظم نظم التشغيل ونشر التطبيقات تستخدم فقط كمية صغيرة من الموارد الفعلية المتاحة. من خلال افتراض الخوادم لدينا، يمكننا وضع العديد من الخوادم الافتراضية على كل خادم فعلي لتحسين استخدام الأجهزة. وهذا يمنعنا من الحاجة إلى شراء موارد فعلية إضافية.
 
-A VM provides an environment that is isolated from the rest of a system, so whatever is running inside a VM won't interfere with anything else running on the host hardware. Because VMs are isolated, they are a good option for testing new applications or setting up a production environment. We can also run a single-purpose VM to support a specific use case.
+توفر آلة افتراضية بيئة معزولة عن بقية النظام، لذلك مهما كان يتم تشغيله داخل الآلة الافتراضية لن يتداخل مع أي شيء آخر يتم تشغيله على الأجهزة المضيفة. بسبب العزلة التي توفرها الآلات الافتراضية، فهي خيار جيد لاختبار التطبيقات الجديدة أو إعداد بيئة إنتاج. يمكننا أيضًا تشغيل آلة افتراضية تقوم بدعم حالة استخدام محددة.
 
-## Containers
+## الحاويات
 
-A container is a standard unit of software that packages up code and all its dependencies such as specific versions of runtimes and libraries so that the application runs quickly and reliably from one computing environment to another. Containers offer a logical packaging mechanism in which applications can be abstracted from the environment in which they actually run. This decoupling allows container-based applications to be deployed easily and consistently, regardless of the target environment.
+الحاوية هي وحدة قياسية للبرمجيات تقوم بتعبئة الشيفرة وجميع تبعياتها مثل الإصدارات المحددة للتشغيل والمكتبات بحيث يمكن تشغيل التطبيق بسرعة
 
-### Why do we need containers?
+ وبشكل موثوق في بيئة حوسبة أخرى. تقدم الحاويات آلية تعبئة منطقية حيث يمكن تجريد التطبيقات من البيئة التي تعمل فيها فعليًا. تتيح هذه الإزالة الحاوياتية للتطبيقات التي تعتمد على الحاويات أن تُنشأ وتُنفذ بسهولة وباستمرار، بغض النظر عن البيئة المستهدفة.
 
-Let's discuss some advantages of using containers:
+### لماذا نحتاج إلى الحاويات؟
 
-**Separation of responsibility**
+لنناقش بعض المزايا التي تقدمها الحاويات:
 
-Containerization provides a clear separation of responsibility, as developers focus on application logic and dependencies, while operations teams can focus on deployment and management.
+**فصل المسؤوليات**
 
-**Workload portability**
+توفر الحاويات فصلًا واضحًا للمسؤوليات، حيث يُركز المطورون على منطق التطبيق والتبعيات، بينما يمكن لفرق العمليات التركيز على عمليات النشر والإدارة.
 
-Containers can run virtually anywhere, greatly easing development and deployment.
+**قابلية نقل الأعباء**
 
-**Application isolation**
+يمكن أن تعمل الحاويات في أي مكان تقريبًا، مما يسهل كثيرًا عملية التطوير والنشر.
 
-Containers virtualize CPU, memory, storage, and network resources at the operating system level, providing developers with a view of the OS logically isolated from other applications.
+**عزل التطبيقات**
 
-**Agile development**
+تقوم الحاويات بتقنين موارد وحدة المعالجة المركزية والذاكرة والتخزين والشبكة على مستوى نظام التشغيل، مما يوفر للمطورين نظرة للنظام التشغيل معزولة من التطبيقات الأخرى.
 
-Containers allow developers to move much more quickly by avoiding concerns about dependencies and environments.
+**التطوير السريع**
 
-**Efficient operations**
+تتيح الحاويات للمطورين الانتقال بسرعة أكبر من خلال تجنب القلق بشأن التبعيات والبيئات.
 
-Containers are lightweight and allow us to use just the computing resources we need.
+**عمليات فعالة**
 
-## Virtualization vs Containerization
+الحاويات خفيفة الوزن وتتيح لنا استخدام الموارد الحاسوبية التي نحتاجها فقط.
 
-![virtualization-vs-containerization](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/virtual-machines-and-containers/virtualization-vs-containerization.png)
+## الافتراض الافتراضي مقابل الحاويات
 
-In traditional virtualization, a hypervisor virtualizes physical hardware. The result is that each virtual machine contains a guest OS, a virtual copy of the hardware that the OS requires to run, and an application and its associated libraries and dependencies.
+![الافتراض الافتراضي مقابل الحاويات](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/virtual-machines-and-containers/virtualization-vs-containerization.png)
 
-Instead of virtualizing the underlying hardware, containers virtualize the operating system so each container contains only the application and its dependencies making them much more lightweight than VMs. Containers also share the OS kernel and use a fraction of the memory VMs require.
+في الافتراض التقليدي، يقوم المضيف بتقنين الأجهزة الفعلية. النتيجة هي أن كل آلة افتراضية تحتوي على نظام التشغيل المضيف، ونسخة افتراضية من الأجهزة التي يحتاج النظام إلى تشغيلها، وتطبيق ومكتبته والتبعيات المرتبطة به.
+
+بدلاً من تقنين الأجهزة الأساسية، تقوم الحاويات بتقنين نظام التشغيل بحيث تحتوي كل حاوية فقط على التطبيق وتبعياته، مما يجعلها أخف وزنًا بكثير من الآلات الافتراضية. تشترك الحاويات أيضًا في نواة النظام التشغيل وتستخدم جزءًا من الذاكرة التي تحتاجها الآلات الافتراضية.
 
 # OAuth 2.0 and OpenID Connect (OIDC)
 
