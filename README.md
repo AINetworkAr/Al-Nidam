@@ -3261,52 +3261,52 @@ SLO أو هدف مستوى الخدمة هو الوعد الذي تقدمه ال
 
 SLI أو مؤشر مستوى الخدمة هو مقياس رئيسي يُستخدم لتحديد ما إذا تم تحقيق SLO أم لا. إنه القيمة المقاسة للمقياس الموصوف ضمن SLO. من أجل الامتثال لـ SLA، يجب أن تستوفي قيمة SLI دائمًا قيمة SLO أو تزيدها.
 
-# Disaster recovery
+# استعادة الكوارث
 
-Disaster recovery (DR) is a process of regaining access and functionality of the infrastructure after events like a natural disaster, cyber attack, or even business disruptions.
+استعادة الكوارث (DR) هو عملية استعادة الوصول والوظائف للبنية التحتية بعد حدوث أحداث مثل الكوارث الطبيعية أو الهجمات السيبرانية أو حتى انقطاعات الأعمال.
 
-Disaster recovery relies upon the replication of data and computer processing in an off-premises location not affected by the disaster. When servers go down because of a disaster, a business needs to recover lost data from a second location where the data is backed up. Ideally, an organization can transfer its computer processing to that remote location as well in order to continue operations.
+تعتمد استعادة الكوارث على تكرار البيانات ومعالجة الكمبيوتر في موقع بعيد غير متأثر بالكارثة. عندما تتعطل الخوادم بسبب كارثة، يحتاج العمل إلى استعادة البيانات المفقودة من موقع ثاني حيث تم نسخ البيانات. في الواقع، يمكن للمؤسسة نقل معالجتها الكمبيوترية إلى ذلك الموقع البعيد أيضًا من أجل متابعة العمليات.
 
-_Disaster Recovery is often not actively discussed during system design interviews but it's important to have some basic understanding of this topic. You can learn more about disaster recovery from [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/plan-for-disaster-recovery-dr.html)._
+_غالبًا ما لا يتم مناقشة استعادة الكوارث بنشاط خلال مقابلات تصميم النظم، ولكن من المهم أن يكون لديك بعض الفهم الأساسي حول هذا الموضوع. يمكنك معرفة المزيد عن استعادة الكوارث من [إطار الهندسة المعمارية الجيدة لأمازون ويب سيرفس](https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/plan-for-disaster-recovery-dr.html)._
 
-## Why is disaster recovery important?
+## لماذا تعتبر استعادة الكوارث مهمة؟
 
-Disaster recovery can have the following benefits:
+استعادة الكوارث يمكن أن تحقق الفوائد التالية:
 
-- Minimize interruption and downtime
-- Limit damages
-- Fast restoration
-- Better customer retention
+- تقليل انقطاع الخدمة والتوقف
+- تقييد الأضرار
+- استعادة سريعة
+- تحسين الاحتفاظ بالعملاء
 
-## Terms
+## المصطلحات
 
-Let's discuss some important terms relevantly for disaster recovery:
+لنناقش بعض المصطلحات الهامة المتعلقة بأهمية استعادة الكوارث:
 
-![disaster-recovery](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/disaster-recovery/disaster-recovery.png)
+![استعادة-الكوارث](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/disaster-recovery/disaster-recovery.png)
 
 ### RTO
 
-Recovery Time Objective (RTO) is the maximum acceptable delay between the interruption of service and restoration of service. This determines what is considered an acceptable time window when service is unavailable.
+الهدف الزمني للاستعادة (RTO) هو أقصى تأخير مقبول بين انقطاع الخدمة واستعادة الخدمة. هذا يحدد ما هو مقبول كنافذة زمنية عندما تكون الخدمة غير متاحة.
 
 ### RPO
 
-Recovery Point Objective (RPO) is the maximum acceptable amount of time since the last data recovery point. This determines what is considered an acceptable loss of data between the last recovery point and the interruption of service.
+الهدف الزمني لنقطة الاستعادة (RPO) هو أقصى مدة زمنية مقبولة منذ آخر نقطة استعادة للبيانات. يحدد هذا ما هو مقبول كفقدان للبيانات بين آخر نقطة استعادة وانقطاع الخدمة.
 
-## Strategies
+## استراتيجيات
 
-A variety of disaster recovery (DR) strategies can be part of a disaster recovery plan.
+يمكن أن تكون مجموعة متنوعة من استراتيجيات استعادة الكوارث (DR) جزءًا من خطة استعادة الكوارث.
 
-### Back-up
+### النسخ الاحتياطي
 
-This is the simplest type of disaster recovery and involves storing data off-site or on a removable drive.
+هذا هو نوع استعادة الكوارث الأبسط ويتضمن تخزين البيانات في موقع بعيد أو على وسائط قابلة للإزالة.
 
-### Cold Site
+### الموقع البارد
 
-In this type of disaster recovery, an organization sets up basic infrastructure in a second site.
+في هذا النوع من استعادة الكوارث، تقوم المؤسسة بإعداد بنية أساسية أساسية في موقع ثانٍ.
 
-### Hot site
+### الموقع الساخن
 
-A hot site maintains up-to-date copies of data at all times. Hot sites are time-consuming to set up and more expensive than cold sites, but they dramatically reduce downtime.
+يحتفظ الموقع الساخن بنسخ محدثة من البيانات في جميع الأوقات. يستغرق إعداد المواقع الساخنة وقتًا طويلاً ويكون أكثر تكلفة من المواقع الباردة، ولكنها تقلل بشكل كبير من الوقت التوقف.
 
 # Virtual Machines (VMs) and Containers
 
