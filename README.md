@@ -3239,27 +3239,27 @@ message HelloResponse {
 - [Apache Thrift](https://thrift.apache.org)
 - [Apache Zookeeper](https://zookeeper.apache.org)
 
-# SLA, SLO, SLI
+# SLA، SLO، SLI
 
-Let's briefly discuss SLA, SLO, and SLI. These are mostly related to the business and site reliability side of things but good to know nonetheless.
+لنناقش بإيجاز SLA و SLO و SLI. هذه المصطلحات مرتبطة بشكل أساسي بجانب الأعمال وموثوقية الموقع ولكنها مهمة للمعرفة على الرغم من ذلك.
 
-## Why are they important?
+## لماذا هي مهمة؟
 
-SLAs, SLOs, and SLIs allow companies to define, track and monitor the promises made for a service to its users. Together, SLAs, SLOs, and SLIs should help teams generate more user trust in their services with an added emphasis on continuous improvement to incident management and response processes.
+تتيح SLAs و SLOs و SLIs للشركات تحديد وتتبع ومراقبة الوعود التي تُقدمها لخدمتها للمستخدمين. يجب أن تساعد معًا SLAs و SLOs و SLIs الفِرق على تعزيز الثقة لدى المستخدمين في خدماتهم مع التركيز على تحسين استجابة وإدارة الحوادث بشكل مستمر.
 
 ## SLA
 
-An SLA, or Service Level Agreement, is an agreement made between a company and its users of a given service. The SLA defines the different promises that the company makes to users regarding specific metrics, such as service availability.
+SLA أو اتفاقية مستوى الخدمة هو اتفاق يتم بين شركة ومستخدمي خدمة معينة. تحدد SLA الوعود المختلفة التي تقدمها الشركة للمستخدمين بخصوص مقاييس محددة، مثل توفر الخدمة.
 
-_SLAs are often written by a company's business or legal team._
+_غالبًا ما تُكتب SLAs من قِبل فِرق الأعمال أو الفرق القانونية للشركة._
 
 ## SLO
 
-An SLO, or Service Level Objective, is the promise that a company makes to users regarding a specific metric such as incident response or uptime. SLOs exist within an SLA as individual promises contained within the full user agreement. The SLO is the specific goal that the service must meet in order to comply with the SLA. SLOs should always be simple, clearly defined, and easily measured to determine whether or not the objective is being fulfilled.
+SLO أو هدف مستوى الخدمة هو الوعد الذي تقدمه الشركة للمستخدمين بشأن مقياس محدد مثل استجابة الحوادث أو وقت التشغيل. تتواجد SLOs ضمن SLA كوعود فردية موجودة ضمن اتفاقية المستخدم الكاملة. يُعد SLO الهدف المحدد الذي يجب أن تحققه الخدمة للامتثال لـ SLA. يجب أن تكون SLOs دائمًا بسيطة ومحددة بوضوح، ويسهل قياسها لتحديد ما إذا تم تحقيق الهدف أم لا.
 
 ## SLI
 
-An SLI, or Service Level Indicator, is a key metric used to determine whether or not the SLO is being met. It is the measured value of the metric described within the SLO. In order to remain in compliance with the SLA, the SLI's value must always meet or exceed the value determined by the SLO.
+SLI أو مؤشر مستوى الخدمة هو مقياس رئيسي يُستخدم لتحديد ما إذا تم تحقيق SLO أم لا. إنه القيمة المقاسة للمقياس الموصوف ضمن SLO. من أجل الامتثال لـ SLA، يجب أن تستوفي قيمة SLI دائمًا قيمة SLO أو تزيدها.
 
 # Disaster recovery
 
