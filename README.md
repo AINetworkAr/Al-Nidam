@@ -3505,41 +3505,43 @@ _كلا من بروتوكولات المصادقة هاتان جيدتان في 
 - [Auth0](https://auth0.com)
 - [OneLogin](https://www.onelogin.com)
 
-# SSL, TLS, mTLS
+# SSL، TLS، mTLS
 
-Let's briefly discuss some important communication security protocols such as SSL, TLS, and mTLS. I would say that from a _"big picture"_ system design perspective, this topic is not very important but still good to know about.
+لنتناول بإيجاز بعض بروتوكولات الأمان الهامة للاتصال مثل SSL و TLS و mTLS. أقول أنه من وجهة نظر تصميم النظام من منظور الصورة الكبيرة، هذا الموضوع ليس مهمًا جدًا ولكن من الجيد معرفته.
 
 ## SSL
 
-SSL stands for Secure Sockets Layer, and it refers to a protocol for encrypting and securing communications that take place on the internet. It was first developed in 1995 but since has been deprecated in favor of TLS (Transport Layer Security).
+تعني SSL "Secure Sockets Layer" وهو بروتوكول لتشفير وتأمين الاتصالات التي تحدث على الإنترنت. تم تطويره لأول مرة في عام 1995 ولكنه تم التخلي عنه لصالح TLS (Transport Layer Security).
 
-### Why is it called an SSL certificate if it is deprecated?
+### لماذا يُسمى شهادة SSL إذا كان قد تم التخلي عنه؟
 
-Most major certificate providers still refer to certificates as SSL certificates, which is why the naming convention persists.
+معظم مُزوّدي شهادات كبار لا يزالون يشيرّون إلى الشهادات بأنها شهادات SSL، وهذا هو السبب وراء استمرار تقديم التسمية.
 
-### Why was SSL so important?
+### لماذا كان SSL مهمًا جدًا؟
 
-Originally, data on the web was transmitted in plaintext that anyone could read if they intercepted the message. SSL was created to correct this problem and protect user privacy. By encrypting any data that goes between the user and a web server, SSL also stops certain kinds of cyber attacks by preventing attackers from tampering with data in transit.
+في الأصل، كانت البيانات على الويب تُرسل على شكل نصوص واضحة يمكن لأي شخص قراءتها إذا تم التقاط الرسالة. تم إنشاء SSL لتصحيح هذه المشكلة وحماية خصوصية المستخدم. من خلال تشفير أي بيانات تنتقل بين المستخدم وخادم الويب، يمنع SSL أيضًا أنواعًا معينة من الهجمات السيبرانية من التلاعب بالبيانات أثناء النقل.
 
 ## TLS
 
-Transport Layer Security, or TLS, is a widely adopted security protocol designed to facilitate privacy and data security for communications over the internet. TLS evolved from a previous encryption protocol called Secure Sockets Layer (SSL). A primary use case of TLS is encrypting the communication between web applications and servers.
+تعني Transport Layer Security، أو TLS، وهو بروتوكول أمان معتمد على نطاق واسع مصمم لتحقيق الخصوصية وأمان البيانات للاتصالات عبر الإنترنت. تطور TLS من بروتوكول تشفير سابق يُسمى Secure Sockets Layer (SSL). حالة الاستخدام الأساسية لبروتوكول TLS هي تشفير الاتصال بين تطبيقات الويب والخوادم.
 
-There are three main components to what the TLS protocol accomplishes:
+يتألف بروتوكول TLS من ثلاثة مكونات رئيسية:
 
-- **Encryption**: hides the data being transferred from third parties.
-- **Authentication**: ensures that the parties exchanging information are who they claim to be.
-- **Integrity**: verifies that the data has not been forged or tampered with.
+- **التشفير**: يخفي البيانات التي تُرسل من أطراف ثالثة.
+- **المصادقة**: يضمن أن الأطراف التي تبادل المعلومات هي نفسها التي تدّعي أنها عليها.
+- **النزاهة**: يتحقق من أن البيانات لم تتم تزويرها أو تعديلها.
 
 ## mTLS
 
-Mutual TLS, or mTLS, is a method for mutual authentication. mTLS ensures that the parties at each end of a network connection are who they claim to be by verifying that they both have the correct private key. The information within their respective TLS certificates provides additional verification.
+المصادقة المتبادلة للتشفير أو mTLS هي طريقة للمصادقة المتبادلة. يضمن mTLS أن الأطراف على كل طرف من الاتصال الشبكي هما نفسهما الذين يدّعون أنهما عليهما بالتحقق من أن لديهما المفتاح الخاص الصحيح. تقدم المعلومات في شهادات TLS الخاصة بهما التحقق الإضافي.
 
-### Why use mTLS?
+### لماذا استخدام mTLS؟
 
-mTLS helps ensure that the traffic is secure and trusted in both directions between a client and server. This provides an additional layer of security for users who log in to an organization's network or applications. It also verifies connections with client devices that do not follow a login process, such as Internet of Things (IoT) devices.
+يساعد mTLS في التأكد من أمان وثقة حركة المرور في كلا الاتجاهين بين العميل والخادم. وهذا يوفر طبقة إضافية من الأمان للمستخدمين الذين يقومون بتسجيل الدخول إلى شبكة المنظمة أو التطبيقات. كما أنه يتحقق من الاتصالات مع أجهزة العملاء التي لا تتبع عملية تسجيل الدخول، مثل أجهزة الإنترنت من الأشياء (IoT).
 
-Nowadays, mTLS is commonly used by microservices or distributed systems in a [zero trust security model](https://en.wikipedia.org/wiki/Zero_trust_security_model) to verify each other.
+في الوقت الحاضر، يُستخدم mTLS بشكل شائع من قِبل خدمات المايكروسيرفس أو الأنظمة الموزعة في [نموذج أمان
+
+ الثقة الصفرية](https://en.wikipedia.org/wiki/Zero_trust_security_model) للتحقق من بعضها البعض.
 
 # System Design Interviews
 
