@@ -3543,110 +3543,114 @@ _كلا من بروتوكولات المصادقة هاتان جيدتان في 
 
  الثقة الصفرية](https://en.wikipedia.org/wiki/Zero_trust_security_model) للتحقق من بعضها البعض.
 
-# System Design Interviews
+# مقابلات تصميم الأنظمة
 
-System design is a very extensive topic and system design interviews are designed to evaluate your capability to produce technical solutions to abstract problems, as such, they're not designed for a specific answer. The unique aspect of system design interviews is the two-way nature between the candidate and the interviewer.
+تصميم النظام هو موضوع شامل جدًا، ومقابلات تصميم النظم مصممة لتقييم قدرتك على تقديم حلول تقنية لمشاكل مجردة. لذلك، فإنها ليست مصممة للحصول على إجابة محددة. الجانب الفريد في مقابلات تصميم النظم هو الطبيعة ذات الاتجاه المزدوج بين المرشح والمقابل.
 
-Expectations are quite different at different engineering levels as well. This is because someone with a lot of practical experience will approach it quite differently from someone who's new in the industry. As a result, it's hard to come up with a single strategy that will help us stay organized during the interview.
+تتغير التوقعات بشكل كبير بين مستويات الهندسة المختلفة أيضًا. هذا لأن شخصًا لديه الكثير من الخبرة العملية سيقترب منها بشكل مختلف تمامًا عن شخص جديد في الصناعة. ونتيجة لذلك، من الصعب إيجاد استراتيجية واحدة ستساعدنا في البقاء منظمين خلال المقابلة.
 
-Let's look at some common strategies for system design interviews:
+لنلقي نظرة على بعض الاستراتيجيات المشتركة لمقابلات تصميم النظم:
 
-## Requirements clarifications
+## توضيح المتطلبات
 
-System design interview questions, by nature, are vague or abstract. Asking questions about the exact scope of the problem, and clarifying functional requirements early in the interview is essential. Usually, requirements are divided into three parts:
+أسئلة مقابلات تصميم النظم، بطبيعتها، غامضة أو مجردة. طرح أسئلة حول نطاق المشكلة بالضبط، وتوضيح المتطلبات الوظيفية في وقت مبكر من المقابلة أمر ضروري. عادةً، يتم تقسيم المتطلبات إلى ثلاثة أجزاء:
 
-### Functional requirements
+### المتطلبات الوظيفية
 
-These are the requirements that the end user specifically demands as basic functionalities that the system should offer. All these functionalities need to be necessarily incorporated into the system as part of the contract.
+هذه هي المتطلبات التي يطلبها المستخدم النهائي باعتبارها وظائف أساسية يجب أن يقدمها النظام. يجب دمج جميع هذه الوظائف ضمن النظام كجزء من العقد.
 
-For example:
+مثال:
 
-- "What are the features that we need to design for this system?"
-- "What are the edge cases we need to consider, if any, in our design?"
+- "ما هي الميزات التي نحتاج لتصميمها لهذا النظام؟"
+- "ما هي الحالات الحدية التي يجب أن نأخذها في اعتبارنا في تصميمنا؟"
 
-### Non-functional requirements
+### المتطلبات غير الوظيفية
 
-These are the quality constraints that the system must satisfy according to the project contract. The priority or extent to which these factors are implemented varies from one project to another. They are also called non-behavioral requirements. For example, portability, maintainability, reliability, scalability, security, etc.
+هذه هي القيود النوعية التي يجب أن يستوفيها النظام وفقًا لعقد المشروع. يختلف الأولوية أو الدرجة التي يتم تنفيذ هذه العوامل من مشروع إلى آخر. تُعرف أيضًا باسم المتطلبات غير السلوكية. على سبيل المثال، القابلية للنقل، وسهولة الصيانة، والموثوقية، والتوسعة، والأمان، إلخ.
 
-For example:
+مثال:
 
-- "Each request should be processed with the minimum latency"
-- "System should be highly available"
+- "يجب معالجة كل طلب بأدنى وقت استجابة"
+- "يجب أن يكون النظام متاحًا بشكل كبير"
 
-### Extended requirements
+### المتطلبات الموسعة
 
-These are basically "nice to have" requirements that might be out of the scope of the system.
+هذه هي أساسًا المتطلبات "الجيدة أن تكون متوفرة" التي قد تكون خارج نطاق النظام.
 
-For example:
+مثال:
 
-- "Our system should record metrics and analytics"
-- "Service health and performance monitoring?"
+- "يجب أن يسجل نظامنا المقاييس والتحليلات"
+- "مراقبة أداء وصحة الخدمة؟"
 
-## Estimation and Constraints
+## التقدير والقيود
 
-Estimate the scale of the system we're going to design. It is important to ask questions such as:
+قم بتقدير مقياس النظام الذي سنقوم بتصميمه. من المهم طرح أسئلة مثل:
 
-- "What is the desired scale that this system will need to handle?"
-- "What is the read/write ratio of our system?"
-- "How many requests per second?"
-- "How much storage will be needed?"
+- "ما هو المقياس المطلوب الذي يجب أن يتعامل معه هذا النظام؟"
+- "ما هو نسبة القراءة/الكتابة في نظامنا؟"
+- "كم عدد الطلبات في الثانية؟"
+- "ما هو حجم التخزين المطلوب؟"
 
-These questions will help us scale our design later.
+ستساعدنا هذه الأسئلة في تحديد تصميمنا لاحقًا.
 
-## Data model design
+## تصميم نموذج البيانات
 
-Once we have the estimations, we can start with defining the database schema. Doing so in the early stages of the interview would help us to understand the data flow which is the core of every system. In this step, we basically define all the entities and relationships between them.
+بمجرد أن يكون لدينا التقديرات، يمكننا البدء في تحديد مخطط قاعدة البيانات. يساعدنا القيام بذلك في المراحل الأولى من المقابلة في فهم تدفق البيانات الذي يعد جوهر كل نظام. في هذه الخطوة، نقوم ببساطة بتعريف جميع الكيانات والعلاقات بين
 
-- "What are the different entities in the system?"
-- "What are the relationships between these entities?"
-- "How many tables do we need?"
-- "Is NoSQL a better choice here?"
+ها.
 
-## API design
+- "ما هي الكيانات المختلفة في النظام؟"
+- "ما هي العلاقات بين هذه الكيانات؟"
+- "كم جداول نحتاج؟"
+- "هل NoSQL خيار أفضل هنا؟"
 
-Next, we can start designing APIs for the system. These APIs will help us define the expectations from the system explicitly. We don't have to write any code, just a simple interface defining the API requirements such as parameters, functions, classes, types, entities, etc.
+## تصميم واجهة البرمجة (API)
 
-For example:
+بعد ذلك، يمكننا البدء في تصميم واجهات البرمجة للنظام. هذه الواجهات ستساعدنا في تحديد التوقعات من النظام بشكل صريح. لا يجب علينا كتابة أي كود، فقط واجهة بسيطة تحدد متطلبات الواجهة مثل المعلمات، والدوال، والفئات، والأنواع، والكيانات، وما إلى ذلك.
+
+على سبيل المثال:
 
 ```tsx
 createUser(name: string, email: string): User
 ```
 
-It is advised to keep the interface as simple as possible and come back to it later when covering extended requirements.
+من المستحسن أن نبقي واجهة البرمجة بسيطة قدر الإمكان ونعود إليها لاحقًا عند التطرق إلى المتطلبات الموسعة.
 
-## High-level component design
+## تصميم المكونات على المستوى العالي
 
-Now we have established our data model and API design, it's time to identify system components (such as Load Balancers, API Gateway, etc.) that are needed to solve our problem and draft the first design of our system.
+الآن بعد أن أنشأنا نموذج البيانات وتصميم واجهة البرمجة، حان وقت تحديد المكونات (مثل توازن الحمل، وبوابة واجهة البرمجة، وما إلى ذلك) التي تحتاج إلى حل مشكلتنا ورسم التصميم الأولي لنظامنا.
 
-- "Is it best to design a monolithic or a microservices architecture?"
-- "What type of database should we use?"
+- "هل تصميم هندسة تطبيقات متعددة الطبقات (Monolithic) أم معمارية الميكروسيرفيس (Microservices) هو الأفضل؟"
+- "ما هو نوع قاعدة البيانات الذي يجب أن نستخدمه؟"
 
-Once we have a basic diagram, we can start discussing with the interviewer how the system will work from the client's perspective.
+بمجرد وجود رسم تخطيطي أساسي، يمكننا بدء النقاش مع المقابل حول كيفية عمل النظام من منظور العميل.
 
-## Detailed design
+## التصميم التفصيلي
 
-Now it's time to go into detail about the major components of the system we designed. As always discuss with the interviewer which component may need further improvements.
+الآن حان وقت الدخول في التفاصيل حول المكونات الرئيسية للنظام الذي قمنا بتصميمه. كما هو دائمًا، مناقشة مع المقابل حول أي مكون قد يحتاج لتحسينات إضافية.
 
-Here is a good opportunity to demonstrate your experience in the areas of your expertise. Present different approaches, advantages, and disadvantages. Explain your design decisions, and back them up with examples. This is also a good time to discuss any additional features the system might be able to support, though this is optional.
+هذه فرصة جيدة لإظهار خبرتك في مجالات خبرتك. قدم أساليب مختلفة ومزايا وعيوبها. شرح قرارات التصميم الخاصة بك واستنادها إلى أمثلة. هذه أيضًا فرصة جيدة لمناقشة أي ميزات إضافية قد يمكن أن يدعمها النظام، ولكن هذا اختياري.
 
-- "How should we partition our data?"
-- "What about load distribution?"
-- "Should we use cache?"
-- "How will we handle a sudden spike in traffic?"
+- "كيف يجب أن نقسم بياناتنا؟"
+- "ماذا عن توزيع الأحمال؟"
+- "هل يجب أن نستخدم الذاكرة المؤقتة (Cache)؟"
+- "كيف سنتعامل مع زيادة مفاجئة في حركة المرور؟"
 
-Also, try not to be too opinionated about certain technologies, statements like "I believe that NoSQL databases are just better, SQL databases are not scalable" reflect poorly. As someone who has interviewed a lot of people over the years, my two cents here would be to be humble about what you know and what you do not. Use your existing knowledge with examples to navigate this part of the interview.
+أيضًا، حاول ألا تكون متعصبًا للغاية حيال تقنيات معينة. تصريحات مثل "أعتقد أن قواعد البيانات NoSQL هي الأفضل، قواعد البيانات SQL ليست قابلة للتوسعة" تعكس ضعفًا. بصفتي شخصًا قمت بمقابلة الكثير من الأشخاص على مر السنين، يمكنني أن أقول أنه يجب أن تكون متواضعًا حول ما تعرفه وما لا تعرفه. استخدم معرفتك الحالية مع أمثلة للتنقل في هذا الجزء من المقابلة.
 
-## Identify and resolve bottlenecks
+## تحديد وحل مشاكل الاختناقات
 
-Finally, it's time to discuss bottlenecks and approaches to mitigate them. Here are some important questions to ask:
+أخيرًا، حان وقت مناقشة مشاكل الاختناق والأساليب للتخفيف منها. إليك بعض الأس
 
-- "Do we have enough database replicas?"
-- "Is there any single point of failure?"
-- "Is database sharding required?"
-- "How can we make our system more robust?"
-- "How to improve the availability of our cache?"
+ئلة المهمة لطرحها:
 
-Make sure to read the engineering blog of the company you're interviewing with. This will help you get a sense of what technology stack they're using and which problems are important to them.
+- "هل لدينا ما يكفي من نسخ قواعد البيانات؟"
+- "هل هناك نقطة فشل واحدة؟"
+- "هل هناك حاجة لتجزئة قاعدة البيانات؟"
+- "كيف يمكننا جعل نظامنا أكثر قوة؟"
+- "كيف يمكن تحسين توفر ذاكرة التخزين المؤقت؟"
+
+تأكد من قراءة مدونة الهندسة في الشركة التي تقوم بمقابلتها. سيساعدك ذلك في الحصول على فهم للتكنولوجيا التي يستخدمونها والمشاكل التي تعد مهمة بالنسبة لهم.
 
 # URL Shortener
 
