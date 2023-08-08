@@ -3652,138 +3652,142 @@ createUser(name: string, email: string): User
 
 تأكد من قراءة مدونة الهندسة في الشركة التي تقوم بمقابلتها. سيساعدك ذلك في الحصول على فهم للتكنولوجيا التي يستخدمونها والمشاكل التي تعد مهمة بالنسبة لهم.
 
-# URL Shortener
+تصميم مُختصر الروابط
 
-Let's design a URL shortener, similar to services like [Bitly](https://bitly.com), [TinyURL](https://tinyurl.com/app).
+دعونا نصمم خدمة مختصر الروابط، مشابهة لخدمات مثل [Bitly](https://bitly.com)، و [TinyURL](https://tinyurl.com/app).
 
-## What is a URL Shortener?
+## ما هو مختصر الروابط؟
 
-A URL shortener service creates an alias or a short URL for a long URL. Users are redirected to the original URL when they visit these short links.
+خدمة مختصر الروابط تقوم بإنشاء اختصار أو رابط مختصر لرابط طويل. يتم توجيه المستخدمين إلى الرابط الأصلي عند زيارتهم لهذه الروابط المختصرة.
 
-For example, the following long URL can be changed to a shorter URL.
+على سبيل المثال، يمكن تغيير الرابط الطويل التالي إلى رابط أقصر.
 
-**Long URL**: [https://karanpratapsingh.com/courses/system-design/url-shortener](https://karanpratapsingh.com/courses/system-design/url-shortener)
+**الرابط الطويل**: [https://karanpratapsingh.com/courses/system-design/url-shortener](https://karanpratapsingh.com/courses/system-design/url-shortener)
 
-**Short URL**: [https://bit.ly/3I71d3o](https://bit.ly/3I71d3o)
+**الرابط المختصر**: [https://bit.ly/3I71d3o](https://bit.ly/3I71d3o)
 
-## Why do we need a URL shortener?
+## لماذا نحتاج إلى مختصر الروابط؟
 
-URL shortener saves space in general when we are sharing URLs. Users are also less likely to mistype shorter URLs. Moreover, we can also optimize links across devices, this allows us to track individual links.
+يوفر مختصر الروابط مساحة عمومًا عند مشاركة الروابط. المستخدمون أيضًا أقل احتمالًا لارتكاب أخطاء في كتابة الروابط الأقصر. علاوة على ذلك، يمكننا أيضًا تحسين الروابط عبر الأجهزة، وهذا يسمح لنا بتتبع الروابط الفردية.
 
-## Requirements
+## المتطلبات
 
-Our URL shortening system should meet the following requirements:
+يجب أن تلبي نظام مختصر الروابط الخاص بنا المتطلبات التالية:
 
-### Functional requirements
+### المتطلبات الوظيفية
 
-- Given a URL, our service should generate a _shorter and unique_ alias for it.
-- Users should be redirected to the original URL when they visit the short link.
-- Links should expire after a default timespan.
+- عندما يتم تزويدنا برابط، يجب أن تُنشئ خدمتنا اختصارًا _أقصر وفريد_ له.
+- يجب توجيه المستخدمين إلى الرابط الأصلي عندما يزورون الرابط القصير.
+- يجب أن تنتهي صلاحية الروابط بعد مدة زمنية افتراضية.
 
-### Non-functional requirements
+### المتطلبات غير الوظيفية
 
-- High availability with minimal latency.
-- The system should be scalable and efficient.
+- توفير عالية بأدنى تأخير.
+- يجب أن يكون النظام قابلًا للتوسعة وفعّالًا.
 
-### Extended requirements
+### المتطلبات الموسعة
 
-- Prevent abuse of services.
-- Record analytics and metrics for redirections.
+- منع سوء استخدام الخدمة.
+- تسجيل تحليلات وبيانات مقاييس لعمليات التوجيه.
 
-## Estimation and Constraints
+## التقديرات والقيود
 
-Let's start with the estimation and constraints.
+لنبدأ بالتقديرات والقيود.
 
-_Note: Make sure to check any scale or traffic related assumptions with your interviewer._
+_ملحوظة: تأكد من التحقق من أي افتراضات تتعلق بالحجم أو حركة المرور مع المقابل._
 
-### Traffic
+### حركة المرور
 
-This will be a read-heavy system, so let's assume a `100:1` read/write ratio with 100 million links generated per month.
+سيكون هذا نظامًا قائمًا على القراءة بشكل رئيسي، لنفترض نسبة قراءة / كتابة `100:1` مع إنشاء 100 مليون رابط شهريًا.
 
-**Reads/Writes Per month**
+**قراءة / كتابة شهريًا**
 
-For reads per month:
+بالنسبة لعمليات ال
 
-$$
-100 \times 100 \space million = 10 \space billion/month
-$$
-
-Similarly for writes:
+قراءة شهريًا:
 
 $$
-1 \times 100 \space million = 100 \space million/month
+100 \times 100 \space مليون = 10 \space مليار / شهر
 $$
 
-**What would be Requests Per Second (RPS) for our system?**
-
-100 million requests per month translate into 40 requests per second.
+بالمثل لعمليات الكتابة:
 
 $$
-\frac{100 \space million}{(30 \space days \times 24 \space hrs \times 3600 \space seconds)} = \sim 40 \space URLs/second
+1 \times 100 \space مليون = 100 \space مليون / شهر
 $$
 
-And with a `100:1` read/write ratio, the number of redirections will be:
+**ما ستكون عدد الطلبات في الثانية (RPS) لنظامنا؟**
+
+100 مليون طلب في الشهر يترجم إلى 40 طلبًا في الثانية.
 
 $$
-100 \times 40 \space URLs/second = 4000 \space requests/second
+\frac{100 \space مليون}{(30 \space يوم \times 24 \space ساعة \times 3600 \space ثانية)} = \sim 40 \space طلبًا في الثانية
 $$
 
-### Bandwidth
-
-Since we expect about 40 URLs every second, and if we assume each request is of size 500 bytes then the total incoming data for write requests would be:
+وبنسبة قراءة / كتابة `100:1`، سيكون عدد عمليات التوجيه:
 
 $$
-40 \times 500 \space bytes = 20 \space KB/second
+100 \times 40 \space طلبًا في الثانية = 4000 \space طلبًا في الثانية
 $$
 
-Similarly, for the read requests, since we expect about 4K redirections, the total outgoing data would be:
+### العرض الترددي
+
+نظرًا لتوقعنا حوالي 40 رابطًا في الثانية، وإذا فرضنا أن كل طلب حجمه 500 بايت، سيكون إجمالي البيانات الواردة للطلبات كتابةً:
 
 $$
-4000 \space URLs/second \times 500 \space bytes = \sim 2 \space MB/second
+40 \times 500 \space بايت = 20 \space كيلو بايت / ثانية
 $$
 
-### Storage
-
-For storage, we will assume we store each link or record in our database for 10 years. Since we expect around 100M new requests every month, the total number of records we will need to store would be:
+بالمثل، بالنسبة للطلبات التوجيه، نظرًا لتوقعنا حوالي 4 آلاف توجيه، ستكون البيانات الصادرة الإجمالية:
 
 $$
-100 \space million \times 10\space years \times 12 \space months = 12 \space billion
+4000 \space رابط / ثانية \times 500 \space بايت = \sim 2 \space ميغابايت / ثانية
 $$
 
-Like earlier, if we assume each stored record will be approximately 500 bytes. We will need around 6TB of storage:
+### التخزين
+
+بالنسبة للتخزين، سنفترض أننا سنخزن كل رابط أو سجل في قاعدة البيانات لمدة 10 سنوات. نظرًا لتوقعنا حوالي 100 مليون طلب جديد شهريًا، سيكون إجمالي عدد السجلات التي سنحتاج إلى تخزينها:
 
 $$
-12 \space billion \times 500 \space bytes = 6 \space TB
+100 \space مليون \times 10 \space سنوات \times 12 \space شهرًا = 12 \space مليار
 $$
 
-### Cache
-
-For caching, we will follow the classic [Pareto principle](https://en.wikipedia.org/wiki/Pareto_principle) also known as the 80/20 rule. This means that 80% of the requests are for 20% of the data, so we can cache around 20% of our requests.
-
-Since we get around 4K read or redirection requests each second, this translates into 350M requests per day.
+مثلما كان في السابق، إذا فرضنا أن كل سجل مخزن سيكون حوالي 500 بايت. سنحتاج إلى حوالي 6 تيرابايت من التخزين:
 
 $$
-4000 \space URLs/second \times 24 \space hours \times 3600 \space seconds = \sim 350 \space million \space requests/day
+12 \space مليار \times 500 \space بايت = 6 \space تيرابايت
 $$
 
-Hence, we will need around 35GB of memory per day.
+### التخزين المؤقت
+
+بالنسبة للتخزين المؤقت، سنتبع مبدأ باريتو الكلاسيكي المعروف أيضًا باسم قاعدة 80/20. وهذا يعني أن 80% من الطلبات تتعلق بـ 20% من البيانات، لذا يمكننا تخزين حوالي 20% من الطلبات.
+
+نظرًا لتوقعنا حوالي 4 آلاف طلب قراءة أو توجيه كل ثانية، يترجم ذلك إلى حوالي 350 مليون طلب يوميًا.
 
 $$
-20 \space percent \times 350 \space million \times 500 \space bytes = 35 \space GB/day
+4000 \space رابط / ثانية \times 24 \space ساعة \times 3600 \space ثانية = \sim 350 \space مليون \space طلب / يوم
 $$
 
-### High-level estimate
+لذلك، سنحتاج إلى حوالي 35 غيغابايت من الذاكرة يوميًا.
 
-Here is our high-level estimate:
+$$
+20 \space في المئة \times 350 \space مليون \times 500 \space بايت = 35 \space غيغابايت / يوم
+$$
 
-| Type                 | Estimate   |
+### تقدير عام
+
+إليكم تقديرنا العام:
+
+| النوع                 | التقدير   |
 | -------------------- | ---------- |
-| Writes (New URLs)    | 40/s       |
-| Reads (Redirection)  | 4K/s       |
-| Bandwidth (Incoming) | 20 KB/s    |
-| Bandwidth (Outgoing) | 2 MB/s     |
-| Storage (10 years)   | 6 TB       |
-| Memory (Caching)     | ~35 GB/day |
+| عمليات الكتابة (روابط جديدة)    | 40/ثانية       |
+| عمليات القراءة (توجيه)  | 4K/ثانية       |
+| العرض الترددي (الوارد) | 20 كيلو بايت/ثانية    |
+| العرض الترددي (الصادر) | 2 ميغابايت/ثانية     |
+| التخزين (10 سنوات)   | 6 تيرابايت       |
+| الذاكرة (تخزين مؤقت)
+
+     | ~35 غيغابايت/يوم |
 
 ## Data model design
 
