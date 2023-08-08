@@ -3789,203 +3789,209 @@ $$
 
      | ~35 غيغابايت/يوم |
 
-## Data model design
+## تصميم نموذج البيانات
 
-Next, we will focus on the data model design. Here is our database schema:
+في الخطوة التالية، سنركز على تصميم نموذج البيانات. هذه هي مخططات قاعدة البيانات لدينا:
 
 ![url-shortener-datamodel](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/url-shortener/url-shortener-datamodel.png)
 
-Initially, we can get started with just two tables:
+في البداية، يمكننا أن نبدأ بجدولين فقط:
 
 **users**
 
-Stores user's details such as `name`, `email`, `createdAt`, etc.
+يخزن تفاصيل المستخدم مثل `الاسم`، `البريد الإلكتروني`، `createdAt`، وما إلى ذلك.
 
 **urls**
 
-Contains the new short URL's properties such as `expiration`, `hash`, `originalURL`, and `userID` of the user who created the short URL. We can also use the `hash` column as an [index](https://karanpratapsingh.com/courses/system-design/indexes) to improve the query performance.
+يحتوي على خصائص الروابط القصيرة الجديدة مثل `انتهاء الصلاحية`، `الهاش`، `originalURL`، و `معرف المستخدم` الذي أنشأ الرابط القصير. يمكننا أيضًا استخدام عمود `الهاش` كـ [فهرس](https://karanpratapsingh.com/courses/system-design/indexes) لتحسين أداء الاستعلام.
 
-### What kind of database should we use?
+### ما نوع قاعدة البيانات يجب أن نستخدمه؟
 
-Since the data is not strongly relational, NoSQL databases such as [Amazon DynamoDB](https://aws.amazon.com/dynamodb), [Apache Cassandra](https://cassandra.apache.org/_/index.html), or [MongoDB](https://www.mongodb.com) will be a better choice here, if we do decide to use an SQL database then we can use something like [Azure SQL Database](https://azure.microsoft.com/en-in/products/azure-sql/database) or [Amazon RDS](https://aws.amazon.com/rds).
+نظرًا لعدم قوة العلاقة بين البيانات، قواعد البيانات غير العلائقية مثل [Amazon DynamoDB](https://aws.amazon.com/dynamodb)، [Apache Cassandra](https://cassandra.apache.org/_/index.html)، أو [MongoDB](https://www.mongodb.com) سيكونون خيارًا أفضل هنا، وإذا قررنا استخدام قاعدة بيانات SQL، فيمكننا استخدام شيء مثل [Azure SQL Database](https://azure.microsoft.com/en-in/products/azure-sql/database) أو [Amazon RDS](https://aws.amazon.com/rds).
 
-_For more details, refer to [SQL vs NoSQL](https://karanpratapsingh.com/courses/system-design/sql-vs-nosql-databases)._
+_لمزيد من التفاصيل، راجع [SQL مقابل NoSQL](https://karanpratapsingh.com/courses/system-design/sql-vs-nosql-databases)._
 
-## API design
+## تصميم واجهة البرمجة التطبيقية (API)
 
-Let us do a basic API design for our services:
+لنقم بتصميم واجهة برمجة التطبيقية الأساسية لخدماتنا:
 
-### Create URL
+### إنشاء رابط قصير
 
-This API should create a new short URL in our system given an original URL.
+يجب أن تقوم هذه الواجهة بإنشاء رابط قصير جديد في نظامنا باستخدام عنوان URL الأصلي المعطى.
 
 ```tsx
 createURL(apiKey: string, originalURL: string, expiration?: Date): string
 ```
 
-**Parameters**
+**المعاملات**
 
-API Key (`string`): API key provided by the user.
+مفتاح API (`string`): المفتاح المقدم من قبل المستخدم.
 
-Original URL (`string`): Original URL to be shortened.
+عنوان URL الأصلي (`string`): العنوان URL الأصلي ليتم اختصاره.
 
-Expiration (`Date`): Expiration date of the new URL _(optional)_.
+انتهاء الصلاحية (`Date`): تاريخ انتهاء الصلاحية للعنوان URL الجديد _(اختياري)_.
 
-**Returns**
+**العائدات**
 
-Short URL (`string`): New shortened URL.
+رابط قصير (`string`): رابط مقتصر جديد.
 
-### Get URL
+### الحصول على الرابط
 
-This API should retrieve the original URL from a given short URL.
+يجب أن تسترد هذه الواجهة العنوان URL الأصلي من رابط قصير معين.
 
 ```tsx
 getURL(apiKey: string, shortURL: string): string
 ```
 
-**Parameters**
+**المعاملات**
 
-API Key (`string`): API key provided by the user.
+مفتاح API (`string`): المفتاح المقدم من قبل المستخدم.
 
-Short URL (`string`): Short URL mapped to the original URL.
+رابط قصير (`string`): الرابط المقتصر المتعلق بالعنوان URL الأصلي.
 
-**Returns**
+**العائدات**
 
-Original URL (`string`): Original URL to be retrieved.
+عنوان URL الأصلي (`string`): العنوان URL الأصلي الذي يجب استرداده.
 
-### Delete URL
+### حذف الرابط
 
-This API should delete a given shortURL from our system.
+يجب أن تقوم هذه الواجهة بحذف الرابط المقتصر المعطى من نظامنا.
 
 ```tsx
 deleteURL(apiKey: string, shortURL: string): boolean
 ```
 
-**Parameters**
+**المعاملات**
 
-API Key (`string`): API key provided by the user.
+مفتاح API (`string`): المفتاح المقدم من قبل المستخدم.
 
-Short URL (`string`): Short URL to be deleted.
+رابط قصير (`string`): الرابط المقتصر الذي سيتم حذفه.
 
-**Returns**
+**العائدات**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
-### Why do we need an API key?
+### لماذا نحتاج إلى مفتاح API؟
 
-As you must've noticed, we're using an API key to prevent abuse of our services. Using this API key we can limit the users to a certain number of requests per second or minute. This is quite a standard practice for developer APIs and should cover our extended requirement.
+كما لاحظت، نحن نستخدم مفتاح API لمنع سوء استخدام خدماتنا. باستخدام هذا المفتاح، يمكننا تقييد المستخدمين إلى عدد معين من الطلبات في الثانية أو الدقيقة. هذه ممارسة قياسية جدًا لواجهات برمجة التطبيق للمطورين ويجب أن تغطي متطلباتنا الموسعة.
 
-## High-level design
+## تصميم مرتفع المستوى
 
-Now let us do a high-level design of our system.
+الآن دعونا نقوم بتصميم مرتفع المستوى لنظام
 
-### URL Encoding
+نا.
 
-Our system's primary goal is to shorten a given URL, let's look at different approaches:
+### ترميز العناوين URL
 
-**Base62 Approach**
+هدف نظامنا الرئيسي هو اختصار عنوان URL المعطى، دعونا نلقي نظرة على الطرق المختلفة:
 
-In this approach, we can encode the original URL using [Base62](https://en.wikipedia.org/wiki/Base62) which consists of the capital letters A-Z, the lower case letters a-z, and the numbers 0-9.
+**الطريقة الأساسية 62**
+
+في هذا النهج، يمكننا ترميز العنوان URL الأصلي باستخدام [الأساس 62](https://en.wikipedia.org/wiki/Base62) والذي يتألف من الحروف الكبيرة من A إلى Z، والحروف الصغيرة من a إلى z، والأرقام من 0 إلى 9.
 
 $$
-Number \space of \space URLs = 62^N
+عدد \space الروابط = 62^N
 $$
 
-Where,
+حيث:
 
-`N`: Number of characters in the generated URL.
+`N`: عدد الأحرف في العنوان URL المولد.
 
-So, if we want to generate a URL that is 7 characters long, we will generate ~3.5 trillion different URLs.
+لذا، إذا أردنا إنشاء رابطًا طوله 7 أحرف، فسنقوم بإنشاء ~3.5 تريليون روابط مختلفة.
 
 $$
 \begin{gather*}
-62^5 = \sim 916 \space million \space URLs \\
-62^6 = \sim 56.8 \space billion \space URLs \\
-62^7 = \sim 3.5 \space trillion \space URLs
+62^5 = \sim 916 \space مليون \space رابط \\
+62^6 = \sim 56.8 \space تريليون \space رابط \\
+62^7 = \sim 3.5 \space تريليون \space رابط
 \end{gather*}
 $$
 
-This is the simplest solution here, but it does not guarantee non-duplicate or collision-resistant keys.
+هذا هو أبسط حلاً هنا، ولكنه لا يضمن مفاتيح غير مكررة أو مقاومة للاصطدام.
 
-**MD5 Approach**
+**الطريقة MD5**
 
-The [MD5 message-digest algorithm](https://en.wikipedia.org/wiki/MD5) is a widely used hash function producing a 128-bit hash value (or 32 hexadecimal digits). We can use these 32 hexadecimal digits for generating 7 characters long URL.
+خوارزمية التجزئة MD5 هي خوارزمية تجزئة رسالة تستخدم على نطاق واسع تنتج قيمة تجزئة بطول 128 بت (أو 32 رقمًا عشريًا سداسيًا عشريًا). يمكننا استخدام هذه الأرقام السداسية عشرية الـ 32 لإنشاء رابط بطول 7 أحرف.
 
 $$
 MD5(original\_url) \rightarrow base62encode \rightarrow hash
 $$
 
-However, this creates a new issue for us, which is duplication and collision. We can try to re-compute the hash until we find a unique one but that will increase the overhead of our systems. It's better to look for more scalable approaches.
+ومع ذلك، هذا يخلق لنا مشكلة جديدة، وهي التكرار والتصادم. يمكننا محاولة إعادة حساب التجزئة حتى نجد واحدًا فريدًا ولكن ذلك سيزيد من تكاليف أنظمتنا. من الأفضل البحث عن طرق أكثر قابلية للتوسع.
 
-**Counter Approach**
+**الطريقة العددية**
 
-In this approach, we will start with a single server which will maintain the count of the keys generated. Once our service receives a request, it can reach out to the counter which returns a unique number and increments the counter. When the next request comes the counter again returns the unique number and this goes on.
+في هذا النهج، سنبدأ بخادم واحد يحتفظ بعدد المفاتيح التي تم إنشاؤها. بمجرد أن يتلقى خدمتنا طلبًا، يمكنها الوصول إلى العداد الذي يعيد رقمًا فريدًا ويزيد العداد. عندما يأتي الطلب التالي، يعيد العداد مرة أخرى الرقم الفريد وهذا يستمر.
 
 $$
-Counter(0-3.5 \space trillion) \rightarrow base62encode \rightarrow hash
+عداد(0-3.5 \space تريليون) \rightarrow base62encode \rightarrow hash
 $$
 
-The problem with this approach is that it can quickly become a single point for failure. And if we run multiple instances of the counter we can have collision as it's essentially a distributed system.
+المشكلة مع هذا النهج هي أنه يمكن أن يصبح بسرعة نقطة فردية للفشل. وإذا قمنا بتشغيل عدة مثيلات من العداد، يمكن أن يكون هناك تصادم حيث أنه في الأساس هو نظام موزع.
 
-To solve this issue we can use a distributed system manager such as [Zookeeper](https://zookeeper.apache.org) which can provide distributed synchronization. Zookeeper can maintain multiple ranges for our servers.
+لحل هذه المشكلة يمكننا استخدام مدير نظام موزع مثل [Zookeeper](https://zookeeper.apache.org) الذي يمكنه توفير المزامنة الموزعة. يمكن لـ Zookeeper الحفاظ على مجموعات متعددة لخوادمنا.
 
 $$
 \begin{align*}
-& Range \space 1: \space 1 \rightarrow 1,000,000 \\
-& Range \space 2: \space 1,000,001 \rightarrow 2,000,000 \\
-& Range \space 3: \space 2,000,001 \rightarrow 3,000,000 \\
+& مجموعة \space 1: \space 1 \rightarrow 1,000,000 \\
+& مجموعة \space 2: \space 1,000,001 \rightarrow 2,000,000 \\
+& مجموعة \space 3: \space 2,000,001 \rightarrow 3,000,000 \\
 & ...
 \end{align*}
 $$
 
-Once a server reaches its maximum range Zookeeper will assign an unused counter range to the new server. This approach can guarantee non-duplicate and collision-resistant URLs. Also, we can run multiple instances of Zookeeper to remove the single point of failure.
+عندما يصل خادم ما إلى نطاقه الأقصى، سيقوم Zookeeper بتخصيص نطاق عداد غير مستخدم إلى الخادم الجديد. يمكن أن يضمن هذا النهج مفاتيح غير مكررة ومقاومة للاصطدام. كما يمكننا تشغيل مثيلات متعددة من Zookeeper لإزالة نقطة الفشل الفردية.
 
-### Key Generation Service (KGS)
+### خدمة توليد المفاتيح (KGS)
 
-As we discussed, generating a unique key at scale without duplication and collisions can be a bit of a challenge. To solve this problem, we can create a standalone Key Generation Service (KGS) that generates a unique key ahead of time and stores it in a separate database for later use. This approach can make things simple for us.
+كما ناقشنا، توليد مفتاح فريد على نطاق واسع بدون تكرار وتصادم يمكن أن يكون ت
 
-**How to handle concurrent access?**
+حديًا بعض الشيء. لحل هذه المشكلة، يمكننا إنشاء خدمة مستقلة لتوليد المفاتيح (KGS) التي تقوم بتوليد مفتاح فريد مسبقًا وتخزينه في قاعدة بيانات منفصلة للاستخدام لاحقًا. يمكن أن يجعل هذا النهج الأمور بسيطة بالنسبة لنا.
 
-Once the key is used, we can mark it in the database to make sure we don't reuse it, however, if there are multiple server instances reading data concurrently, two or more servers might try to use the same key.
+**كيفية التعامل مع الوصول المتزامن؟**
 
-The easiest way to solve this would be to store keys in two tables. As soon as a key is used, we move it to a separate table with appropriate locking in place. Also, to improve reads, we can keep some of the keys in memory.
+بمجرد استخدام المفتاح، يمكننا وضع علامة عليه في قاعدة البيانات للتأكد من أننا لا نعيد استخدامه، ومع ذلك، إذا كان هناك العديد من مثيلات الخادم تقوم بقراءة البيانات بتزامن، فقد يحاول خادمان أو أكثر استخدام نفس المفتاح.
 
-**KGS database estimations**
+أسهل طريقة لحل هذه المشكلة هي تخزين المفاتيح في جدولين. بمجرد استخدام المفتاح، ننقله إلى جدول منفصل مع قفل مناسب في مكانه. وأيضًا، لتحسين القراءات، يمكننا الاحتفاظ ببعض المفاتيح في الذاكرة.
 
-As per our discussion, we can generate up to ~56.8 billion unique 6 character long keys which will result in us having to store 300 GB of keys.
+**تقديرات قاعدة بيانات KGS**
+
+كما هو مذكور في مناقشتنا، يمكننا توليد ما يصل إلى ~56.8 مليار مفتاح فريد طوله 6 أحرف مما سيؤدي إلى حاجتنا لتخزين 300 جيجابايت من المفاتيح.
 
 $$
 6 \space characters \times 56.8 \space billion = \sim 390 \space GB
 $$
 
-While 390 GB seems like a lot for this simple use case, it is important to remember this is for the entirety of our service lifetime and the size of the keys database would not increase like our main database.
+على الرغم من أن 390 جيجابايت يبدو وكأنها الكثير لهذا الاستخدام البسيط، إلا أنه من المهم أن نتذكر أن هذا لفترة حياة خدمتنا بأكملها وحجم قاعدة البيانات للمفاتيح لن يزداد مثل قاعدتنا البيانات الرئيسية.
 
-### Caching
+### التخزين المؤقت
 
-Now, let's talk about [caching](https://karanpratapsingh.com/courses/system-design/caching). As per our estimations, we will require around ~35 GB of memory per day to cache 20% of the incoming requests to our services. For this use case, we can use [Redis](https://redis.io) or [Memcached](https://memcached.org) servers alongside our API server.
+الآن، دعونا نتحدث عن [التخزين المؤقت](https://karanpratapsingh.com/courses/system-design/caching). ووفقًا لتقديراتنا، سنحتاج إلى حوالي ~35 جيجابايت من الذاكرة يوميًا لتخزين 20% من الطلبات الواردة إلى خدماتنا. لهذا الاستخدام، يمكننا استخدام خوادم [Redis](https://redis.io) أو [Memcached](https://memcached.org) جنبًا إلى جنب مع خادم API.
 
-_For more details, refer to [caching](https://karanpratapsingh.com/courses/system-design/caching)._
+_لمزيد من التفاصيل، راجع [التخزين المؤقت](https://karanpratapsingh.com/courses/system-design/caching)._
 
-### Design
+### التصميم
 
-Now that we have identified some core components, let's do the first draft of our system design.
+الآن بعد أن حددنا بعض المكونات الأساسية، دعونا نقوم بصياغة مسودة أولية لتصميم نظامنا.
 
 ![url-shortener-basic-design](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/url-shortener/url-shortener-basic-design.png)
 
-Here's how it works:
+هكذا يعمل النظام:
 
-**Creating a new URL**
+**إنشاء عنوان URL جديد**
 
-1. When a user creates a new URL, our API server requests a new unique key from the Key Generation Service (KGS).
-2. Key Generation Service provides a unique key to the API server and marks the key as used.
-3. API server writes the new URL entry to the database and cache.
-4. Our service returns an HTTP 201 (Created) response to the user.
+1. عندما ينشئ المستخدم عنوان URL جديد، يطلب خادم الـ API مفتاح فريد جديد من خدمة توليد المفاتيح (KGS).
+2. تقدم خدمة توليد المفاتيح مفتاحًا فريدًا لخادم الـ API وتضع علامة على المفتاح على أنه تم استخدامه.
+3. يكتب خادم الـ API إدخال العنوان الجديد في قاعدة البيانات والذاكرة المؤقتة.
+4. تعيد خدمتنا استجابة HTTP 201 (تم الإنشاء) إلى المستخدم.
 
-**Accessing a URL**
+**الوصول إلى عنوان URL**
 
-1. When a client navigates to a certain short URL, the request is sent to the API servers.
-2. The request first hits the cache, and if the entry is not found there then it is retrieved from the database and an HTTP 301 (Redirect) is issued to the original URL.
-3. If the key is still not found in the database, an HTTP 404 (Not found) error is sent to the user.
+1. عندما يتصفح العميل إلى عنوان URL مقتصر معين، يتم إرسال الطلب إلى خوادم الـ API.
+2. يصل الطلب أولاً إلى التخزين المؤقت، وإذا لم يتم العثور على الإدخال هناك، يتم استرداده من قاعدة البيانات ويتم إصدار استجابة HTTP 301 (توجيه) إلى العنوان URL الأصلي.
+3. إذا ل
+
+م يتم العثور على المفتاح حتى في قاعدة البيانات، يتم إرسال خطأ HTTP 404 (غير موجود) إلى المستخدم.
 
 ## Detailed design
 
