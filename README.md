@@ -3422,90 +3422,92 @@ OAuth 2.0، والذي يعني الترخيص المفتوح، هو معيار 
 
 كل من OAuth 2.0 و OIDC سهل التنفيذ وقائم على JSON، والذي يدعمه معظم تطبيقات الويب والجوّال. ومع ذلك، مواصفات OpenID Connect (OIDC) أكثر صرامة من مواصفات OAuth الأساسية.
 
-# Single Sign-On (SSO)
+# تسجيل الدخول الموحّد (SSO)
 
-Single Sign-On (SSO) is an authentication process in which a user is provided access to multiple applications or websites by using only a single set of login credentials. This prevents the need for the user to log separately into the different applications.
+تسجيل الدخول الموحّد (SSO) هو عملية مصادقة تُمكِّن المستخدم من الوصول إلى تطبيقات أو مواقع متعددة باستخدام مجموعة واحدة من بيانات تسجيل الدخول فقط. وهذا يمنع الحاجة لتسجيل الدخول بشكل منفصل إلى التطبيقات المختلفة.
 
-The user credentials and other identifying information are stored and managed by a centralized system called Identity Provider (IdP). The Identity Provider is a trusted system that provides access to other websites and applications.
+بيانات مصادقة المستخدم ومعلومات التعرّف الأخرى يتم تخزينها وإدارتها من قبل نظام مركزي يُسمى مُوفر الهوية (IdP). مُوفر الهوية هو نظام موثوق يوفر وصولًا إلى مواقع وتطبيقات أخرى.
 
-Single Sign-On (SSO) based authentication systems are commonly used in enterprise environments where employees require access to multiple applications of their organizations.
+يُستخدَم نظام المصادقة القائم على تسجيل الدخول الموحّد (SSO) بشكل شائع في بيئات المؤسسات حيث يحتاج الموظفون إلى الوصول إلى تطبيقات متعددة تابعة لهم.
 
-## Components
+## المكونات
 
-Let's discuss some key components of Single Sign-On (SSO).
+لنناقش بعض المكونات الرئيسية لتسجيل الدخول الموحّد (SSO).
 
-### Identity Provider (IdP)
+### مُوفِّر الهوية (IdP)
 
-User Identity information is stored and managed by a centralized system called Identity Provider (IdP). The Identity Provider authenticates the user and provides access to the service provider.
+معلومات هوية المستخدم تُخزَّن وتُدار من قبل نظام مركزي يُسمى مُوفر الهوية (IdP). يقوم مُوفِّر الهوية بمصادقة المستخدم ويوفِّر وصولًا إلى موفِّر الخدمة.
 
-The identity provider can directly authenticate the user by validating a username and password or by validating an assertion about the user's identity as presented by a separate identity provider. The identity provider handles the management of user identities in order to free the service provider from this responsibility.
+مُوفر الهوية يمكنه مصادقة المستخدم مباشرةً عن طريق التحقق من اسم المستخدم وكلمة المرور أو عن طريق التحقق من بيان مُظهر حول هوية المستخدم كما يُقدِّمه مُوفِّر هوية منفصل. مُوفِّر الهوية يُدير إدارة هويات المستخدم لتحرير مزود الخدمة من هذه المسؤولية.
 
-### Service Provider
+### مزود الخدمة
 
-A service provider provides services to the end-user. They rely on identity providers to assert the identity of a user, and typically certain attributes about the user are managed by the identity provider. Service providers may also maintain a local account for the user along with attributes that are unique to their service.
+مُزود الخدمة يقدِّم خدمات للمستخدم النهائي. يعتمدون على مُوفِّري الهوية لتأكيد هوية المستخدم، وعادة ما يُدار بواسطة مُوفِّري الهوية بعض السمات المتعلقة بالمستخدم. يمكن أن يحتفظ مُزودي الخدمة أيضًا بحساب محلي للمستخدم بالإضافة إلى سمات فريدة لخدمتهم.
 
-### Identity Broker
+### وسيط الهوية
 
-An identity broker acts as an intermediary that connects multiple service providers with various different identity providers. Using Identity Broker, we can perform single sign-on over any application without the hassle of the protocol it follows.
+وسيط الهوية يعمل كوسيط يربط مزودي خدمة متعددين بمزودي هوية مختلفين. باستخدام وسيط الهوية، يُمكِنُنا تنفيذ تسجيل الدخول الموحّد عبر أي تطبيق دون عناء البروتوكول الذي يتبعه.
 
 ## SAML
 
-Security Assertion Markup Language is an open standard that allows clients to share security information about identity, authentication, and permission across different systems. SAML is implemented with the Extensible Markup Language (XML) standard for sharing data.
+لغة ترميز تصريحات الأمان هي معيار مفتوح يسمح للعملاء بمشاركة معلومات الأمان حول الهوية والمصادقة والأذون عبر أنظمة مختلفة. يتم تنفيذ SAML باستخدام معيار لغة الترميز الموسّعة (XML) لمشاركة البيانات.
 
-SAML specifically enables identity federation, making it possible for identity providers (IdPs) to seamlessly and securely pass authenticated identities and their attributes to service providers.
+تمكن SAML على وجه الخصوص تكامل الهويات، مما يجعل من الممكن على مزودي الهوية (IdPs) تمرير هويات مصادقة وسماتها بشكل سلس وآمن إلى مقدمي الخدمة.
 
-## How does SSO work?
+## كيف يعمل تسجيل الدخول الموحّد (SSO)؟
 
-Now, let's discuss how Single Sign-On works:
+الآن، لنتناقش حول كيفية عمل تسجيل الدخول الموحّد:
 
 ![sso](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/single-sign-on/sso.png)
 
-1. The user requests a resource from their desired application.
-2. The application redirects the user to the Identity Provider (IdP) for authentication.
-3. The user signs in with their credentials (usually, username and password).
-4. Identity Provider (IdP) sends a Single Sign-On response back to the client application.
-5. The application grants access to the user.
+1. يُطلب المستخدم موردًا من تطبيقه المرغوب.
+2. يُعيد التطبيق المستخدم إلى مُوفِّر الهوية (IdP) للمصادقة.
+3. يُسجل المستخدم دخوله باستخدام بيانات اعتماده (عاد
 
-## SAML vs OAuth 2.0 and OpenID Connect (OIDC)
+ة، اسم المستخدم وكلمة المرور).
+4. يُرسِل مُوفِّر الهوية (IdP) رد تسجيل دخول موحّد إلى تطبيق العميل.
+5. يُمنَح التطبيق الوصول للمستخدم.
 
-There are many differences between SAML, OAuth, and OIDC. SAML uses XML to pass messages, while OAuth and OIDC use JSON. OAuth provides a simpler experience, while SAML is geared towards enterprise security.
+## SAML مقابل OAuth 2.0 و OpenID Connect (OIDC)
 
-OAuth and OIDC use RESTful communication extensively, which is why mobile, and modern web applications find OAuth and OIDC a better experience for the user. SAML, on the other hand, drops a session cookie in a browser that allows a user to access certain web pages. This is great for short-lived workloads.
+هناك العديد من الاختلافات بين SAML و OAuth و OIDC. يستخدم SAML XML لتمرير الرسائل، بينما يستخدم OAuth و OIDC JSON. يوفر OAuth تجربة أبسط، بينما يُستهدَف SAML أمان المؤسسات.
 
-OIDC is developer-friendly and simpler to implement, which broadens the use cases for which it might be implemented. It can be implemented from scratch pretty fast, via freely available libraries in all common programming languages. SAML can be complex to install and maintain, which only enterprise-size companies can handle well.
+يستخدم OAuth و OIDC التواصل القائم على REST بشكل واسع، ولهذا تعتبر التطبيقات المتنقلة وتطبيقات الويب الحديثة تجربة أفضل للمستخدم مع OAuth و OIDC. بالمقابل، يفرض SAML ملف تعريف جلسة في متصفح يتيح للمستخدم الوصول إلى صفحات ويب معينة. وهذا رائع لأعباء العمل المستمرة.
 
-OpenID Connect is essentially a layer on top of the OAuth framework. Therefore, it can offer a built-in layer of permission that asks a user to agree to what the service provider might access. Although SAML is also capable of allowing consent flow, it achieves this by hard-coding carried out by a developer and not as part of its protocol.
+OIDC ودود للمطورين وأسهل في التنفيذ، مما يوسع حالات الاستخدام التي يمكن تنفيذها به. يمكن تنفيذه من الصفر بسرعة كبيرة، من خلال مكتبات متاحة مجانًا في جميع لغات البرمجة الشائعة. يمكن أن يكون SAML معقدًا لتثبيته وصيانته، والذي يمكن لشركات الحجم الكبير فقط التعامل معه جيدًا.
 
-_Both of these authentication protocols are good at what they do. As always, a lot depends on our specific use cases and target audience._
+OpenID Connect عبارة عن أساس أعلى لإطار OAuth. لذلك، يمكن أن يقدم طبقة مدمجة من الإذن تُطلب من المستخدم الموافقة على الوصول إلى ما قد يصل إليه مقدم الخدمة. على الرغم من أن SAML قادر أيضًا على السماح بتدفق الموافقة، إلا أنه يتم ذلك عن طريق الترميز الصلب الذي يقوم به المطور وليس كجزء من بروتوكوله.
 
-## Advantages
+_كلا من بروتوكولات المصادقة هاتان جيدتان في مجالاتهما. كما هو الحال دائمًا، يعتمد الكثير على حالات الاستخدام الخاصة بنا وجمهور الهدف._
 
-Following are the benefits of using Single Sign-On:
+# SSL, TLS, mTLS
 
-- Ease of use as users only need to remember one set of credentials.
-- Ease of access without having to go through a lengthy authorization process.
-- Enforced security and compliance to protect sensitive data.
-- Simplifying the management with reduced IT support cost and admin time.
+Let's briefly discuss some important communication security protocols such as SSL, TLS, and mTLS. I would say that from a _"big picture"_ system design perspective, this topic is not very important but still good to know about.
 
-## Disadvantages
+## المزايا
 
-Here are some disadvantages of Single Sign-On:
+فيما يلي بعض فوائد استخدام تسجيل الدخول الموحّد:
 
-- Single Password Vulnerability, if the main SSO password gets compromised, all the supported applications get compromised.
-- The authentication process using Single Sign-On is slower than traditional authentication as every application has to request the SSO provider for verification.
+- سهولة الاستخدام حيث يحتاج المستخدمون فقط إلى تذكر مجموعة واحدة من بيانات تسجيل الدخول.
+- سهولة الوصول دون الحاجة للخضوع لعملية تفويض طويلة.
+- تطبيق أمان وامتثال لحماية البيانات الحساسة.
+- تبسيط الإدارة مع تقليل تكلفة دعم تكنولوجيا المعلومات ووقت الإدارة.
 
-## Examples
+## العيوب
 
-These are some commonly used Identity Providers (IdP):
+إليك بعض عيوب تسجيل الدخول الموحّد:
+
+- عرضة لضعف كلمة المرور الوحيدة، إذا تم اختراق كلمة المرور الرئيسية لتسجيل الدخول الموحّد، ستتعرض جميع التطبيقات المدعومة للاختراق.
+- عملية المصادقة باستخدام تسجيل الدخول الموحّد أبطأ من المصادقة التقليدية حيث يجب على كل تطبيق طلب تحقق من موفِّر الهوية للتحقق.
+
+## أمثلة
+
+إليك بعض مُوفري الهوية (IdP) الشائعين:
 
 - [Okta](https://www.okta.com)
 - [Google](https://cloud.google.com/architecture/identity/single-sign-on)
 - [Auth0](https://auth0.com)
 - [OneLogin](https://www.onelogin.com)
-
-# SSL, TLS, mTLS
-
-Let's briefly discuss some important communication security protocols such as SSL, TLS, and mTLS. I would say that from a _"big picture"_ system design perspective, this topic is not very important but still good to know about.
 
 ## SSL
 
