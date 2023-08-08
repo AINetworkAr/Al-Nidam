@@ -3480,10 +3480,6 @@ OpenID Connect عبارة عن أساس أعلى لإطار OAuth. لذلك، ي
 
 _كلا من بروتوكولات المصادقة هاتان جيدتان في مجالاتهما. كما هو الحال دائمًا، يعتمد الكثير على حالات الاستخدام الخاصة بنا وجمهور الهدف._
 
-# SSL, TLS, mTLS
-
-Let's briefly discuss some important communication security protocols such as SSL, TLS, and mTLS. I would say that from a _"big picture"_ system design perspective, this topic is not very important but still good to know about.
-
 ## المزايا
 
 فيما يلي بعض فوائد استخدام تسجيل الدخول الموحّد:
@@ -3508,6 +3504,10 @@ Let's briefly discuss some important communication security protocols such as SS
 - [Google](https://cloud.google.com/architecture/identity/single-sign-on)
 - [Auth0](https://auth0.com)
 - [OneLogin](https://www.onelogin.com)
+
+# SSL, TLS, mTLS
+
+Let's briefly discuss some important communication security protocols such as SSL, TLS, and mTLS. I would say that from a _"big picture"_ system design perspective, this topic is not very important but still good to know about.
 
 ## SSL
 
