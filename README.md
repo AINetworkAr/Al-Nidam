@@ -4207,134 +4207,138 @@ $$
 
 سنقسم البيانات بين خدمات مختلفة لكل منها ملكية خاصة على جدول معين. ثم يمكننا استخدام قاعدة بيانات علاقية مثل [PostgreSQL](https://www.postgresql.org) أو قاعدة بيانات NoSQL موزعة مثل [Apache Cassandra](https://cassandra.apache.org/_/index.html) لحالتنا.
 
-## API design
+## تصميم واجهة البرمجة (API)
 
-Let us do a basic API design for our services:
+لنقم بتصميم واجهة برمجة تطبيقات (API) الأساسية لخدماتنا:
 
-### Get all chats or groups
+### الحصول على جميع المحادثات أو المجموعات
 
-This API will get all chats or groups for a given `userID`.
+ستحصل هذه الواجهة على جميع المحادثات أو المجموعات لمستخدم معين باستخدام "userID".
 
 ```tsx
 getAll(userID: UUID): Chat[] | Group[]
 ```
 
-**Parameters**
+**المعلمات**
 
-User ID (`UUID`): ID of the current user.
+معرف المستخدم (`UUID`): معرف المستخدم الحالي.
 
-**Returns**
+**العائدات**
 
-Result (`Chat[] | Group[]`): All the chats and groups the user is a part of.
+النتيجة (`Chat[] | Group[]`): جميع المحادثات والمجموعات التي يشارك فيها المستخدم.
 
-### Get messages
+### الحصول على الرسائل
 
-Get all messages for a user given the `channelID` (chat or group id).
+الحصول على جميع الرسائل لمستخدم معين باستخدام "channelID" (معرف المحادثة أو المجموعة).
 
 ```tsx
 getMessages(userID: UUID, channelID: UUID): Message[]
 ```
 
-**Parameters**
+**المعلمات**
 
-User ID (`UUID`): ID of the current user.
+معرف المستخدم (`UUID`): معرف المستخدم الحالي.
 
-Channel ID (`UUID`): ID of the channel (chat or group) from which messages need to be retrieved.
+معرف القناة (`UUID`): معرف القناة (معرف المحادثة أو المجموعة) الذي تحتاج إلى استرداد الرسائل منه.
 
-**Returns**
+**العائدات**
 
-Messages (`Message[]`): All the messages in a given chat or group.
+الرسائل (`Message[]`): جميع الرسائل في محادثة أو مجموعة معينة.
 
-### Send message
+### إرسال رسالة
 
-Send a message from a user to a channel (chat or group).
+إرسال رسالة من مستخدم إلى قناة (محادثة أو مجموعة).
 
 ```tsx
 sendMessage(userID: UUID, channelID: UUID, message: Message): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-User ID (`UUID`): ID of the current user.
+معرف المستخدم (`UUID`): معرف المستخدم الحالي.
 
-Channel ID (`UUID`): ID of the channel (chat or group) user wants to send a message to.
+معرف القناة (`UUID`): معرف القناة (معرف المحادثة أو المجموعة) الذي يرغب المستخدم في إرسال رسالة إليه.
 
-Message (`Message`): The message (text, image, video, etc.) that the user wants to send.
+الرسالة (`Message`): الرسالة (نص، صورة، فيديو، إلخ.) التي يرغب المستخدم في إرسالها.
 
-**Returns**
+**العائدات**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+النتيجة (`boolean`): يمثل ما إذا كانت العملية ناجحة أم لا.
 
-### Join or leave a channel
+### الانضمام أو مغادرة قناة
 
-Allows the user to join or leave a channel (chat or group).
+تسمح للمستخدم بالانضمام إلى قناة (محادثة أو مجموعة) أو مغادرتها.
 
 ```tsx
 joinGroup(userID: UUID, channelID: UUID): boolean
 leaveGroup(userID: UUID, channelID: UUID): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-User ID (`UUID`): ID of the current user.
+معرف المستخدم (`UUID`): معرف المستخدم الحالي.
 
-Channel ID (`UUID`): ID of the channel (chat or group) the user wants to join or leave.
+معرف القناة (`UUID`): معرف القناة (معرف المحادثة أو المجموعة) الذي يرغب المستخدم في الانضمام إليه أو مغادرته.
 
-**Returns**
+**العائدات**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+النتيجة (`boolean`): يمثل ما إذا كانت العملية ناجحة أم لا.
 
-## High-level design
+## تصميم عالي المستوى
 
-Now let us do a high-level design of our system.
+لنقم الآن بتصميم عالي المستوى لنظامنا.
 
-### Architecture
+### الهندسة المعمارية
 
-We will be using [microservices architecture](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) since it will make it easier to horizontally scale and decouple our services. Each service will have ownership of its own data model. Let's try to divide our system into some core services.
+سنستخدم [هندسة الخدمات المصغرة](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) لأنها ستجعل من السهل توسيع خدماتنا أفقيًا وفصلها. ستمتلك كل خدمة نموذج بياناتها الخاص. دعونا نقسم نظامنا إلى بعض الخدمات الأساسية.
 
-**User Service**
+**خدمة المستخدمين**
 
-This is an HTTP-based service that handles user-related concerns such as authentication and user information.
+هذه الخدمة تستند إلى HTTP وتتعامل مع مسائل تتعلق بالمستخدمين مثل المصادقة ومعلومات المستخدم.
 
-**Chat Service**
+**خدمة المحادثة**
 
-The chat service will use WebSockets and establish connections with the client to handle chat and group message-related functionality. We can also use cache to keep track of all the active connections sort of like sessions which will help us determine if the user is online or not.
+ستستخدم خدمة المحادثة WebSockets وإنشاء اتصالات مع العميل للتعامل مع وظائف المحادثة والرسائل في المجموعة. يمكننا أيضًا استخدام التخزين المؤقت لتتبع جميع الاتصالات النشطة تمامًا مثل الجلسات مما سيساعدنا على تحديد ما إذا كان المستخدم متصلًا أم لا.
 
-**Notification Service**
+**خدمة الإشعارات**
 
-This service will simply send push notifications to the users. It will be discussed in detail separately.
+ستقوم هذه الخدمة ببساط
 
-**Presence Service**
+ة بإرسال إشعارات دفع للمستخدمين. سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-The presence service will keep track of the _last seen_ status of all users. It will be discussed in detail separately.
+**خدمة الوجود**
 
-**Media service**
+ستقوم خدمة الوجود بتتبع حالة "آخر ظهور" لجميع المستخدمين. سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-This service will handle the media (images, videos, files, etc.) uploads. It will be discussed in detail separately.
+**خدمة الوسائط**
 
-**What about inter-service communication and service discovery?**
+ستتعامل هذه الخدمة مع تحميل وسائط (صور، فيديو، ملفات، إلخ.). سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-Since our architecture is microservices-based, services will be communicating with each other as well. Generally, REST or HTTP performs well but we can further improve the performance using [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) which is more lightweight and efficient.
+**ماذا عن التواصل بين الخدمات واكتشاف الخدمات؟**
 
-[Service discovery](https://karanpratapsingh.com/courses/system-design/service-discovery) is another thing we will have to take into account. We can also use a service mesh that enables managed, observable, and secure communication between individual services.
+نظرًا لأن هندسة النظام الخاص بنا تعتمد على الخدمات المصغرة، ستتواصل الخدمات مع بعضها البعض. بشكل عام، تعمل REST أو HTTP بشكل جيد ولكن يمكننا تحسين الأداء بمزيد من الكفاءة باستخدام [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) والذي هو أخف وزنًا وأكثر كفاءة.
 
-_Note: Learn more about [REST, GraphQL, gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) and how they compare with each other._
+[اكتشاف الخدمات](https://karanpratapsingh.com/courses/system-design/service-discovery) هو شيء آخر يجب أخذه في الاعتبار. يمكننا أيضًا استخدام شبكة خدمة تمكِّن من التواصل المُدار والمرئي والآمن بين الخدمات الفردية.
 
-### Real-time messaging
+_ملحوظة: تعرّف على المزيد حول [REST، GraphQL، gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) وكيفية مقارنتها مع بعضها البعض._
 
-How do we efficiently send and receive messages? We have two different options:
+### الرسائل في الوقت الحقيقي
 
-**Pull model**
+كيف يمكننا إرسال واستقبال الرسائل بكفاءة؟ لدينا اختيارين مختلفين:
 
-The client can periodically send an HTTP request to servers to check if there are any new messages. This can be achieved via something like [Long polling](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#long-polling).
+**نموذج الاستقطاب (Pull)**
 
-**Push model**
+يمكن للعميل أن يرسل بشكل دوري طلبًا HTTP إلى الخوادم للتحقق مما إذا كانت هناك رسائل جديدة. يمكن تحقيق ذلك عبر شيء مثل [الاستقطاب الطويل (Long polling)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#long-polling).
 
-The client opens a long-lived connection with the server and once new data is available it will be pushed to the client. We can use [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) or [Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) for this.
+**نموذج الدفع (Push)**
 
-The pull model approach is not scalable as it will create unnecessary request overhead on our servers and most of the time the response will be empty, thus wasting our resources. To minimize latency, using the push model with [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) is a better choice because then we can push data to the client once it's available without any delay, given the connection is open with the client. Also, WebSockets provide full-duplex communication, unlike [Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) which are only unidirectional.
+يفتح العميل اتصالًا طويل الأمد مع الخادم وعندما تكون البيانات الجديدة متاحة سيتم دفعها إلى العميل. يمكننا استخدام [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) أو [أحداث الخادم المرسلة (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) لهذا.
 
-_Note: Learn more about [Long polling, WebSockets, Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events)._
+نموذج الاستقطاب (Pull) ليس قابلاً للتوسع حيث س
+
+يؤدي إلى إنشاء زيادة غير ضرورية في الطلبات على خوادمنا وفي معظم الوقت ستكون الاستجابة فارغة، مما يهدر مواردنا. لتقليل التأخير، استخدام نموذج الدفع (Push) باستخدام [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) هو اختيار أفضل لأننا سنتمكن من دفع البيانات إلى العميل بمجرد توفرها دون أي تأخير، بشرط أن يكون الاتصال مفتوحًا مع العميل. أيضًا، توفر WebSockets اتصالًا ذهابيًا وإيابيًا بالكامل، على عكس [أحداث الخادم المرسلة (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) التي تكون ذات اتجاه واحد فقط.
+
+_ملحوظة: تعرّف على المزيد حول [الاستقطاب الطويل (Long polling)، WebSockets، أحداث الخادم المرسلة (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events)._
 
 ### Last seen
 
