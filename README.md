@@ -4340,60 +4340,64 @@ _ملحوظة: تعرّف على المزيد حول [REST، GraphQL، gRPC](htt
 
 _ملحوظة: تعرّف على المزيد حول [الاستقطاب الطويل (Long polling)، WebSockets، أحداث الخادم المرسلة (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events)._
 
-### Last seen
+### الظهور الأخير
 
-To implement the last seen functionality, we can use a [heartbeat](<https://en.wikipedia.org/wiki/Heartbeat_(computing)>) mechanism, where the client can periodically ping the servers indicating its liveness. Since this needs to be as low overhead as possible, we can store the last active timestamp in the cache as follows:
+لتنفيذ وظيفة "الظهور الأخير"، يمكننا استخدام آلية [نبضات القلب (Heartbeat)](https://en.wikipedia.org/wiki/Heartbeat_(computing))، حيث يمكن للعميل إرسال إشارة نبضية بشكل دوري إلى الخوادم للإشارة إلى عمله. نظرًا لأن هذا يحتاج إلى أدنى قدر ممكن من التكلفة، يمكننا تخزين الطابع الزمني للنشاط الأخير في الذاكرة المخبأة على النحو التالي:
 
-| Key    | Value               |
-| ------ | ------------------- |
-| User A | 2022-07-01T14:32:50 |
-| User B | 2022-07-05T05:10:35 |
-| User C | 2022-07-10T04:33:25 |
+| المفتاح | القيمة                |
+| ------- | -------------------- |
+| مستخدم أ | 2022-07-01T14:32:50 |
+| مستخدم ب | 2022-07-05T05:10:35 |
+| مستخدم ج | 2022-07-10T04:33:25 |
 
-This will give us the last time the user was active. This functionality will be handled by the presence service combined with [Redis](https://redis.io) or [Memcached](https://memcached.org) as our cache.
+سيمنحنا هذا آخر وقت قام فيه المستخدم بالتفاعل. سيتم التعامل مع هذه الوظيفة بواسطة خدمة الوجود بالتعاون مع [Redis](https://redis.io) أو [Memcached](https://memcached.org) كذاكرة مؤقتة.
 
-Another way to implement this is to track the latest action of the user, once the last activity crosses a certain threshold, such as _"user hasn't performed any action in the last 30 seconds"_, we can show the user as offline and last seen with the last recorded timestamp. This will be more of a lazy update approach and might benefit us over heartbeat in certain cases.
+طريقة أخرى لتنفيذ ذلك هي تتبع أحدث عملية للمستخدم، عندما يتجاوز آخر نشاط عتبة معينة، مثل _"المستخدم لم يقم بأي عمل خلال الـ 30 ثانية الماضية"_. يمكننا عرض العميل على أنه غير متصل وظهوره الأخير مع الطابع الزمني الذي تم تسجيله آخر مرة. سيكون هذا نهجًا لتحديث كسول قد يفيدنا في بعض الحالات أكثر من النبضات.
 
-### Notifications
+### الإشعارات
 
-Once a message is sent in a chat or a group, we will first check if the recipient is active or not, we can get this information by taking the user's active connection and last seen into consideration.
+بمجرد إرسال رسالة في دردشة أو مجموعة، سنتحقق أولاً مما إذا كان المستلم نشطًا أم لا، يمكننا الحصول على هذه المعلومات من خلال مراعاة الاتصال النشط للمستخدم ووقت آخر ظهوره.
 
-If the recipient is not active, the chat service will add an event to a [message queue](https://karanpratapsingh.com/courses/system-design/message-queues) with additional metadata such as the client's device platform which will be used to route the notification to the correct platform later on.
+إذا كان المستلم غير نشط، سيقوم خدمة الدردشة بإضافة حدث إلى [صف الرسائل](https://karanpratapsingh.com/courses/system-design/message-queues) مع بيانات تعريفية إضافية مثل منصة جهاز العميل التي سيتم استخدامها لتوجيه الإشعار إلى المنصة الصحيحة لاحقًا.
 
-The notification service will then consume the event from the message queue and forward the request to [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging) or [Apple Push Notification Service (APNS)](https://developer.apple.com/documentation/usernotifications) based on the client's device platform (Android, iOS, web, etc). We can also add support for email and SMS.
+ثم ستستهلك خدمة الإشعارات الحدث من صف الرسائل وتوجيه الطلب إلى [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging) أو [Apple Push Notification Service (APNS)](https://developer.apple.com/documentation/usernotifications) استنادًا إلى منصة جهاز العميل (Android، iOS، الويب، إلخ). يمكننا أيضًا إضافة دعمًا للبريد الإلكتروني ورسائل النص.
 
-**Why are we using a message queue?**
+**لماذا نستخدم صف الرسائل؟**
 
-Since most message queues provide best-effort ordering which ensures that messages are generally delivered in the same order as they're sent and that a message is delivered at least once which is an important part of our service functionality.
+نظرًا لأن معظم أنظمة الرسائل توفر ترتيبًا حسب أفضل الجهود والذي يضمن تسليم الرسائل بشكل عام بنفس الترتيب الذي تم إرساله وأن تسليم الرسالة يتم مرة واحدة على الأقل، وهو جزء مهم من وظيفة خدمتنا.
 
-While this seems like a classic [publish-subscribe](https://karanpratapsingh.com/courses/system-design/publish-subscribe) use case, it is actually not as mobile devices and browsers each have their own way of handling push notifications. Usually, notifications are handled externally via Firebase Cloud Messaging (FCM) or Apple Push Notification Service (APNS) unlike message fan-out which we commonly see in backend services. We can use something like [Amazon SQS](https://aws.amazon.com/sqs) or [RabbitMQ](https://www.rabbitmq.com) to support this functionality.
+على الرغم من أن هذا يبدو وكأنه استخدام تقليدي لنمط النشر-الاشتراك ([publish-subscribe](https://karanpratapsingh.com/courses
 
-### Read receipts
+/system-design/publish-subscribe))، إلا أنه في الواقع ليس كذلك بما أن الأجهزة المحمولة ومتصفحات الويب لكل منها طريقتها الخاصة للتعامل مع الإشعارات. عادةً ما يتم التعامل مع الإشعارات بشكل خارجي من خلال Firebase Cloud Messaging (FCM) أو Apple Push Notification Service (APNS) على عكس انتشار الرسائل الذي نراه بشكل شائع في خدمات الخادم الخلفي. يمكننا استخدام شيء مثل [Amazon SQS](https://aws.amazon.com/sqs) أو [RabbitMQ](https://www.rabbitmq.com) لدعم هذه الوظيفة.
 
-Handling read receipts can be tricky, for this use case we can wait for some sort of [Acknowledgment (ACK)](<https://en.wikipedia.org/wiki/Acknowledgement_(data_networks)>) from the client to determine if the message was delivered and update the corresponding `deliveredAt` field. Similarly, we will mark the message as seen once the user opens the chat and update the corresponding `seenAt` timestamp field.
+### تلقي إيصالات القراءة
 
-### Design
+التعامل مع إيصالات القراءة يمكن أن يكون أمرًا معقدًا، لهذا الغرض يمكننا الانتظار حتى نحصل على نوع من [التأكيد (ACK)](https://en.wikipedia.org/wiki/Acknowledgement_(data_networks)) من العميل لتحديد ما إذا تم تسليم الرسالة وتحديث الحقل `deliveredAt` المقابل. بالمثل، سنضيف علامة على الرسالة كمقروءة بمجرد أن يفتح المستخدم الدردشة وتحديث الحقل الزمني المقابل `seenAt`.
 
-Now that we have identified some core components, let's do the first draft of our system design.
+### التصميم
+
+الآن بعد أن قمنا بتحديد بعض المكونات الأساسية، دعونا نقوم بصياغة المسودة الأولى لتصميم نظامنا.
 
 ![whatsapp-basic-design](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/whatsapp/whatsapp-basic-design.png)
 
-## Detailed design
+## تصميم مفصل
 
-It's time to discuss our design decisions in detail.
+حان الوقت لمناقشة قرارات التصميم لدينا بالتفصيل.
 
-### Data Partitioning
+### تجزئة البيانات
 
-To scale out our databases we will need to partition our data. Horizontal partitioning (aka [Sharding](https://karanpratapsingh.com/courses/system-design/sharding)) can be a good first step. We can use partitions schemes such as:
+لتوسيع قواعد البيانات لدينا سنحتاج إلى تجزئة بياناتنا. يمكن أن تكون التجزئة الأفقية (المعروفة أيضًا بـ [التجزئة الأفقية](https://karanpratapsingh.com/courses/system-design/sharding)) خطوة أولى جيدة. يمكننا استخدام أنماط التجزئة مثل:
 
-- Hash-Based Partitioning
-- List-Based Partitioning
-- Range Based Partitioning
-- Composite Partitioning
+- التجزئة القائمة على التجزئة (Hash-Based Partitioning)
+- التجزئة القائمة على القائمة (List-Based Partitioning)
+- التجزئة القائمة على النطاق (Range Based Partitioning)
+- التجزئة المركبة (Composite Partitioning)
 
-The above approaches can still cause uneven data and load distribution, we can solve this using [Consistent hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
+تلك النماذج أعلاه قد تؤدي لاستقطاب غير متساوي للبيانات والأعباء، ويمكننا حل هذا باستخدام [التجزئة المتسقة (Consistent hashing)](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
 
-_For more details, refer to [Sharding](https://karanpratapsingh.com/courses/system-design/sharding) and [Consistent Hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
+_لمزيد من التفاصيل، راجع [التجزئة (Sharding)](https://karanpratapsingh.com/courses/system-design/sharding) و [التجزئة المتسقة (Consistent Hashing
+
+)](https://karanpratapsingh.com/courses/system-design/consistent-hashing).__
 
 ### Caching
 
