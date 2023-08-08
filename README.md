@@ -3993,78 +3993,80 @@ _لمزيد من التفاصيل، راجع [التخزين المؤقت](https
 
 م يتم العثور على المفتاح حتى في قاعدة البيانات، يتم إرسال خطأ HTTP 404 (غير موجود) إلى المستخدم.
 
-## Detailed design
+## التصميم التفصيلي
 
-It's time to discuss the finer details of our design.
+حان وقت مناقشة تفاصيل تصميمنا الأدق.
 
-### Data Partitioning
+### تقسيم البيانات
 
-To scale out our databases we will need to partition our data. Horizontal partitioning (aka [Sharding](https://karanpratapsingh.com/courses/system-design/sharding)) can be a good first step. We can use partitions schemes such as:
+لتوسيع قواعد البيانات لدينا، سنحتاج إلى تقسيم بياناتنا. يمكن أن يكون التقسيم الأفقي (المعروف أيضًا باسم [التقسيم](https://karanpratapsingh.com/courses/system-design/sharding)) خطوة أولى جيدة. يمكننا استخدام خطط تقسيم مثل:
 
-- Hash-Based Partitioning
-- List-Based Partitioning
-- Range Based Partitioning
-- Composite Partitioning
+- التقسيم القائم على الهاش
+- التقسيم القائم على القائمة
+- التقسيم القائم على النطاق
+- التقسيم المركب
 
-The above approaches can still cause uneven data and load distribution, we can solve this using [Consistent hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
+النهج المذكور أعلاه قد يسبب توزيعًا غير متساويًا للبيانات والأحمال، يمكننا حل هذا باستخدام [التجزئة المستمرة](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
 
-_For more details, refer to [Sharding](https://karanpratapsingh.com/courses/system-design/sharding) and [Consistent Hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
+_للمزيد من التفاصيل، يمكنك الرجوع إلى [التقسيم](https://karanpratapsingh.com/courses/system-design/sharding) و [التجزئة المستمرة](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
 
-### Database cleanup
+### تنظيف قاعدة البيانات
 
-This is more of a maintenance step for our services and depends on whether we keep the expired entries or remove them. If we do decide to remove expired entries, we can approach this in two different ways:
+هذه خطوة أكثر توجيهًا لصيانة خدماتنا وتعتمد على ما إذا كنا سنحتفظ بالإدخالات المنتهية أم سنقوم بإزالتها. إذا قررنا إزالة الإدخالات المنتهية، يمكننا التعامل مع هذا الأمر بطريقتين مختلفتين:
 
-**Active cleanup**
+**تنظيف نشط**
 
-In active cleanup, we will run a separate cleanup service which will periodically remove expired links from our storage and cache. This will be a very lightweight service like a [cron job](https://en.wikipedia.org/wiki/Cron).
+في التنظيف النشط، سنقوم بتشغيل خدمة تنظيف منفصلة ستقوم بشكل دوري بإزالة الروابط المنتهية من التخزين والذاكرة المؤقتة. ستكون هذه خدمة خفيفة الوزن جدًا مثل [المهمة المجدولة](https://en.wikipedia.org/wiki/Cron).
 
-**Passive cleanup**
+**تنظيف سلبي**
 
-For passive cleanup, we can remove the entry when a user tries to access an expired link. This can ensure a lazy cleanup of our database and cache.
+في التنظيف السلبي، يمكننا إزالة الإدخالة عندما يحاول المستخدم الوصول إلى رابط منتهي. يمكن أن يضمن هذا تنظيفًا كسولًا لقاعدة البيانات والذاكرة المؤقتة.
 
-### Cache
+### الذاكرة المؤقتة
 
-Now let us talk about [caching](https://karanpratapsingh.com/courses/system-design/caching).
+الآن دعونا نتحدث عن [التخزين المؤقت](https://karanpratapsingh.com/courses/system-design/caching).
 
-**Which cache eviction policy to use?**
+**أي سياسة تطهير ذاكرة التخزين المؤقت يجب استخدامها؟**
 
-As we discussed before, we can use solutions like [Redis](https://redis.io) or [Memcached](https://memcached.org) and cache 20% of the daily traffic but what kind of cache eviction policy would best fit our needs?
+كما ناقشنا سابقًا، يمكننا استخدام حلول مثل [Redis](https://redis.io) أو [Memcached](https://memcached.org) وتخزين تخزين مؤقت لـ 20% من حركة البيانات اليومية، ولكن أي نوع من سياسات تطهير ذاكرة التخزين المؤقت سيكون مناسبًا لاحتياجاتنا؟
 
-[Least Recently Used (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)>) can be a good policy for our system. In this policy, we discard the least recently used key first.
+يمكن أن تكون السياسة المعتمدة على الاستخدام الأقل حديثًا (LRU) سياسة جيدة لنظامنا. في هذه السياسة، نقوم بالتخلص من المفتاح الذي تم استخدامه مؤخرًا بشكل أقل.
 
-**How to handle cache miss?**
+**كيفية التعامل مع النقص في التخزين المؤقت؟**
 
-Whenever there is a cache miss, our servers can hit the database directly and update the cache with the new entries.
+في حالة النقص في التخزين المؤقت، يمكن لخوادمنا أن تصل إلى قاعدة البيانات مباشرةً وتحديث التخزين المؤقت باستخدام الإدخالات الجديدة.
 
-### Metrics and Analytics
+### القياسات والتحليلات
 
-Recording analytics and metrics is one of our extended requirements. We can store and update metadata like visitor's country, platform, the number of views, etc alongside the URL entry in our database.
+تسجيل التحليلات والقياسات هو واحد من متطلباتنا الموسّعة. يمكننا تخزين وتحديث البيانات الوصفية مثل بلد الزائر، والمنصة، وعدد المشاهدات، إلخ، جنبًا إلى جنب مع إدخال رابط URL في قاعدة البيانات.
 
-### Security
+### الأمان
 
-For security, we can introduce private URLs and authorization. A separate table can be used to store user ids that have permission to access a specific URL. If a user does not have proper permissions, we can return an HTTP 401 (Unauthorized) error.
+بالنسبة للأمان، يمكننا تقديم روابط خاصة ومصادقة. يمكن استخدام جدول منفصل ل
 
-We can also use an [API Gateway](https://karanpratapsingh.com/courses/system-design/api-gateway) as they can support capabilities like authorization, rate limiting, and load balancing out of the box.
+تخزين معرّفات المستخدمين الذين لديهم إذن للوصول إلى رابط محدد. إذا لم يكن لدى المستخدم أذونات مناسبة، يمكننا إرجاع خطأ HTTP 401 (غير مصرح به).
 
-## Identify and resolve bottlenecks
+يمكننا أيضًا استخدام [بوابة واجهة البرمجة](https://karanpratapsingh.com/courses/system-design/api-gateway) حيث يمكن أن تدعم قدرات مثل المصادقة، وتحديد معدل الاستجابة، وتوازن الأحمال من خلالها.
+
+## التعرف وحل العقبات
 
 ![url-shortener-advanced-design](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/url-shortener/url-shortener-advanced-design.png)
 
-Let us identify and resolve bottlenecks such as single points of failure in our design:
+دعونا نعرف ونحل العقبات مثل نقاط الفشل الواحدة في تصميمنا:
 
-- "What if the API service or Key Generation Service crashes?"
-- "How will we distribute our traffic between our components?"
-- "How can we reduce the load on our database?"
-- "What if the key database used by KGS fails?"
-- "How to improve the availability of our cache?"
+- "ماذا لو تعطل خدمة الواجهة البرمجية أو خدمة إنشاء المفاتيح؟"
+- "كيف سنوزع حركة المرور بين مكوناتنا؟"
+- "كيف يمكننا تقليل الأحمال على قاعدة البيانات؟"
+- "ماذا لو فشلت قاعدة بيانات المفاتيح المستخدمة بواسطة KGS؟"
+- "كيفية تحسين توفر ذاكرة التخزين المؤقت؟"
 
-To make our system more resilient we can do the following:
+لجعل نظامنا أكثر مرونة، يمكننا القيام بما يلي:
 
-- Running multiple instances of our Servers and Key Generation Service.
-- Introducing [load balancers](https://karanpratapsingh.com/courses/system-design/load-balancing) between clients, servers, databases, and cache servers.
-- Using multiple read replicas for our database as it's a read-heavy system.
-- Standby replica for our key database in case it fails.
-- Multiple instances and replicas for our distributed cache.
+- تشغيل عدة نسخ من خوادمنا وخدمة إنشاء المفاتيح.
+- تقديم [موازنة الأحمال](https://karanpratapsingh.com/courses/system-design/load-balancing) بين العملاء والخوادم وقواعد البيانات وخوادم التخزين المؤقت.
+- استخدام قراءات متعددة لقاعدة البيانات لأنها نظام ذو ميل قراءة عالٍ.
+- نسخة احتياطية لقاعدة البيانات المفاتيح في حالة فشلها.
+- عدة نسخ ونسخ احتياطية لذاكرة التخزين المؤقت الموزعة.
 
 # WhatsApp
 
