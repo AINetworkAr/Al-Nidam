@@ -4068,140 +4068,144 @@ _للمزيد من التفاصيل، يمكنك الرجوع إلى [التقس
 - نسخة احتياطية لقاعدة البيانات المفاتيح في حالة فشلها.
 - عدة نسخ ونسخ احتياطية لذاكرة التخزين المؤقت الموزعة.
 
-# WhatsApp
+## تصميم واتساب
 
-Let's design a [WhatsApp](https://whatsapp.com) like instant messaging service, similar to services like [Facebook Messenger](https://www.messenger.com), and [WeChat](https://www.wechat.com).
+دعونا نصمم خدمة مراسلة فورية مشابهة لتطبيق [واتساب](https://whatsapp.com)، مماثلة لخدمات مثل [فيسبوك ماسنجر](https://www.messenger.com) و [ويشات](https://www.wechat.com).
 
-## What is WhatsApp?
+## ما هو واتساب؟
 
-WhatsApp is a chat application that provides instant messaging services to its users. It is one of the most used mobile applications on the planet, connecting over 2 billion users in 180+ countries. WhatsApp is also available on the web.
+واتساب هو تطبيق مراسلة يقدم خدمات المراسلة الفورية لمستخدميه. إنه أحد أكثر التطبيقات المحمولة استخدامًا على وجه الكوكب، حيث يربط أكثر من 2 مليار مستخدم في أكثر من 180 دولة. واتساب متاح أيضًا على الويب.
 
-## Requirements
+## المتطلبات
 
-Our system should meet the following requirements:
+يجب أن يستوفي نظامنا المتطلبات التالية:
 
-### Functional requirements
+### المتطلبات الوظيفية
 
-- Should support one-on-one chat.
-- Group chats (max 100 people).
-- Should support file sharing (image, video, etc.).
+- يجب أن يدعم المحادثة من شخص إلى شخص.
+- المحادثات الجماعية (حد أقصى 100 شخص).
+- يجب دعم مشاركة الملفات (صورة، فيديو، إلخ).
 
-### Non-functional requirements
+### المتطلبات غير الوظيفية
 
-- High availability with minimal latency.
-- The system should be scalable and efficient.
+- توفير عالي مع حد أدنى من التأخير.
+- يجب أن يكون النظام قابلًا للتوسعة وفعالًا.
 
-### Extended requirements
+### المتطلبات الموسّعة
 
-- Sent, Delivered, and Read receipts of the messages.
-- Show the last seen time of users.
-- Push notifications.
+- تقارير الإرسال والتوصيل والقراءة للرسائل.
+- عرض وقت آخر ظهور للمستخدمين.
+- إشعارات الدفع.
 
-## Estimation and Constraints
+## التقدير والقيود
 
-Let's start with the estimation and constraints.
+لنبدأ بالتقدير والقيود.
 
-_Note: Make sure to check any scale or traffic-related assumptions with your interviewer._
+_ملاحظة: تأكد من التحقق من أي افتراضات تتعلق بالمقياس أو حركة المرور مع مقابلك._
 
-### Traffic
+### حركة المرور
 
-Let us assume we have 50 million daily active users (DAU) and on average each user sends at least 10 messages to 4 different people every day. This gives us 2 billion messages per day.
+لنفترض أن لدينا 50 مليون مستخدم نشط يوميًا (DAU) وعلى المتوسط كل مستخدم يرسل على الأقل 10 رسائل إلى 4 أشخاص مختلفين يوميًا. هذا يمنحنا 2 مليار رسالة في اليوم.
 
 $$
 50 \space million \times 40 \space messages = 2 \space billion/day
 $$
 
-Messages can also contain media such as images, videos, or other files. We can assume that 5 percent of messages are media files shared by the users, which gives us additional 100 million files we would need to store.
+قد تحتوي الرسائل أيضًا على وسائط مثل الصور والفيديوهات أو ملفات أخرى. يمكننا أن نفترض أن 5 في المئة من الرسائل هي ملفات وسائط يتم مشاركتها بواسطة المستخدمين، وهذا يمنحنا 100 مليون ملف إضافي يجب تخزينهم.
 
 $$
 5 \space percent \times 2 \space billion = 100 \space million/day
 $$
 
-**What would be Requests Per Second (RPS) for our system?**
+**ما هو معدل الطلبات في الثانية (RPS) لنظامنا؟**
 
-2 billion requests per day translate into 24K requests per second.
+2 مليار طلب في اليوم يترجم إلى 24 ألف طلب في الثانية.
 
 $$
 \frac{2 \space billion}{(24 \space hrs \times 3600 \space seconds)} = \sim 24K \space requests/second
 $$
 
-### Storage
+### التخزين
 
-If we assume each message on average is 100 bytes, we will require about 200 GB of database storage every day.
+إذا افترضنا أن كل رسالة تتكون في المتوسط من 100 بايت، فسنحتاج إلى حوالي 200 جيجابايت من تخزين قاعدة البيانات يوميًا.
 
 $$
 2 \space billion \times 100 \space bytes = \sim 200 \space GB/day
 $$
 
-As per our requirements, we also know that around 5 percent of our daily messages (100 million) are media files. If we assume each file is 100 KB on average, we will require 10 TB of storage every day.
+وطبقًا لم
+
+تطلباتنا، نعلم أيضًا أن حوالي 5 في المئة من الرسائل اليومية (100 مليون) هي ملفات وسائط. إذا افترضنا أن كل ملف يبلغ متوسط 100 كيلوبايت، فسنحتاج إلى 10 تيرابايت من التخزين يوميًا.
 
 $$
 100 \space million \times 100 \space KB = 10 \space TB/day
 $$
 
-And for 10 years, we will require about 38 PB of storage.
+وعلى مدى 10 سنوات، سنحتاج إلى حوالي 38 بيتابايت من التخزين.
 
 $$
 (10 \space TB + 0.2 \space TB) \times 10 \space years \times 365 \space days = \sim 38 \space PB
 $$
 
-### Bandwidth
+### النطاق الترددي
 
-As our system is handling 10.2 TB of ingress every day, we will require a minimum bandwidth of around 120 MB per second.
+نظرًا لأن نظامنا يتعامل مع 10.2 تيرابايت من البيانات الواردة كل يوم، سنحتاج إلى نطاق ترددي لا يقل عن 120 ميجابايت في الثانية.
 
 $$
 \frac{10.2 \space TB}{(24 \space hrs \times 3600 \space seconds)} = \sim 120 \space MB/second
 $$
 
-### High-level estimate
+### تقدير عالي المستوى
 
-Here is our high-level estimate:
+إليكم تقديرنا عالي المستوى:
 
-| Type                      | Estimate   |
+| النوع                         | التقدير         |
 | ------------------------- | ---------- |
-| Daily active users (DAU)  | 50 million |
-| Requests per second (RPS) | 24K/s      |
-| Storage (per day)         | ~10.2 TB   |
-| Storage (10 years)        | ~38 PB     |
-| Bandwidth                 | ~120 MB/s  |
+| مستخدمين نشطين يوميًا (DAU)  | 50 مليون   |
+| طلبات في الثانية (RPS)   | 24K/ثانية   |
+| التخزين (يوميًا)          | ~10.2 تيرابايت |
+| التخزين (10 سنوات)        | ~38 بيتابايت |
+| النطاق الترددي           | ~120 ميجابايت/ثانية |
 
-## Data model design
+## تصميم النموذج البياناتي
 
-This is the general data model which reflects our requirements.
+هذا هو النموذج العام للبيانات الذي يعكس متطلباتنا.
 
 ![whatsapp-datamodel](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/whatsapp/whatsapp-datamodel.png)
 
-We have the following tables:
+لدينا الجداول التالية:
 
-**users**
+**المستخدمين**
 
-This table will contain a user's information such as `name`, `phoneNumber`, and other details.
+ستحتوي هذه الجدول على معلومات المستخدم مثل "الاسم" و"رقم الهاتف" وتفاصيل أخرى.
 
-**messages**
+**الرسائل**
 
-As the name suggests, this table will store messages with properties such as `type` (text, image, video, etc.), `content`, and timestamps for message delivery. The message will also have a corresponding `chatID` or `groupID`.
+كما يوحي الاسم، سيحتوي هذا الجدول على تخزين الرسائل مع خصائص مثل "النوع" (نص، صورة، فيديو، إلخ) و"المحتوى" والطوابق الزمنية لتسليم الرسالة. ستكون للرسالة أيضًا "chatID" أو "groupID" المقابلة.
 
-**chats**
+**المحادثات**
 
-This table basically represents a private chat between two users and can contain multiple messages.
+يمثل هذا الجدول ببساطة محادثة خاصة بين مستخدمين اثنين ويمكن أن يحتوي على عدة رسائل.
 
-**users_chats**
+**المستخدمين_المحادثات**
 
-This table maps users and chats as multiple users can have multiple chats (N:M relationship) and vice versa.
+يقوم هذا الجدول بتعيين المستخدمين والمحادثات حيث يمكن لعدة مستخدمين أن يكونوا لديهم عدة محادثات (علاقة N:M) والعكس أيض
 
-**groups**
+ًا.
 
-This table represents a group made up of multiple users.
+**المجموعات**
 
-**users_groups**
+يمثل هذا الجدول مجموعة مكونة من عدة مستخدمين.
 
-This table maps users and groups as multiple users can be a part of multiple groups (N:M relationship) and vice versa.
+**المستخدمين_المجموعات**
 
-### What kind of database should we use?
+يقوم هذا الجدول بتعيين المستخدمين والمجموعات حيث يمكن لعدة مستخدمين أن يكونوا جزءًا من عدة مجموعات (علاقة N:M) والعكس أيضًا.
 
-While our data model seems quite relational, we don't necessarily need to store everything in a single database, as this can limit our scalability and quickly become a bottleneck.
+### أي نوع من قواعد البيانات يجب أن نستخدمه؟
 
-We will split the data between different services each having ownership over a particular table. Then we can use a relational database such as [PostgreSQL](https://www.postgresql.org) or a distributed NoSQL database such as [Apache Cassandra](https://cassandra.apache.org/_/index.html) for our use case.
+بينما يبدو نموذج البيانات الخاص بنا ذا طابع علاقي، ليس من الضروري تخزين كل شيء في قاعدة بيانات واحدة، حيث يمكن أن يحد من توسعنا ويصبح نقطة توقف سريعًا.
+
+سنقسم البيانات بين خدمات مختلفة لكل منها ملكية خاصة على جدول معين. ثم يمكننا استخدام قاعدة بيانات علاقية مثل [PostgreSQL](https://www.postgresql.org) أو قاعدة بيانات NoSQL موزعة مثل [Apache Cassandra](https://cassandra.apache.org/_/index.html) لحالتنا.
 
 ## API design
 
