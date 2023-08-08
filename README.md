@@ -4399,71 +4399,77 @@ _لمزيد من التفاصيل، راجع [التجزئة (Sharding)](https:/
 
 )](https://karanpratapsingh.com/courses/system-design/consistent-hashing).__
 
-### Caching
+### التخزين المؤقت (Caching)
 
-In a messaging application, we have to be careful about using cache as our users expect the latest data, but many users will be requesting the same messages, especially in a group chat. So, to prevent usage spikes from our resources we can cache older messages.
+في تطبيق الرسائل، يجب أن نكون حذرين عند استخدام التخزين المؤقت نظرًا لأن المستخدمين يتوقعون البيانات الأحدث، ولكن العديد من المستخدمين سيطلبون نفس الرسائل، خاصةً في دردشة المجموعة. لذا، من أجل منع الذروات في استهلاك مواردنا، يمكننا تخزين الرسائل القديمة في التخزين المؤقت.
 
-Some group chats can have thousands of messages and sending that over the network will be really inefficient, to improve efficiency we can add pagination to our system APIs. This decision will be helpful for users with limited network bandwidth as they won't have to retrieve old messages unless requested.
+بعض دردشات المجموعات يمكن أن تحتوي على آلاف الرسائل وسيكون إرسالها عبر الشبكة غير كفوء، لتحسين الكفاءة يمكننا إضافة ترقيم لنظام واجهات البرمجة (APIs) لدينا. سيكون هذا القرار مفيدًا للمستخدمين ذوي العرض الترددي المحدود حيث لن يكون عليهم استرداد الرسائل القديمة إلا عند الطلب.
 
-**Which cache eviction policy to use?**
+**أي نوع من سياسة إخراج التخزين المؤقت يجب استخدامه؟**
 
-We can use solutions like [Redis](https://redis.io) or [Memcached](https://memcached.org) and cache 20% of the daily traffic but what kind of cache eviction policy would best fit our needs?
+يمكننا استخدام حلول مثل [Redis](https://redis.io) أو [Memcached](https://memcached.org) وتخزين 20٪ من حركة المرور اليومية، ولكن أي نوع من سياسات إخراج التخزين المؤقت سيكون مناسبًا لاحتياجاتنا؟
 
-[Least Recently Used (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)>) can be a good policy for our system. In this policy, we discard the least recently used key first.
+[Least Recently Used (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)>) يمكن أن يكون سياسة جيدة لنظامنا. في هذه السياسة، نقوم بنبذ المفتاح الذي تم استخدامه مؤخرًا بشكل أقل أولاً.
 
-**How to handle cache miss?**
+**كيفية التعامل مع نقص التخزين المؤقت؟**
 
-Whenever there is a cache miss, our servers can hit the database directly and update the cache with the new entries.
+كلما حدث نقص في التخزين المؤقت، يمكن لخوادمنا الاتصال بقاعدة البيانات مباشرة وتحديث التخزين المؤقت بالمدخلات الجديدة.
 
-_For more details, refer to [Caching](https://karanpratapsingh.com/courses/system-design/caching)._
+_لمزيد من التفاصيل، راجع [التخزين المؤقت (Caching)](https://karanpratapsingh.com/courses/system-design/caching)._
 
-### Media access and storage
+### وصول وتخزين الوسائط
 
-As we know, most of our storage space will be used for storing media files such as images, videos, or other files. Our media service will be handling both access and storage of the user media files.
+كما نعلم، ستُستخدم معظم مساحة التخزين لدينا لتخزين ملفات وسائط مثل الصور ومقاطع الفيديو أو ملفات أخرى. سيتولى خدمة الوسائط لدينا كل من وصول وتخزين ملفات وسائط المستخدم.
 
-But where can we store files at scale? Well, [object storage](https://karanpratapsingh.com/courses/system-design/storage#object-storage) is what we're looking for. Object stores break data files up into pieces called objects. It then stores those objects in a single repository, which can be spread out across multiple networked systems. We can also use distributed file storage such as [HDFS](https://karanpratapsingh.com/courses/system-design/storage#hdfs) or [GlusterFS](https://www.gluster.org).
+ولكن أين يمكننا تخزين الملفات على نطاق واسع؟ حسنًا، [التخزين على شكل كائنات (Object Storage)](https://karanpratapsingh.com/courses/system-design/storage#object-storage) هو ما نبحث عنه. تقوم تخزينات الكائنات بتجزئة ملفات البيانات إلى قطع تسمى كائنات. ثم تخزن تلك الكائنات في مستودع واحد، والذي يمكن أن يكون موزعًا عبر أنظمة متعددة متصلة بشبكة. يمكننا أيضًا استخدام تخزين الملفات الموزعة مثل [HDFS](https://karanpratapsingh.com/courses/system-design/storage#hdfs) أو [GlusterFS](https://www.gluster.org).
 
-_Fun fact: WhatsApp deletes media on its servers once it has been downloaded by the user._
+_حقيقة ممتعة: تقوم واتساب بحذف الوسائط على خوادمها بمجرد أن يتم تنزيلها من قبل المستخدم._
 
-We can use object stores like [Amazon S3](https://aws.amazon.com/s3), [Azure Blob Storage](https://azure.microsoft.com/en-in/services/storage/blobs), or [Google Cloud Storage](https://cloud.google.com/storage) for this use case.
+يمكننا استخدام تخزين الكائنات مثل [Amazon S3](https://aws.amazon.com/s3) أو [Azure Blob Storage](https://azure.microsoft.com/en-in/services/storage/blobs) أو [Google Cloud Storage](https://cloud.google.com/storage) لهذا الاستخدام.
 
-### Content Delivery Network (CDN)
+### شبكة تسليم المحتوى (CDN)
 
-[Content Delivery Network (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network) increases content availability and redundancy while reducing bandwidth costs. Generally, static files such as images, and videos are served from CDN. We can use services like [Amazon CloudFront](https://aws.amazon.com/cloudfront) or [Cloudflare CDN](https://www.cloudflare.com/cdn) for this use case.
+[شبكة تسليم المحتوى (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network) تزيد من توفر وتكرار المحتوى وتقليل تكاليف النطاق الترددي. عمومًا، يتم تقديم الملفات الثابتة مثل الصور ومقاطع الفيديو من خلال شبكة CDN. يم
 
-### API gateway
+كننا استخدام خدمات مثل [Amazon CloudFront](https://aws.amazon.com/cloudfront) أو [Cloudflare CDN](https://www.cloudflare.com/cdn) لهذا الاستخدام.
 
-Since we will be using multiple protocols like HTTP, WebSocket, TCP/IP, deploying multiple L4 (transport layer) or L7 (application layer) type load balancers separately for each protocol will be expensive. Instead, we can use an [API Gateway](https://karanpratapsingh.com/courses/system-design/api-gateway) that supports multiple protocols without any issues.
+### بوابة واجهة برمجة التطبيق (API Gateway)
 
-API Gateway can also offer other features such as authentication, authorization, rate limiting, throttling, and API versioning which will improve the quality of our services.
+نظرًا لأننا سوف نستخدم بروتوكولات متعددة مثل HTTP وWebSocket وTCP/IP، سيكون نشر محملات التوازن بين الخوادم من الطبقة الرابعة (طبقة النقل) أو الطبقة السابعة (طبقة التطبيق) بشكل منفصل لكل بروتوكول مكلفًا. بدلاً من ذلك، يمكننا استخدام [بوابة واجهة برمجة التطبيق (API Gateway)](https://karanpratapsingh.com/courses/system-design/api-gateway) التي تدعم بروتوكولات متعددة دون أي مشكلات.
 
-We can use services like [Amazon API Gateway](https://aws.amazon.com/api-gateway) or [Azure API Gateway](https://azure.microsoft.com/en-in/services/api-management) for this use case.
+قد تقدم بوابة واجهة برمجة التطبيق ميزات أخرى مثل المصادقة، والتفويض، وتحديد السرعة، والتقييد، وإصدارات واجهة برمجة التطبيق، والتي ستحسن جودة خدماتنا.
 
-## Identify and resolve bottlenecks
+يمكننا استخدام خدمات مثل [Amazon API Gateway](https://aws.amazon.com/api-gateway) أو [Azure API Gateway](https://azure.microsoft.com/en-in/services/api-management) لهذا الاستخدام.
+
+## التعرف على نقاط الضعف وحلها
 
 ![whatsapp-advanced-design](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/whatsapp/whatsapp-advanced-design.png)
 
-Let us identify and resolve bottlenecks such as single points of failure in our design:
+لنتعرف على نقاط الضعف ونحلها مثل نقاط الفشل الفردية في تصميمنا:
 
-- "What if one of our services crashes?"
-- "How will we distribute our traffic between our components?"
-- "How can we reduce the load on our database?"
-- "How to improve the availability of our cache?"
-- "Wouldn't API Gateway be a single point of failure?"
-- "How can we make our notification system more robust?"
-- "How can we reduce media storage costs"?
-- "Does chat service has too much responsibility?"
+- "ماذا لو انهارت إحدى خدماتنا؟"
+- "كيف سنوزع حركة المرور بين مكوناتنا؟"
+- "كيف يمكننا تقليل الأحمال على قاعدة البيانات؟"
+- "كيف يمكن تحسين توفر التخزين المؤقت؟"
+- "ألن تكون بوابة واجهة البرمجة التطبيق نقطة فشل فردية؟"
+- "كيف يمكن جعل نظام الإشعارات أكثر قوة؟"
+- "كيف يمكننا تقليل تكاليف تخزين الوسائط؟"
+- "هل لدى خدمة الدردشة مسؤوليات كبيرة؟"
 
-To make our system more resilient we can do the following:
+لجعل نظامنا أكثر قدرة على التحمل، يمكننا القيام بما يلي:
 
-- Running multiple instances of each of our services.
-- Introducing [load balancers](https://karanpratapsingh.com/courses/system-design/load-balancing) between clients, servers, databases, and cache servers.
-- Using multiple read replicas for our databases.
-- Multiple instances and replicas for our distributed cache.
-- We can have a standby replica of our API Gateway.
-- Exactly once delivery and message ordering is challenging in a distributed system, we can use a dedicated [message broker](https://karanpratapsingh.com/courses/system-design/message-brokers) such as [Apache Kafka](https://kafka.apache.org) or [NATS](https://nats.io) to make our notification system more robust.
-- We can add media processing and compression capabilities to the media service to compress large files similar to WhatsApp which will save a lot of storage space and reduce cost.
-- We can create a group service separate from the chat service to further decouple our services.
+- تشغيل عدة نسخ من كل من خدماتنا.
+- تقديم [محملات توازن الحمولة](https://karanpratapsingh.com/courses/system-design/load-balancing) بين العملاء والخوادم وقواعد البيانات وخوادم التخزين المؤقت.
+- استخدام قراء مكررة متعددة لقواعد البيانات لدينا.
+- نسخ متعددة ومكررة لخوادم التخزين المؤقت لدينا.
+- يمكن أن يكون لدينا نسخة احتياطية لـ بوابة واجهة البرمجة التطبيق (API Gateway).
+- تس
+
+ليم مرة واحدة تمامًا وترتيب الرسائل أمر صعب في نظام موزع، يمكننا استخدام [وسيط الرسائل المخصص](https://karanpratapsingh.com/courses/system-design/message-brokers) مثل [Apache Kafka](https://kafka.apache.org) أو [NATS](https://nats.io) لجعل نظام الإشعارات أكثر قوة.
+- يمكننا إضافة إمكانيات معالجة وضغط الوسائط إلى خدمة الوسائط لضغط الملفات الكبيرة بشكل مماثل لواتساب والتي ستوفر الكثير من مساحة التخزين وتقليل التكلفة.
+- يمكننا إنشاء خدمة مجموعة منفصلة عن خدمة الدردشة لتفكيك خدماتنا بشكل أكبر.
+
+هذه الخطوات ستجعل نظامنا أكثر مرونة وقدرة على التحمل.
 
 # Twitter
 
