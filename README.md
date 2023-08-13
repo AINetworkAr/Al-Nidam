@@ -4825,65 +4825,69 @@ _لمزيد من التفاصيل، يُرجى الإشارة إلى تصميم 
 
 _لمزيد من التفاصيل، يُرجى الإشارة إلى [Sharding](https://karanpratapsingh.com/courses/system-design/sharding) و [الهاش المستمر](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
 
-### Mutual friends
+### أصدقاء مشتركين
 
-For mutual friends, we can build a social graph for every user. Each node in the graph will represent a user and a directional edge will represent followers and followees. After that, we can traverse the followers of a user to find and suggest a mutual friend. This would require a graph database such as [Neo4j](https://neo4j.com) and [ArangoDB](https://www.arangodb.com).
+بالنسبة للأصدقاء المشتركين، يمكننا بناء رسم بياني اجتماعي لكل مستخدم. كل عقدة في الرسم البياني ستمثل مستخدمًا، وسيمثل الحافة الاتجاهية المتابعين والمتابعون. بعد ذلك، يمكننا الانتقال إلى متابعي مستخدم للعثور على أصدقاء مشتركين واقتراحهم. سيتطلب ذلك قاعدة بيانات رسم بياني مثل [Neo4j](https://neo4j.com) و [ArangoDB](https://www.arangodb.com).
 
-This is a pretty simple algorithm, to improve our suggestion accuracy, we will need to incorporate a recommendation model which uses machine learning as part of our algorithm.
+هذا خوارزمية بسيطة جدًا، ولتحسين دقة اقتراحنا، سنحتاج إلى دمج نموذج توصية يستخدم التعلم الآلي كجزء من خوارزميتنا.
 
-### Metrics and Analytics
+### مقاييس وتحليلات
 
-Recording analytics and metrics is one of our extended requirements. As we will be using [Apache Kafka](https://kafka.apache.org) to publish all sorts of events, we can process these events and run analytics on the data using [Apache Spark](https://spark.apache.org) which is an open-source unified analytics engine for large-scale data processing.
+تسجيل التحليلات والمقاييس هو واحد من متطلباتنا الممتدة. حيث سنستخدم [Apache Kafka](https://kafka.apache.org) لنشر جميع أنواع الأحداث، يمكننا معالجة هذه الأحداث وتشغيل تحليلات على البيانات باستخدام [Apache Spark](https://spark.apache.org) وهو محرك تحليلات موحد مفتوح المصدر لمعالجة البيانات بمقياس كبير.
 
-### Caching
+### التخزين المؤقت
 
-In a social media application, we have to be careful about using cache as our users expect the latest data. So, to prevent usage spikes from our resources we can cache the top 20% of the tweets.
+في تطبيق وسائل التواصل الاجتماعي، يجب أن نكون حذرين في استخدام التخزين المؤقت حيث يتوقع مستخدمونا البيانات الأحدث. لذا، من أجل منع الارتفاعات الحادة في استخدام مواردنا، يمكننا تخزين أعلى 20٪ من التغريدات.
 
-To further improve efficiency we can add pagination to our system APIs. This decision will be helpful for users with limited network bandwidth as they won't have to retrieve old messages unless requested.
+ومن أجل تحسين الكفاءة بشكل أكبر، يمكننا إضافة ترقيم الصفحات إلى واجهات برمجة التطبيقات الخاصة بنظامنا. سيكون هذا القرار مفيدًا للمستخدمين الذين لديهم عرض نطاق ترددي محدود حيث لن يكون عليهم استرداد الرسائل القديمة إلا عند الطلب.
 
-**Which cache eviction policy to use?**
+**ما هو سياسة ترحيل التخزين المؤقت المناسبة؟**
 
-We can use solutions like [Redis](https://redis.io) or [Memcached](https://memcached.org) and cache 20% of the daily traffic but what kind of cache eviction policy would best fit our needs?
+يمكننا استخدام حلول مثل [Redis](https://redis.io) أو [Memcached](https://memcached.org) وتخزين 20٪ من حركة المرور اليومية ولكن أي نوع من سياسات ترحيل التخزين المؤقت سيكون مناسبًا لاحتياجاتنا؟
 
-[Least Recently Used (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)>) can be a good policy for our system. In this policy, we discard the least recently used key first.
+سيكون السياسة المعروفة باسم [أقل استخدامًا مؤخرًا (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently
 
-**How to handle cache miss?**
+_used_(LRU)>) مناسبة لنظامنا. في هذه السياسة، يتم التخلص من المفتاح الذي تم استخدامه مؤخرًا بأولوية.
 
-Whenever there is a cache miss, our servers can hit the database directly and update the cache with the new entries.
+**كيفية التعامل مع عدم وجود بيانات في التخزين المؤقت؟**
 
-_For more details, refer to [Caching](https://karanpratapsingh.com/courses/system-design/caching)._
+عند حدوث عدم وجود بيانات في التخزين المؤقت، يمكن لخوادمنا ضرب قاعدة البيانات مباشرةً وتحديث التخزين المؤقت بالإدخالات الجديدة.
 
-### Media access and storage
+_لمزيد من التفاصيل، يُرجى الإشارة إلى [التخزين المؤقت](https://karanpratapsingh.com/courses/system-design/caching)._
 
-As we know, most of our storage space will be used for storing media files such as images, videos, or other files. Our media service will be handling both access and storage of the user media files.
+### وصول وتخزين الوسائط
 
-But where can we store files at scale? Well, [object storage](https://karanpratapsingh.com/courses/system-design/storage#object-storage) is what we're looking for. Object stores break data files up into pieces called objects. It then stores those objects in a single repository, which can be spread out across multiple networked systems. We can also use distributed file storage such as [HDFS](https://karanpratapsingh.com/courses/system-design/storage#hdfs) or [GlusterFS](https://www.gluster.org).
+كما نعلم، سيتم استخدام معظم مساحة التخزين لدينا لتخزين ملفات وسائط مثل الصور ومقاطع الفيديو أو الملفات الأخرى. ستتولى خدمة الوسائط لدينا كل من وصول وتخزين ملفات وسائط المستخدم.
 
-### Content Delivery Network (CDN)
+ولكن أين يمكننا تخزين الملفات على نطاق واسع؟ حسنًا، [تخزين الكائنات](https://karanpratapsingh.com/courses/system-design/storage#object-storage) هو ما نبحث عنه. يقوم تخزين الكائنات بتقسيم ملفات البيانات إلى قطع تسمى الكائنات. ثم يقوم بتخزين تلك الكائنات في مستودع واحد، والذي يمكن أن يُنتشر عبر الأنظمة المتصلة بالشبكة المتعددة. يمكننا أيضًا استخدام تخزين الملفات الموزع مثل [HDFS](https://karanpratapsingh.com/courses/system-design/storage#hdfs) أو [GlusterFS](https://www.gluster.org).
 
-[Content Delivery Network (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network) increases content availability and redundancy while reducing bandwidth costs. Generally, static files such as images, and videos are served from CDN. We can use services like [Amazon CloudFront](https://aws.amazon.com/cloudfront) or [Cloudflare CDN](https://www.cloudflare.com/cdn) for this use case.
+### شبكة توصيل المحتوى (CDN)
 
-## Identify and resolve bottlenecks
+تزيد شبكة توصيل المحتوى ([CDN](https://karanpratapsingh.com/courses/system-design/content-delivery-network)) من توفر المحتوى والتكرار وتقليل تكاليف النطاق الترددي. عمومًا، يتم تقديم الملفات الثابتة مثل الصور ومقاطع الفيديو من شبكة توصيل المحتوى. يمكننا استخدام خدمات مثل [Amazon CloudFront](https://aws.amazon.com/cloudfront) أو [Cloudflare CDN](https://www.cloudflare.com/cdn) لهذا الاستخدام.
+
+## تحديد وحل الأضغاط
 
 ![twitter-advanced-design](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/twitter/twitter-advanced-design.png)
 
-Let us identify and resolve bottlenecks such as single points of failure in our design:
+دعونا نحدد ونحل الأضغاط مثل النقاط الفردية للفشل في تصميمنا:
 
-- "What if one of our services crashes?"
-- "How will we distribute our traffic between our components?"
-- "How can we reduce the load on our database?"
-- "How to improve the availability of our cache?"
-- "How can we make our notification system more robust?"
-- "How can we reduce media storage costs"?
+- "ماذا لو تعطلت إحدى خدماتنا؟"
+- "كيف سنوزع حركة المرور بين مكوناتنا؟"
+- "كيف يمكننا تقليل العبء على قاعدة بياناتنا؟"
+- "كيفية تحسين توافر ذاكرتنا المؤقتة؟"
+- "كيف يمكننا جعل نظام الإشعارات أكثر قوة؟"
+- "كيف يمكننا تقليل تكاليف تخزين الوسائط؟"
 
-To make our system more resilient we can do the following:
+لجعل نظامنا أكثر مرونة، يمكننا القيام بالأمور التالية:
 
-- Running multiple instances of each of our services.
-- Introducing [load balancers](https://karanpratapsingh.com/courses/system-design/load-balancing) between clients, servers, databases, and cache servers.
-- Using multiple read replicas for our databases.
-- Multiple instances and replicas for our distributed cache.
-- Exactly once delivery and message ordering is challenging in a distributed system, we can use a dedicated [message broker](https://karanpratapsingh.com/courses/system-design/message-brokers) such as [Apache Kafka](https://kafka.apache.org) or [NATS](https://nats.io) to make our notification system more robust.
-- We can add media processing and compression capabilities to the media service to compress large files which will save a lot of storage space and reduce cost.
+- تشغيل عدة نسخ من كل من خدماتنا.
+- إدخال [موازنات الحمولة](https://karanpratapsingh.com/courses/system-design/load-balancing) بين العملاء والخوادم وقواعد البيانات وخوادم التخزين المؤقت.
+- استخدام مستنسخات قراءة متعددة لقواعد بياناتنا.
+- نسخ متعددة ومستنسخات لذاكرتنا المؤقتة الموزعة.
+- توصيل مرة واحدة وترتيب الرسائل أمر تحدي في نظام موزع، يمكننا استخدام [وسيط الرسائل](https://karanpratapsingh.com/courses/system-design/message-brokers) المخصص مثل [Apache Kafka](https://kafka.apache.org) أو [NATS](https://nats.io) لجعل نظام الإشعارات أكثر قوة.
+- يمكننا إضافة قدرات معالجة وضغط الوسائط إلى خدمة الوسائط لضغ
+
+ط الملفات الكبيرة مما سيوفر الكثير من مساحة التخزين ويقلل التكلفة.
 
 # Netflix
 
