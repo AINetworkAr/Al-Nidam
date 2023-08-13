@@ -5185,120 +5185,92 @@ _ملحوظة: يمكننا إضافة خطوات إضافية مثل إنشاء
 معالجة الفيديو كمهمة طويلة الأمد واستخدام [طابور الرسائل](https://karanpratapsingh.com/courses/system-design/message-queues) يجعلان الكثير من الدواسر. كما أنه يفصل خط الإنتاج لمعالجة الفيديو عن وظيفة التحميل. يمكننا استخدام شيء مثل [Amazon SQS](https://aws.amazon.com/sqs) أو [RabbitMQ](https://www.rabbitmq.com) لدعم هذا.
 
 
-### Video streaming
+### تدفق الفيديو
 
-Video streaming is a challenging task from both the client and server perspectives. Moreover, internet connection speeds vary quite a lot between different users. To make sure users don't re-fetch the same content, we can use a [Content Delivery Network (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network).
+تعد مهمة تدفق الفيديو مهمة تحديّة من منظوري العميل والخادم. علاوةً على ذلك، تختلف سرعات اتصال الإنترنت بشكل كبير بين مستخدمين مختلفين. للتأكد من عدم إعادة استدعاء المحتوى نفسه، يمكننا استخدام [شبكة تسليم المحتوى (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network).
 
-Netflix takes this a step further with its [Open Connect](https://openconnect.netflix.com) program. In this approach, they partner with thousands of Internet Service Providers (ISPs) to localize their traffic and deliver their content more efficiently.
+نيتفليكس يأخذ هذا الأمر خطوة أبعد مع برنامجه [Open Connect](https://openconnect.netflix.com). في هذا النهج، يتعاونون مع آلاف مقدمي خدمات الإنترنت (ISPs) لتوجيه حركة المرور المحلية وتسليم محتواهم بكفاءة أكبر.
 
-**What is the difference between Netflix's Open Connect and a traditional Content Delivery Network (CDN)?**
+**ما هو الفرق بين Open Connect لـ Netflix وشبكة تسليم المحتوى التقليدية (CDN)؟**
 
-Netflix Open Connect is a purpose-built [Content Delivery Network (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network) responsible for serving Netflix's video traffic. Around 95% of the traffic globally is delivered via direct connections between Open Connect and the ISPs their customers use to access the internet.
+Open Connect لـ Netflix هو شبكة تسليم محتوى (CDN) مصممة بغرض تقديم حركة المرور الفيديو لـ Netflix. يتم توصيل حوالي 95٪ من حركة المرور على مستوى العالم عبر اتصالات مباشرة بين Open Connect ومقدمي خدمات الإنترنت الذين يستخدمونها عملاءهم للوصول إلى الإنترنت.
 
-Currently, they have Open Connect Appliances (OCAs) in over 1000 separate locations around the world. In case of issues, Open Connect Appliances (OCAs) can failover, and the traffic can be re-routed to Netflix servers.
+حاليًا، لديهم جهاز Open Connect Appliances (OCAs) في أكثر من 1000 موقع منفصل حول العالم. في حالة وجود مشكلات، يمكن لجهاز Open Connect Appliances (OCAs) أن يعمل باستمرار ويمكن إعادة توجيه حركة المرور إلى خوادم Netflix.
 
-Additionally, we can use [Adaptive bitrate streaming](https://en.wikipedia.org/wiki/Adaptive_bitrate_streaming) protocols such as [HTTP Live Streaming (HLS)](https://en.wikipedia.org/wiki/HTTP_Live_Streaming) which is designed for reliability and it dynamically adapts to network conditions by optimizing playback for the available speed of the connections.
+بالإضافة إلى ذلك، يمكننا استخدام بروتوكولات التدفق مع معدل بت متكيف مثل [HTTP Live Streaming (HLS)](https://en.wikipedia.org/wiki/HTTP_Live_Streaming) والذي يتم تصميمه لضمان الاستقرار والتكيف الديناميكي مع ظروف الشبكة عن طريق تحسين التشغيل لسرعة الاتصال المتاحة.
 
-Lastly, for playing the video from where the user left off (part of our extended requirements), we can simply use the `offset` property we stored in the `views` table to retrieve the scene chunk at that particular timestamp and resume the playback for the user.
+أخيرًا، لتشغيل الفيديو من حيث تركه المستخدم (جزء من متطلباتنا الموسعة)، يمكننا ببساطة استخدام خاصية `offset` التي قمنا بتخزينها في جدول `views` لاسترداد قطعة المشهد في الطابع الزمني المحدد واستئناف التشغيل للمستخدم.
 
-### Searching
+### البحث
 
-Sometimes traditional DBMS are not performant enough, we need something which allows us to store, search, and analyze huge volumes of data quickly and in near real-time and give results within milliseconds. [Elasticsearch](https://www.elastic.co) can help us with this use case.
+في بعض الأحيان، قد لا تكون أنظمة قواعد البيانات التقليدية قادرة على التأديب بشكل كافٍ، نحن بحاجة إلى شيء يتيح لنا تخزين والبحث وتحليل حجوم كبيرة من البيانات بسرعة وبالقرب من الوقت الفعلي وتقديم النتائج في غضون ميلي ثانية. يمكن لـ [Elasticsearch](https://www.elastic.co) مساعدتنا في هذا السياق.
 
-[Elasticsearch](https://www.elastic.co) is a distributed, free and open search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured. It is built on top of [Apache Lucene](https://lucene.apache.org).
+[Elasticsearch](https://www.elastic.co) هو محرك بحث وتحليل موزع ومجاني ومفتوح المصدر لجميع أنواع البيانات، بما في ذلك البيانات ال
 
-**How do we identify trending content?**
+نصية والعددية والجغرافية والمنظمة وغير المنظمة. تم بناؤه فوق [Apache Lucene](https://lucene.apache.org).
 
-Trending functionality will be based on top of the search functionality. We can cache the most frequently searched queries in the last `N` seconds and update them every `M` seconds using some sort of batch job mechanism.
+**كيف نحدد المحتوى الرائج؟**
 
-### Sharing
+سيتم بناء وظيفة الاتجاه على أساس وظيفة البحث. يمكننا تخزين الاستعلامات الأكثر بحثًا في الـ "N" ثواني الأخيرة وتحديثها كل "M" ثانية باستخدام نوع من آلية العمل بالدفعة.
 
-Sharing content is an important part of any platform, for this, we can have some sort of URL shortener service in place that can generate short URLs for the users to share.
+### مشاركة
 
-_For more details, refer to the [URL Shortener](https://karanpratapsingh.com/courses/system-design/url-shortener) system design._
+مشاركة المحتوى هي جزء مهم من أي منصة، لهذا يمكن أن يكون لدينا نوعًا من خدمة اختصار عناوين URL في مكان يمكن أن تُنشئ عناوين URL قصيرة للمستخدمين لمشاركتها.
 
-## Detailed design
+_للمزيد من التفاصيل، انظر إلى تصميم النظام [URL Shortener](https://karanpratapsingh.com/courses/system-design/url-shortener)._
 
-It's time to discuss our design decisions in detail.
+### تدفق الفيديو
 
-### Data Partitioning
+تعد مهمة تدفق الفيديو مهمة تحديّة من منظوري العميل والخادم. علاوةً على ذلك، تختلف سرعات اتصال الإنترنت بشكل كبير بين مستخدمين مختلفين. للتأكد من عدم إعادة استدعاء المحتوى نفسه، يمكننا استخدام [شبكة تسليم المحتوى (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network).
 
-To scale out our databases we will need to partition our data. Horizontal partitioning (aka [Sharding](https://karanpratapsingh.com/courses/system-design/sharding)) can be a good first step. We can use partitions schemes such as:
+نيتفليكس يأخذ هذا الأمر خطوة أبعد مع برنامجه [Open Connect](https://openconnect.netflix.com). في هذا النهج، يتعاونون مع آلاف مقدمي خدمات الإنترنت (ISPs) لتوجيه حركة المرور المحلية وتسليم محتواهم بكفاءة أكبر.
 
-- Hash-Based Partitioning
-- List-Based Partitioning
-- Range Based Partitioning
-- Composite Partitioning
+**ما هو الفرق بين Open Connect لـ Netflix وشبكة تسليم المحتوى التقليدية (CDN)؟**
 
-The above approaches can still cause uneven data and load distribution, we can solve this using [Consistent hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
+Open Connect لـ Netflix هو شبكة تسليم محتوى (CDN) مصممة بغرض تقديم حركة المرور الفيديو لـ Netflix. يتم توصيل حوالي 95٪ من حركة المرور على مستوى العالم عبر اتصالات مباشرة بين Open Connect ومقدمي خدمات الإنترنت الذين يستخدمونها عملاءهم للوصول إلى الإنترنت.
 
-_For more details, refer to [Sharding](https://karanpratapsingh.com/courses/system-design/sharding) and [Consistent Hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
+حاليًا، لديهم جهاز Open Connect Appliances (OCAs) في أكثر من 1000 موقع منفصل حول العالم. في حالة وجود مشكلات، يمكن لجهاز Open Connect Appliances (OCAs) أن يعمل باستمرار ويمكن إعادة توجيه حركة المرور إلى خوادم Netflix.
 
-### Geo-blocking
+بالإضافة إلى ذلك، يمكننا استخدام بروتوكولات التدفق مع معدل بت متكيف مثل [HTTP Live Streaming (HLS)](https://en.wikipedia.org/wiki/HTTP_Live_Streaming) والذي يتم تصميمه لضمان الاستقرار والتكيف الديناميكي مع ظروف الشبكة عن طريق تحسين التشغيل لسرعة الاتصال المتاحة.
 
-Platforms like Netflix and YouTube use [Geo-blocking](https://en.wikipedia.org/wiki/Geo-blocking) to restrict content in certain geographical areas or countries. This is primarily done due to legal distribution laws that Netflix has to adhere to when they make a deal with the production and distribution companies. In the case of YouTube, this will be controlled by the user during the publishing of the content.
+أخيرًا، لتشغيل الفيديو من حيث تركه المستخدم (جزء من متطلباتنا الموسعة)، يمكننا ببساطة استخدام خاصية `offset` التي قمنا بتخزينها في جدول `views` لاسترداد قطعة المشهد في الطابع الزمني المحدد واستئناف التشغيل للمستخدم.
 
-We can determine the user's location either using their [IP](https://karanpratapsingh.com/courses/system-design/ip) or region settings in their profile then use services like [Amazon CloudFront](https://aws.amazon.com/cloudfront) which supports a geographic restrictions feature or a [geolocation routing policy](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-geo.html) with [Amazon Route53](https://aws.amazon.com/route53) to restrict the content and re-route the user to an error page if the content is not available in that particular region or country.
+### البحث
 
-### Recommendations
+في بعض الأحيان، قد لا تكون أنظمة قواعد البيانات التقليدية قادرة على التأديب بشكل كافٍ، نحن بحاجة إلى شيء يتيح لنا تخزين والبحث وتحليل حجوم كبيرة من البيانات بسرعة وبالقرب من الوقت الفعلي وتقديم النتائج في غضون ميلي ثانية. يمكن لـ [Elasticsearch](https://www.elastic.co) مساعدتنا في هذا السياق.
 
-Netflix uses a machine learning model which uses the user's viewing history to predict what the user might like to watch next, an algorithm like [Collaborative Filtering](https://en.wikipedia.org/wiki/Collaborative_filtering) can be used.
+[Elasticsearch](https://www.elastic.co) هو محرك بحث وتحليل موزع ومجاني ومفتوح المصدر لجميع أنواع البيانات، بما في ذلك البيانات ال
 
-However, Netflix (like YouTube) uses its own algorithm called Netflix Recommendation Engine which can track several data points such as:
+نصية والعددية والجغرافية والمنظمة وغير المنظمة. تم بناؤه فوق [Apache Lucene](https://lucene.apache.org).
 
-- User profile information like age, gender, and location.
-- Browsing and scrolling behavior of the user.
-- Time and date a user watched a title.
-- The device which was used to stream the content.
-- The number of searches and what terms were searched.
+**كيف نحدد المحتوى الرائج؟**
 
-_For more detail, refer to [Netflix recommendation research](https://research.netflix.com/research-area/recommendations)._
+سيتم بناء وظيفة الاتجاه على أساس وظيفة البحث. يمكننا تخزين الاستعلامات الأكثر بحثًا في الـ "N" ثواني الأخيرة وتحديثها كل "M" ثانية باستخدام نوع من آلية العمل بالدفعة.
 
-### Metrics and Analytics
+### مشاركة
 
-Recording analytics and metrics is one of our extended requirements. We can capture the data from different services and run analytics on the data using [Apache Spark](https://spark.apache.org) which is an open-source unified analytics engine for large-scale data processing. Additionally, we can store critical metadata in the views table to increase data points within our data.
+مشاركة المحتوى هي جزء مهم من أي منصة، لهذا يمكن أن يكون لدينا نوعًا من خدمة اختصار عناوين URL في مكان يمكن أن تُنشئ عناوين URL قصيرة للمستخدمين لمشاركتها.
 
-### Caching
+_للمزيد من التفاصيل، انظر إلى تصميم النظام [URL Shortener](https://karanpratapsingh.com/courses/system-design/url-shortener)._
 
-In a streaming platform, caching is important. We have to be able to cache as much static media content as possible to improve user experience. We can use solutions like [Redis](https://redis.io) or [Memcached](https://memcached.org) but what kind of cache eviction policy would best fit our needs?
-
-**Which cache eviction policy to use?**
-
-[Least Recently Used (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)>) can be a good policy for our system. In this policy, we discard the least recently used key first.
-
-**How to handle cache miss?**
-
-Whenever there is a cache miss, our servers can hit the database directly and update the cache with the new entries.
-
-_For more details, refer to [Caching](https://karanpratapsingh.com/courses/system-design/caching)._
-
-### Media streaming and storage
-
-As most of our storage space will be used for storing media files such as thumbnails and videos. Per our discussion earlier, the media service will be handling both the upload and processing of media files.
-
-We will use distributed file storage such as [HDFS](https://karanpratapsingh.com/courses/system-design/storage#hdfs), [GlusterFS](https://www.gluster.org), or an [object storage](https://karanpratapsingh.com/courses/system-design/storage#object-storage) such as [Amazon S3](https://aws.amazon.com/s3) for storage and streaming of the content.
-
-### Content Delivery Network (CDN)
-
-[Content Delivery Network (CDN)](https://karanpratapsingh.com/courses/system-design/content-delivery-network) increases content availability and redundancy while reducing bandwidth costs. Generally, static files such as images, and videos are served from CDN. We can use services like [Amazon CloudFront](https://aws.amazon.com/cloudfront) or [Cloudflare CDN](https://www.cloudflare.com/cdn) for this use case.
-
-## Identify and resolve bottlenecks
+## تحديد وحل نقاط الضعف
 
 ![netflix-advanced-design](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/netflix/netflix-advanced-design.png)
 
-Let us identify and resolve bottlenecks such as single points of failure in our design:
+لنحدد ونحل نقاط الضعف مثل نقاط الفشل الفردية في تصميمنا:
 
-- "What if one of our services crashes?"
-- "How will we distribute our traffic between our components?"
-- "How can we reduce the load on our database?"
-- "How to improve the availability of our cache?"
+- "ماذا لو تعطلت إحدى خدماتنا؟"
+- "كيف سنوزع حركة المرور بين مكوناتنا؟"
+- "كيف يمكننا تقليل الحمل على قاعدة البيانات؟"
+- "كيفية تحسين توافر ذاكرة التخزين المؤقت لدينا؟"
 
-To make our system more resilient we can do the following:
+لجعل نظامنا أكثر مرونة، يمكننا القيام بما يلي:
 
-- Running multiple instances of each of our services.
-- Introducing [load balancers](https://karanpratapsingh.com/courses/system-design/load-balancing) between clients, servers, databases, and cache servers.
-- Using multiple read replicas for our databases.
-- Multiple instances and replicas for our distributed cache.
+- تشغيل عدة نسخ من كل من خدماتنا.
+- إدخال [توازن الحمل](https://karanpratapsingh.com/courses/system-design/load-balancing) بين العملاء والخوادم وقواعد البيانات وخوادم الذاكرة المؤقتة.
+- استخدام نسخ متعددة لقواعد بياناتنا.
+- نسخ متعددة ونسخ احتياطية لذاكرة التخزين المؤقت الموزعة لدينا.
+
 
 # Uber
 
