@@ -5272,142 +5272,143 @@ _للمزيد من التفاصيل، انظر إلى تصميم النظام [U
 - نسخ متعددة ونسخ احتياطية لذاكرة التخزين المؤقت الموزعة لدينا.
 
 
-# Uber
+# أوبر (Uber)
 
-Let's design an [Uber](https://uber.com) like ride-hailing service, similar to services like [Lyft](https://www.lyft.com), [OLA Cabs](https://www.olacabs.com), etc.
+لنقم بتصميم خدمة مشابهة لأوبر (Uber) لحجز رحلات النقل، مشابهة لخدمات مثل [ليفت (Lyft)](https://www.lyft.com) و[OLA Cabs](https://www.olacabs.com).
 
-## What is Uber?
+## ما هو أوبر؟
 
-Uber is a mobility service provider, allowing users to book rides and a driver to transport them in a way similar to a taxi. It is available on the web and mobile platforms such as Android and iOS.
+أوبر هي مزود خدمة للتنقل، تتيح للمستخدمين حجز رحلات نقل والسائق لنقلهم بطريقة مشابهة لسيارة أجرة. إنها متاحة على الويب والمنصات المحمولة مثل أندرويد وآي أو إس.
 
-## Requirements
+## المتطلبات
 
-Our system should meet the following requirements:
+يجب أن تلبي نظامنا المتطلبات التالية:
 
-### Functional requirements
+### المتطلبات الوظيفية
 
-We will design our system for two types of users: Customers and Drivers.
+سنقوم بتصميم نظامنا لنوعين من المستخدمين: العملاء والسائقين.
 
-**Customers**
+**العملاء**
 
-- Customers should be able to see all the cabs in the vicinity with an ETA and pricing information.
-- Customers should be able to book a cab to a destination.
-- Customers should be able to see the location of the driver.
+- يجب أن يكون بإمكان العملاء رؤية جميع السيارات المتوفرة في الجوار مع معلومات حول الوقت المتوقع للوصول والأسعار.
+- يجب أن يكون بإمكان العملاء حجز سيارة إلى وجهة معينة.
+- يجب أن يكون بإمكان العملاء رؤية موقع السائق.
 
-**Drivers**
+**السائقين**
 
-- Drivers should be able to accept or deny the customer-requested ride.
-- Once a driver accepts the ride, they should see the pickup location of the customer.
-- Drivers should be able to mark the trip as complete on reaching the destination.
+- يجب أن يكون بإمكان السائقين قبول أو رفض طلب الرحلة الذي تقدم به العميل.
+- بمجرد قبول السائق للرحلة، يجب أن يرون موقع الالتقاط للعميل.
+- يجب أن يكون بإمكان السائقين وضع علامة على الرحلة كمكتملة عند الوصول إلى الوجهة.
 
-### Non-Functional requirements
+### المتطلبات غير الوظيفية
 
-- High reliability.
-- High availability with minimal latency.
-- The system should be scalable and efficient.
+- موثوقية عالية.
+- توافر عالي مع تأخير أدنى.
+- يجب أن يكون النظام قابلاً للتوسعة وفعّالاً.
 
-### Extended requirements
+### المتطلبات الموسّعة
 
-- Customers can rate the trip after it's completed.
-- Payment processing.
-- Metrics and analytics.
+- يمكن للعملاء تقدير الرحلة بعد اكتمالها.
+- معالجة المدفوعات.
+- القياسات والتحليلات.
 
-## Estimation and Constraints
+## التقدير والقيود
 
-Let's start with the estimation and constraints.
+لنبدأ بالتقدير والقيود.
 
-_Note: Make sure to check any scale or traffic-related assumptions with your interviewer._
+_ملحوظة: تأكد من التحقق من أي افتراضات تتعلق بالمقياس أو حركة المرور مع المقابلة._
 
-### Traffic
+### حركة المرور
 
-Let us assume we have 100 million daily active users (DAU) with 1 million drivers and on average our platform enables 10 million rides daily.
+لنفترض أن لدينا 100 مليون مستخدم نشط يوميًا (DAU) مع مليون سائق وفي المتوسط نظامنا يمكنه تمكين 10 ملايين رحلة يوميًا.
 
-If on average each user performs 10 actions (such as request a check available rides, fares, book rides, etc.) we will have to handle 1 billion requests daily.
-
-$$
-100 \space million \times 10 \space actions = 1 \space billion/day
-$$
-
-**What would be Requests Per Second (RPS) for our system?**
-
-1 billion requests per day translate into 12K requests per second.
+إذا افترضنا أن كل مستخدم يقوم بمتوسط 10 إجراءات (مثل طلب تحقق من توفر الرحلات، وأسعار الرحلات، وحجز الرحلات، وما إلى ذلك)، سيتعين علينا التعامل مع 1 مليار طلب يوميًا.
 
 $$
-\frac{1 \space billion}{(24 \space hrs \times 3600 \space seconds)} = \sim 12K \space requests/second
+100 \space مليون \times 10 \space إجراءات = 1 \space مليار/يوم
 $$
 
-### Storage
+**ما سيكون عدد الطلبات في الثانية (RPS) لنظامنا؟**
 
-If we assume each message on average is 400 bytes, we will require about 400 GB of database storage every day.
-
-$$
-1 \space billion \times 400 \space bytes = \sim 400 \space GB/day
-$$
-
-And for 10 years, we will require about 1.4 PB of storage.
+1 مليار طلب يوميًا يترجم إلى 12 ألف طلب في الثانية.
 
 $$
-400 \space GB \times 10 \space years \times 365 \space days = \sim 1.4 \space PB
+\frac{1 \space مليار}{(24 \space ساعة \times 3600 \space ثانية)} = \sim 12 ألف \space طلب/ثانية
 $$
 
-### Bandwidth
+### التخزين
 
-As our system is handling 400 GB of ingress every day, we will require a minimum bandwidth of around 4 MB per second.
+إذا افترضنا أن كل رسالة تتوسط حوالي 400 بايت، سنحتاج إلى حوالي 400 جيجابايت من تخزين قاعدة البيانات يوميًا.
 
 $$
-\frac{400 \space GB}{(24 \space hrs \times 3600 \space seconds)} = \sim 5 \space MB/second
+1 \space مليار \times 400 \space بايت = \sim 400 \space جيجابايت/يوم
 $$
 
-### High-level estimate
+وعلى مدى 10 سنوات، سنحتاج إلى حوالي 1.4 بيتابايت من التخزين.
 
-Here is our high-level estimate:
+$$
+400 \space جيجابايت \times 10 \space سنوات \times 365 \space يوم = \sim 1.4 \space بيتابايت
+$$
 
-| Type                      | Estimate    |
-| ------------------------- | ----------- |
-| Daily active users (DAU)  | 100 million |
-| Requests per second (RPS) | 12K/s       |
-| Storage (per day)         | ~400 GB     |
-| Storage (10 years)        | ~1.4 PB     |
-| Bandwidth                 | ~5 MB/s     |
+### النطاق الترددي
 
-## Data model design
+نظرًا لأن نظامنا يتعامل مع 400 جيجابايت من المدخلات يوميًا، سنحتاج إلى
 
-This is the general data model which reflects our requirements.
+ عرض نطاق ترددي أدنى يبلغ حوالي 4 ميجابايت في الثانية.
+
+$$
+\frac{400 \space جيجابايت}{(24 \space ساعة \times 3600 \space ثانية)} = \sim 5 \space ميجابايت/ثانية
+$$
+
+### تقدير عام
+
+إليكم تقديرنا العام:
+
+| النوع                   | التقدير  |
+| ---------------------- | ------- |
+| المستخدمون النشطون يوميًا (DAU) | 100 مليون |
+| الطلبات في الثانية (RPS)    | 12 ألف/ثانية |
+| التخزين (يوميًا)          | ~400 جيجابايت |
+| التخزين (10 سنوات)        | ~1.4 بيتابايت |
+| النطاق الترددي           | ~5 ميجابايت/ثانية |
+
+## تصميم البيانات
+
+هذا هو النموذج العام للبيانات الذي يعكس متطلباتنا.
 
 ![uber-datamodel](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/uber/uber-datamodel.png)
 
-We have the following tables:
+لدينا الجداول التالية:
 
-**customers**
+**العملاء (customers)**
 
-This table will contain a customer's information such as `name`, `email`, and other details.
+ستحتوي هذه الجدول على معلومات العميل مثل "الاسم"، "البريد الإلكتروني" وتفاصيل أخرى.
 
-**drivers**
+**السائقين (drivers)**
 
-This table will contain a driver's information such as `name`, `email`, `dob` and other details.
+ستحتوي هذه الجدول على معلومات السائق مثل "الاسم"، "البريد الإلكتروني"، "تاريخ الميلاد" وتفاصيل أخرى.
 
-**trips**
+**الرحلات (trips)**
 
-This table represents the trip taken by the customer and stores data such as `source`, `destination`, and `status` of the trip.
+تمثل هذه الجدول الرحلة التي قام بها العميل وتخزن بيانات مثل "نقطة البداية"، "الوجهة" و "حالة" الرحلة.
 
-**cabs**
+**السيارات (cabs)**
 
-This table stores data such as the registration number, and type (like Uber Go, Uber XL, etc.) of the cab that the driver will be driving.
+تخزن هذه الجدول بيانات مثل رقم التسجيل ونوع السيارة (مثل أوبر جو، أوبر XL، وما إلى ذلك) التي سيقودها السائق.
 
-**ratings**
+**التقييمات (ratings)**
 
-As the name suggests, this table stores the `rating` and `feedback` for the trip.
+كما يوحي الاسم، تخزن هذه الجدول "التقييم" و "الملاحظات" للرحلة.
 
-**payments**
+**المدفوعات (payments)**
 
-The payments table contains the payment-related data with the corresponding `tripID`.
+يحتوي جدول المدفوعات على البيانات المتعلقة بالدفع مع "رقم الرحلة" المقابل.
 
-### What kind of database should we use?
+### أي نوع من قواعد البيانات يجب أن نستخدمه؟
 
-While our data model seems quite relational, we don't necessarily need to store everything in a single database, as this can limit our scalability and quickly become a bottleneck.
+بينما يبدو نموذج البيانات الخاص بنا وكأنه ذو صلة بشكل كبير، ليس من الضروري تخزين كل شيء في قاعدة بيانات واحدة، حيث يمكن أن يقيد هذا قابلية التوسع ويصبح سرعان ما نقطة ضعف.
 
-We will split the data between different services each having ownership over a particular table. Then we can use a relational database such as [PostgreSQL](https://www.postgresql.org) or a distributed NoSQL database such as [Apache Cassandra](https://cassandra.apache.org/_/index.html) for our use case.
-
+سنقسم البيانات بين خدمات مختلفة لكل منها ملكية لجدول معين. ثم يمكننا استخدام قاعدة بيانات ذات صلة مثل [PostgreSQL](https://www.postgresql.org) أو قاعدة بيانات NoSQL موزعة مثل [Apache Cassandra](https://cassandra.apache.org/_/index.html) لحالتنا.
 ## API design
 
 Let us do a basic API design for our services:
