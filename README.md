@@ -5409,107 +5409,107 @@ $$
 بينما يبدو نموذج البيانات الخاص بنا وكأنه ذو صلة بشكل كبير، ليس من الضروري تخزين كل شيء في قاعدة بيانات واحدة، حيث يمكن أن يقيد هذا قابلية التوسع ويصبح سرعان ما نقطة ضعف.
 
 سنقسم البيانات بين خدمات مختلفة لكل منها ملكية لجدول معين. ثم يمكننا استخدام قاعدة بيانات ذات صلة مثل [PostgreSQL](https://www.postgresql.org) أو قاعدة بيانات NoSQL موزعة مثل [Apache Cassandra](https://cassandra.apache.org/_/index.html) لحالتنا.
-## API design
+## تصميم واجهة البرمجة الواجبية (API)
 
-Let us do a basic API design for our services:
+لنقم بتصميم واجهة برمجة التطبيق (API) الأساسية لخدماتنا:
 
-### Request a Ride
+### طلب رحلة
 
-Through this API, customers will be able to request a ride.
+من خلال هذه الواجهة، سيتمكن العملاء من طلب رحلة.
 
 ```tsx
 requestRide(customerID: UUID, source: Tuple<float>, destination: Tuple<float>, cabType: Enum<string>, paymentMethod: Enum<string>): Ride
 ```
 
-**Parameters**
+**المعلمات**
 
-Customer ID (`UUID`): ID of the customer.
+معرف العميل (`UUID`): معرّف العميل.
 
-Source (`Tuple<float>`): Tuple containing the latitude and longitude of the trip's starting location.
+نقطة البداية (`Tuple<float>`): مجموعة تحتوي على خطوط الطول والعرض لموقع بداية الرحلة.
 
-Destination (`Tuple<float>`): Tuple containing the latitude and longitude of the trip's destination.
+نقطة الوجهة (`Tuple<float>`): مجموعة تحتوي على خطوط الطول والعرض لموقع الوجهة.
 
-**Returns**
+**النتائج**
 
-Result (`Ride`): Associated ride information of the trip.
+نتيجة (`Ride`): معلومات الرحلة المرتبطة بالرحلة.
 
-### Cancel the Ride
+### إلغاء الرحلة
 
-This API will allow customers to cancel the ride.
+ستسمح هذه الواجهة للعملاء بإلغاء الرحلة.
 
 ```tsx
 cancelRide(customerID: UUID, reason?: string): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-Customer ID (`UUID`): ID of the customer.
+معرف العميل (`UUID`): معرّف العميل.
 
-Reason (`UUID`): Reason for canceling the ride _(optional)_.
+السبب (`UUID`): سبب إلغاء الرحلة _(اختياري)_.
 
-**Returns**
+**النتائج**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
-### Accept or Deny the Ride
+### قبول أو رفض الرحلة
 
-This API will allow the driver to accept or deny the trip.
+ستتيح هذه الواجهة للسائق قبول أو رفض الرحلة.
 
 ```tsx
 acceptRide(driverID: UUID, rideID: UUID): boolean
 denyRide(driverID: UUID, rideID: UUID): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-Driver ID (`UUID`): ID of the driver.
+معرف السائق (`UUID`): معرّف السائق.
 
-Ride ID (`UUID`): ID of the customer requested ride.
+معرف الرحلة (`UUID`): معرّف الرحلة المطلوبة من العميل.
 
-**Returns**
+**النتائج**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
-### Start or End the Trip
+### بدء أو انهاء الرحلة
 
-Using this API, a driver will be able to start and end the trip.
+باستخدام هذه الواجهة، سيتمكن السائق من بدء وانهاء الرحلة.
 
 ```tsx
 startTrip(driverID: UUID, tripID: UUID): boolean
 endTrip(driverID: UUID, tripID: UUID): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-Driver ID (`UUID`): ID of the driver.
+معرف السائق (`UUID`): معرّف السائق.
 
-Trip ID (`UUID`): ID of the requested trip.
+معرف الرحلة (`UUID`): معرّف الرحلة المطلوبة.
 
-**Returns**
+**النتائج**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
-### Rate the Trip
+### تقييم الرحلة
 
-This API will enable customers to rate the trip.
+ستمكن هذه الواجهة العملاء من تقييم الرحلة.
 
 ```tsx
 rateTrip(customerID: UUID, tripID: UUID, rating: int, feedback?: string): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-Customer ID (`UUID`): ID of the customer.
+معرف العميل (`UUID`): معرّف العميل.
 
-Trip ID (`UUID`): ID of the completed trip.
+معرف الرحلة (`UUID`): معرّف الرحلة المكتملة.
 
-Rating (`int`): Rating of the trip.
+التقييم (`int`): تقييم الرحلة.
 
-Feedback (`string`): Feedback about the trip by the customer _(optional)_.
+ملاحظات (`string`): ملاحظات عن الرحلة من قبل العميل _(اختياري)_.
 
-**Returns**
+**النتائج**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
 ## High-level design
 
