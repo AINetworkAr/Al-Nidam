@@ -5511,81 +5511,83 @@ rateTrip(customerID: UUID, tripID: UUID, rating: int, feedback?: string): boolea
 
 نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
-## High-level design
+## تصميم مستوى عالٍ
 
-Now let us do a high-level design of our system.
+لنقم الآن بعمل تصميم مستوى عالٍ لنظامنا.
 
-### Architecture
+### البنية المعمارية
 
-We will be using [microservices architecture](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) since it will make it easier to horizontally scale and decouple our services. Each service will have ownership of its own data model. Let's try to divide our system into some core services.
+سنستخدم [بنية الخدمات المصغرة (Microservices)](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) حيث ستسهّل لنا توسعة النظام أفقيًا وفصل الخدمات عن بعضها البعض. ستمتلك كل خدمة نموذج بياناتها الخاص. دعونا نحاول تقسيم نظامنا إلى بعض الخدمات الأساسية.
 
-**Customer Service**
+**خدمة العملاء**
 
-This service handles customer-related concerns such as authentication and customer information.
+تدير هذه الخدمة مسائل تتعلق بالعملاء مثل المصادقة ومعلومات العميل.
 
-**Driver Service**
+**خدمة السائقين**
 
-This service handles driver-related concerns such as authentication and driver information.
+تدير هذه الخدمة مسائل تتعلق بالسائقين مثل المصادقة ومعلومات السائق.
 
-**Ride Service**
+**خدمة الرحلات**
 
-This service will be responsible for ride matching and quadtree aggregation. It will be discussed in detail separately.
+ستكون هذه الخدمة مسؤولة عن تطابق الرحلات وتجميع البيانات في تربة الرباعي. سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-**Trip Service**
+**خدمة الرحلات**
 
-This service handles trip-related functionality in our system.
+تدير هذه الخدمة وظائف تتعلق بالرحلات في نظامنا.
 
-**Payment Service**
+**خدمة المدفوعات**
 
-This service will be responsible for handling payments in our system.
+ستكون هذه الخدمة مسؤولة عن معالجة المدفوعات في نظامنا.
 
-**Notification Service**
+**خدمة الإشعارات**
 
-This service will simply send push notifications to the users. It will be discussed in detail separately.
+ستقوم هذه الخدمة ببساطة بإرسال إشعارات دفع إلى المستخدمين. سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-**Analytics Service**
+**خدمة التحليلات**
 
-This service will be used for metrics and analytics use cases.
+ستُستخدم هذه الخدمة لحالات الاستخدام المتعلقة بالمقاييس والتحليلات.
 
-**What about inter-service communication and service discovery?**
+**ماذا عن التواصل بين الخدمات واكتشاف الخدمات؟**
 
-Since our architecture is microservices-based, services will be communicating with each other as well. Generally, REST or HTTP performs well but we can further improve the performance using [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) which is more lightweight and efficient.
+نظرًا لأن بنيتنا قائمة على نموذج الخدمات المصغرة، ستكون الخدمات تتواصل مع بعضها البعض أيضًا. عمومًا، تؤدي تقنية REST أو HTTP بشكل جيد، ولكن يمكننا تحسين الأداء بشكل أكبر باستخدام [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) والذي يعتبر أكثر خفة وكفاءة.
 
-[Service discovery](https://karanpratapsingh.com/courses/system-design/service-discovery) is another thing we will have to take into account. We can also use a service mesh that enables managed, observable, and secure communication between individual services.
+[اكتشاف الخدمات](https://karanpratapsingh.com/courses/system-design/service-discovery) هو شيء آخر يجب أن نأخذه في الاعتبار. يمكننا أيضًا استخدام شبكة الخدمات التي تمكّن من التواصل المُدار والمرئي والآمن بين الخدمات الفردية.
 
-_Note: Learn more about [REST, GraphQL, gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) and how they compare with each other._
+_ملحوظة: تعرف على المزيد حول [REST وGraphQL وgRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) وكيفية مقارنتها مع بعضها البعض._
 
-### How is the service expected to work?
+### كيف يُتوقع أن تعمل الخدمة؟
 
-Here's how our service is expected to work:
+هكذا من المُتوقع أن تعمل خدمتنا:
 
 ![uber-working](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/uber/uber-working.png)
 
-1. Customer requests a ride by specifying the source, destination, cab type, payment method, etc.
-2. Ride service registers this request, finds nearby drivers, and calculates the estimated time of arrival (ETA).
-3. The request is then broadcasted to the nearby drivers for them to accept or deny.
-4. If the driver accepts, the customer is notified about the live location of the driver with the estimated time of arrival (ETA) while they wait for pickup.
-5. The customer is picked up and the driver can start the trip.
-6. Once the destination is reached, the driver will mark the ride as complete and collect payment.
-7. After the payment is complete, the customer can leave a rating and feedback for the trip if they like.
+1. يقوم العميل بطلب رحلة عن طريق تحديد مصدر الرحلة والوجهة ونوع السيارة وطريقة الدفع، وما إلى ذلك.
+2. تسجيل خدمة الرحلات لهذا الطلب، وتجد السائقين القريبين وتحسب الوقت المتوقع للوصول (ETA).
+3. يتم بث الطلب ثم ترسل للسائقين القريبين لقبوله أو رفضه.
+4. إذا قبل السائق، يُعلم العميل بموقع السائق المباشر والوقت المتوقع للوصول (ETA) أثناء انتظارهم للرحلة.
+5. يتم استلام العميل ويمكن للسائق بدء الرحلة.
+6. بمجرد وصول الوجهة، سيُمكن للسائق وضع علامة على الرحلة كمكتملة وجمع الدفع.
+7. بعد اكتمال الدفع، يمكن للعميل ترك تقييم وم
 
-### Location Tracking
+لاحظات للرحلة إذا أراد.
 
-How do we efficiently send and receive live location data from the client (customers and drivers) to our backend? We have two different options:
+### تتبع الموقع
 
-**Pull model**
+كيف يمكننا إرسال واستقبال بيانات الموقع المباشرة من العميل (العملاء والسائقين) إلى الخادم الخاص بنا بكفاءة؟ لدينا خيارين مختلفين:
 
-The client can periodically send an HTTP request to servers to report its current location and receive ETA and pricing information. This can be achieved via something like [Long polling](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#long-polling).
+**النموذج السحبي**
 
-**Push model**
+يمكن للعميل إرسال طلب HTTP بانتظام إلى الخوادم للإبلاغ عن موقعه الحالي واستقبال معلومات ETA والتسعير. يمكن تحقيق ذلك من خلال شيء مثل [الاستفتاء الطويل (Long Polling)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#long-polling).
 
-The client opens a long-lived connection with the server and once new data is available it will be pushed to the client. We can use [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) or [Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) for this.
+**النموذج الدفعي**
 
-The pull model approach is not scalable as it will create unnecessary request overhead on our servers and most of the time the response will be empty, thus wasting our resources. To minimize latency, using the push model with [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) is a better choice because then we can push data to the client once it's available without any delay, given the connection is open with the client. Also, WebSockets provide full-duplex communication, unlike [Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) which are only unidirectional.
+يفتح العميل اتصالًا مطول الأمد مع الخادم وبمجرد توفر بيانات جديدة، سيتم دفعها إلى العميل. يمكننا استخدام [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) أو [Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) لذلك.
 
-Additionally, the client application should have some sort of background job mechanism to ping GPS location while the application is in the background.
+النهج السحبي غير قابل للتوسعة حيث سيؤدي إلى إنشاء زيادة غير ضرورية في طلباتنا على الخوادم وفي معظم الأوقات ستكون الاستجابة فارغة، مما يؤدي إلى هدر الموارد. لتقليل التأخير، استخدام النموذج الدفعي باستخدام [WebSockets](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#websockets) هو خيار أفضل، لأنه يمكننا دفع البيانات إلى العميل بمجرد توفرها دون أي تأخير، طالما أن الاتصال مفتوحًا مع العميل. بالإضافة إلى ذلك، يوفر WebSockets اتصالًا ثنائي الاتجاه، على عكس [Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events#server-sent-events-sse) والتي تعمل باتجاه واحد فقط.
 
-_Note: Learn more about [Long polling, WebSockets, Server-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events)._
+علاوة على ذلك، يجب أن تحتوي تطبيق العميل على آلية عمل في الخلفية لإرسال موقع GPS بينما يكون التطبيق في الخلفية.
+
+_ملحوظة: تعرف على المزيد حول [الاستفتاء الطويل (Long Polling) وWebSockets وServer-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events)._
 
 ### Ride Matching
 
