@@ -5647,63 +5647,65 @@ _للمزيد من التفاصيل، راجع [المعاملات (Transactions
 
 _للمزيد من التفاصيل، تعرف على كيفية [عمل التسعير المرتفع](https://www.uber.com/us/en/drive/driver-app/how-surge-works) مع Uber._
 
-### Payments
+### المدفوعات
 
-Handling payments at scale is challenging, to simplify our system we can use a third-party payment processor like [Stripe](https://stripe.com) or [PayPal](https://www.paypal.com). Once the payment is complete, the payment processor will redirect the user back to our application and we can set up a [webhook](https://en.wikipedia.org/wiki/Webhook) to capture all the payment-related data.
+من الصعب التعامل مع المدفوعات على نطاق واسع، لتبسيط نظامنا يمكننا استخدام معالج مدفوعات من جهة خارجية مثل [Stripe](https://stripe.com) أو [PayPal](https://www.paypal.com). بمجرد اكتمال عملية الدفع، سيقوم معالج الدفع بإعادة توجيه المستخدم إلى تطبيقنا ويمكننا إعداد [webhook](https://en.wikipedia.org/wiki/Webhook) لالتقاط جميع البيانات المتعلقة بالدفع.
 
-### Notifications
+### الإشعارات
 
-Push notifications will be an integral part of our platform. We can use a message queue or a message broker such as [Apache Kafka](https://kafka.apache.org) with the notification service to dispatch requests to [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging) or [Apple Push Notification Service (APNS)](https://developer.apple.com/documentation/usernotifications) which will handle the delivery of the push notifications to user devices.
+ستكون الإشعارات بواسطة الدفع جزءًا أساسيًا من منصتنا. يمكننا استخدام طابور رسائل أو وسيط رسائل مثل [Apache Kafka](https://kafka.apache.org) مع خدمة الإشعارات لإرسال الطلبات إلى [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging) أو [Apple Push Notification Service (APNS)](https://developer.apple.com/documentation/usernotifications) الذي سيتولى توصيل الإشعارات بالدفع إلى أجهزة المستخدم.
 
-_For more details, refer to the [WhatsApp](https://karanpratapsingh.com/courses/system-design/whatsapp#notifications) system design where we discuss push notifications in detail._
+_لمزيد من التفاصيل، راجع تصميم النظام لـ [WhatsApp](https://karanpratapsingh.com/courses/system-design/whatsapp#notifications) حيث نناقش الإشعارات بالتفصيل._
 
-## Detailed design
+## التصميم المفصل
 
-It's time to discuss our design decisions in detail.
+حان الوقت لمناقشة قرارات تصميمنا بالتفصيل.
 
-### Data Partitioning
+### تقسيم البيانات
 
-To scale out our databases we will need to partition our data. Horizontal partitioning (aka [Sharding](https://karanpratapsingh.com/courses/system-design/sharding)) can be a good first step. We can shard our database either based on existing [partition schemes](https://karanpratapsingh.com/courses/system-design/sharding#partitioning-criteria) or regions. If we divide the locations into regions using let's say zip codes, we can effectively store all the data in a given region on a fixed node. But this can still cause uneven data and load distribution, we can solve this using [Consistent hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
+لتوسيع قواعد البيانات الخاصة بنا، سنحتاج إلى تقسيم بياناتنا. يمكن أن يكون التقسيم الأفقي (المعروف أيضًا بـ [Sharding](https://karanpratapsingh.com/courses/system-design/sharding)) خطوة أولى جيدة. يمكننا تجزئة قاعدة البيانات الخاصة بنا سواء بناءً على [أنماط التقسيم الحالية](https://karanpratapsingh.com/courses/system-design/sharding#partitioning-criteria) أو المناطق. إذا قمنا بتقسيم المواقع إلى مناطق باستخدام رموز البريد مثلاً، يمكننا تخزين جميع البيانات بفعالية في منطقة معينة على جهاز ثابت. ولكن ذلك قد يتسبب ما زال في توزيع غير متساوي للبيانات والحمل، يمكننا حل هذا باستخدام [التجزئة المتسقة (Consistent hashing)](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
 
-_For more details, refer to [Sharding](https://karanpratapsingh.com/courses/system-design/sharding) and [Consistent Hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
+_لمزيد من التفاصيل، راجع [التجزئة (Sharding)](https://karanpratapsingh.com/courses/system-design/sharding) و [التجزئة المتسقة (Consistent Hashing)](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
 
-### Metrics and Analytics
+### القياسات والتحليلات
 
-Recording analytics and metrics is one of our extended requirements. We can capture the data from different services and run analytics on the data using [Apache Spark](https://spark.apache.org) which is an open-source unified analytics engine for large-scale data processing. Additionally, we can store critical metadata in the views table to increase data points within our data.
+تسجيل البيانات التحليلية والقياسات هو واحد من متطلباتنا الموسعة. يمكننا التقاط البيانات من خدمات مختلفة وتشغيل تحليلات على البيانات باستخدام [Apache Spark](https://spark.apache.org) وهو محرك تحليلات موحد مفتوح المصدر لمعالجة البيانات بمقياس كبير. بالإضافة إلى ذلك، يمكننا تخزين البيانات الوصفية الحرجة في جداول العروض لزيادة نقاط البيانات ضمن بياناتنا.
 
-### Caching
+### التخزين المؤقت
 
-In a location services-based platform, caching is important. We have to be able to cache the recent locations of the customers and drivers for fast retrieval. We can use solutions like [Redis](https://redis.io) or [Memcached](https://memcached.org) but what kind of cache eviction policy would best fit our needs?
+في منصة قائمة على خدمات الموقع، يعتبر التخزين المؤقت أمرًا مهمًا. يجب أن نتمكن من تخزين مواقع العملاء والسائقين الأخيرة للاسترجاع السريع. يمكننا استخدام حلول مثل [Redis](https://redis.io) أو [Memcached](https://memcached.org)، ولكن ما نوع سياسة إخراج البيانات المؤقتة الذي سيتناسب أكثر مع احتياجاتنا؟
 
-**Which cache eviction policy to use?**
+**أي سياسة إخراج البيانات المؤقتة يجب استخدامها؟**
 
-[Least Recently Used (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)>) can be a good policy for our system. In this policy, we discard the least recently used key first.
+[أقل مستخدمًا مؤخرًا (LRU)](<https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)>) يمكن أن تكون سياسة جي
 
-**How to handle cache miss?**
+دة لنظامنا. في هذه السياسة، نقوم بتجاوز المفتاح الذي تم استخدامه بوقت قريب.
 
-Whenever there is a cache miss, our servers can hit the database directly and update the cache with the new entries.
+**كيفية التعامل مع عدم وجود البيانات المؤقتة؟**
 
-_For more details, refer to [Caching](https://karanpratapsingh.com/courses/system-design/caching)._
+عندما يحدث عدم وجود البيانات المؤقتة، يمكن لخوادمنا الوصول إلى قاعدة البيانات مباشرة وتحديث البيانات المؤقتة بالإدخالات الجديدة.
 
-## Identify and resolve bottlenecks
+_لمزيد من التفاصيل، راجع [التخزين المؤقت (Caching)](https://karanpratapsingh.com/courses/system-design/caching)._
+
+## تحديد وحل المشكلات
 
 ![uber-advanced-design](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/uber/uber-advanced-design.png)
 
-Let us identify and resolve bottlenecks such as single points of failure in our design:
+دعونا نحدد ونحل المشكلات مثل نقاط الفشل الوحيدة في تصميمنا:
 
-- "What if one of our services crashes?"
-- "How will we distribute our traffic between our components?"
-- "How can we reduce the load on our database?"
-- "How to improve the availability of our cache?"
-- "How can we make our notification system more robust?"
+- "ماذا لو تعطلت إحدى خدماتنا؟"
+- "كيف سنوزع حركتنا بين مكوناتنا؟"
+- "كيف يمكننا تقليل الحمل على قاعدة البيانات؟"
+- "كيفية تحسين توفر ذاكرة التخزين المؤقت؟"
+- "كيف يمكننا جعل نظام الإشعارات أكثر استدامة؟"
 
-To make our system more resilient we can do the following:
+لجعل نظامنا أكثر مرونة، يمكننا القيام بالآتي:
 
-- Running multiple instances of each of our services.
-- Introducing [load balancers](https://karanpratapsingh.com/courses/system-design/load-balancing) between clients, servers, databases, and cache servers.
-- Using multiple read replicas for our databases.
-- Multiple instances and replicas for our distributed cache.
-- Exactly once delivery and message ordering is challenging in a distributed system, we can use a dedicated [message broker](https://karanpratapsingh.com/courses/system-design/message-brokers) such as [Apache Kafka](https://kafka.apache.org) or [NATS](https://nats.io) to make our notification system more robust.
+- تشغيل عدة نسخ من كل من خدماتنا.
+- إدخال [موازنات الحمل](https://karanpratapsingh.com/courses/system-design/load-balancing) بين العملاء والخوادم وقواعد البيانات وخوادم التخزين المؤقت.
+- استخدام نسخ قراءة متعددة لقواعد بياناتنا.
+- نسخ متعددة ونسخ لخوادم التخزين المؤقت.
+- توصيل مرة واحدة وترتيب الرسائل يعدان تحديًا في نظام موزع، يمكننا استخدام وسيط الرسائل المخصص مثل [Apache Kafka](https://kafka.apache.org) أو [NATS](https://nats.io) لجعل نظام الإشعارات أكثر استدامة.
 
 # Next Steps
 
