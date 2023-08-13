@@ -4571,148 +4571,148 @@ $$
 | التخزين (10 سنوات)        | ~19 بيتابايت      |
 | العرض الترددي                 | ~60 ميجابايت/ثانية    |
 
-## Data model design
+## تصميم نموذج البيانات
 
-This is the general data model which reflects our requirements.
+هذا هو نموذج البيانات العام الذي يعكس متطلباتنا.
 
-![twitter-datamodel](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/twitter/twitter-datamodel.png)
+![نموذج-بيانات-تويتر](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/twitter/twitter-datamodel.png)
 
-We have the following tables:
+لدينا الجداول التالية:
 
 **users**
 
-This table will contain a user's information such as `name`, `email`, `dob`, and other details.
+تحتوي هذه الجدول على معلومات المستخدم مثل "الاسم"، "البريد الإلكتروني"، "تاريخ الميلاد"، وتفاصيل أخرى.
 
 **tweets**
 
-As the name suggests, this table will store tweets and their properties such as `type` (text, image, video, etc.), `content`, etc. We will also store the corresponding `userID`.
+كما يوحي الاسم، سيحتوي هذا الجدول على التغريدات وخصائصها مثل "النوع" (نص، صورة، فيديو، وما إلى ذلك)، "المحتوى"، وما إلى ذلك. سنقوم أيضًا بتخزين "userID" المقابل.
 
 **favorites**
 
-This table maps tweets with users for the favorite tweets functionality in our application.
+يختص هذا الجدول بتعيين التغريدات مع المستخدمين لوظيفة تغريدات المفضلة في تطبيقنا.
 
 **followers**
 
-This table maps the followers and [followees](https://en.wiktionary.org/wiki/followee) as users can follow each other (N:M relationship).
+يعيّن هذا الجدول المتابعين والـ "followees" كما يمكن للمستخدمين متابعة بعضهم البعض (علاقة N:M).
 
 **feeds**
 
-This table stores feed properties with the corresponding `userID`.
+يخزن هذا الجدول خصائص التغذية مع "userID" المقابل.
 
 **feeds_tweets**
 
-This table maps tweets and feed (N:M relationship).
+يعيّن هذا الجدول التغريدات والتغذية (علاقة N:M).
 
-### What kind of database should we use?
+### أي نوع من قواعد البيانات يجب أن نستخدم؟
 
-While our data model seems quite relational, we don't necessarily need to store everything in a single database, as this can limit our scalability and quickly become a bottleneck.
+بينما يبدو نموذج بياناتنا نسبيًا ذا طابع علاقي، ليس من الضروري أن نقوم بتخزين كل شيء في قاعدة بيانات واحدة، حيث يمكن أن يقيّد ذلك قابليتنا للتوسع ويصبح سرعان ما عائقًا.
 
-We will split the data between different services each having ownership over a particular table. Then we can use a relational database such as [PostgreSQL](https://www.postgresql.org) or a distributed NoSQL database such as [Apache Cassandra](https://cassandra.apache.org/_/index.html) for our use case.
+سنقسم البيانات بين خدمات مختلفة تمتلك كل منها السيطرة على جدول معين. ثم يمكننا استخدام قاعدة بيانات علاقية مثل [PostgreSQL](https://www.postgresql.org) أو قاعدة بيانات NoSQL موزعة مثل [Apache Cassandra](https://cassandra.apache.org/_/index.html) لحالتنا.
 
-## API design
+## تصميم واجهة البرمجة (API)
 
-Let us do a basic API design for our services:
+لنقم بتصميم واجهة برمجة التطبيق (API) الأساسية لخدماتنا:
 
-### Post a tweet
+### نشر تغريدة
 
-This API will allow the user to post a tweet on the platform.
+ستسمح هذه الواجهة للمستخدم بنشر تغريدة على المنصة.
 
 ```tsx
 postTweet(userID: UUID, content: string, mediaURL?: string): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-User ID (`UUID`): ID of the user.
+مُعرّف المستخدم (`UUID`): مُعرّف المستخدم.
 
-Content (`string`): Contents of the tweet.
+المحتوى (`string`): محتوى التغريدة.
 
-Media URL (`string`): URL of the attached media _(optional)_.
+رابط الوسائط (`string`): رابط الوسائط المرفقة _(اختياري)_.
 
-**Returns**
+**العودة**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+النتيجة (`boolean`): تُمثّل ما إذا كانت العملية ناجحة أم لا.
 
-### Follow or unfollow a user
+### متابعة أو إلغاء متابعة مستخدم
 
-This API will allow the user to follow or unfollow another user.
+ستسمح هذه الواجهة للمستخدم بمتابعة أو إلغاء متابعة مستخدم آخر.
 
 ```tsx
 follow(followerID: UUID, followeeID: UUID): boolean
 unfollow(followerID: UUID, followeeID: UUID): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-Follower ID (`UUID`): ID of the current user.
+مُعرّف المتابع (`UUID`): مُعرّف المستخدم الحالي.
 
-Followee ID (`UUID`): ID of the user we want to follow or unfollow.
+مُعرّف المتابَع (`UUID`): مُعرّف المستخدم الذي نريد متابعته أو إلغاء متابعته.
 
-Media URL (`string`): URL of the attached media _(optional)_.
+**العودة**
 
-**Returns**
+النتيجة (`boolean`): تُمثّل ما إذا كانت العملية ناجحة أم لا.
 
-Result (`boolean`): Represents whether the operation was successful or not.
+### الحصول على تغذية الأخبار
 
-### Get newsfeed
-
-This API will return all the tweets to be shown within a given newsfeed.
+ستقوم هذه الواجهة بإرجاع جميع التغريدات التي سيتم عرضها في تغذية الأخبار الخاصة بمستخدم معين.
 
 ```tsx
 getNewsfeed(userID: UUID): Tweet[]
 ```
 
-**Parameters**
+**المعلمات**
 
-User ID (`UUID`): ID of the user.
+مُعرّف المستخدم (`UUID`): مُعرّف المستخدم.
 
-**Returns**
+**العودة**
 
-Tweets (`Tweet[]`): All the tweets to be shown within a given newsfeed.
+التغريدات (`Tweet[]`): جميع التغريدات التي سيتم عرضها في تغذية الأخبار الخاصة بمستخدم معين.
 
-## High-level design
+## تصميم مستوى عالي
 
-Now let us do a high-level design of our system.
+لنقم الآن بتصميم عالي المستوى ل
 
-### Architecture
+نظامنا.
 
-We will be using [microservices architecture](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) since it will make it easier to horizontally scale and decouple our services. Each service will have ownership of its own data model. Let's try to divide our system into some core services.
+### الهندسة المعمارية
 
-**User Service**
+سنستخدم [هندسة الخدمات الصغيرة (Microservices)](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) حيث ستسهّل لنا هذه الهندسة توسيع الخدمات أفقيًا وفصلها عن بعضها البعض. ستمتلك كل خدمة بياناتها الخاصة. دعونا نحاول تقسيم نظامنا إلى بعض الخدمات الأساسية.
 
-This service handles user-related concerns such as authentication and user information.
+**خدمة المستخدم**
 
-**Newsfeed Service**
+هذه الخدمة تتعامل مع قضايا تتعلق بالمستخدمين مثل المصادقة ومعلومات المستخدم.
 
-This service will handle the generation and publishing of user newsfeeds. It will be discussed in detail separately.
+**خدمة تغذية الأخبار**
 
-**Tweet Service**
+ستتعامل هذه الخدمة مع إنشاء ونشر تغذية الأخبار للمستخدمين. سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-The tweet service will handle tweet-related use cases such as posting a tweet, favorites, etc.
+**خدمة التغريدة**
 
-**Search Service**
+ستتعامل خدمة التغريدة مع استخدامات التغريدة مثل نشر تغريدة، تغريدات المفضلة، وما إلى ذلك.
 
-The service is responsible for handling search-related functionality. It will be discussed in detail separately.
+**خدمة البحث**
 
-**Media service**
+هذه الخدمة مسؤولة عن معالجة وظائف البحث. ستتم مناقشتها بالتفصيل بشكل منفصل.
 
-This service will handle the media (images, videos, files, etc.) uploads. It will be discussed in detail separately.
+**خدمة الوسائط**
 
-**Notification Service**
+ستتعامل هذه الخدمة مع تحميل الوسائط (الصور، الفيديو، الملفات، إلخ). سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-This service will simply send push notifications to the users.
+**خدمة الإشعارات**
 
-**Analytics Service**
+ستقوم هذه الخدمة ببساطة بإرسال إشعارات دفع إلى المستخدمين.
 
-This service will be used for metrics and analytics use cases.
+**خدمة التحليلات**
 
-**What about inter-service communication and service discovery?**
+ستُستخدم هذه الخدمة لاستخدامات المقاييس والتحليلات.
 
-Since our architecture is microservices-based, services will be communicating with each other as well. Generally, REST or HTTP performs well but we can further improve the performance using [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) which is more lightweight and efficient.
+**ماذا عن التواصل بين الخدمات واكتشاف الخدمات؟**
 
-[Service discovery](https://karanpratapsingh.com/courses/system-design/service-discovery) is another thing we will have to take into account. We can also use a service mesh that enables managed, observable, and secure communication between individual services.
+نظرًا لأن هندسة النظام لدينا مبنية على خدمات صغيرة، سيتواصل الخدمات مع بعضها. عمومًا، تؤدي التقنيات المعتادة مثل REST أو HTTP بشكل جيد ولكن يمكننا تحسين الأداء بمزيد من التحسين باستخدام [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) الذي يعتبر أكثر خفة وكفاءة.
 
-_Note: Learn more about [REST, GraphQL, gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) and how they compare with each other._
+[اكتشاف الخدمات](https://karanpratapsingh.com/courses/system-design/service-discovery) هو شيء آخر يجب أن نأخذه في الاعتبار. يمكننا أيضًا استخدام "خدمة الشبكة" (Service Mesh) التي تمكّن من التواصل بين الخدمات الفردية بشكل مُدار وقابل للمراقبة والأمان.
+
+_ملاحظة: تعرف على المزيد حول [REST و GraphQL و gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) وكيف تتفاوت هذه التقنيات مع بعضها البعض._
 
 ### Newsfeed
 
