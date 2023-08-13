@@ -5589,61 +5589,63 @@ _ملحوظة: تعرف على المزيد حول [REST وGraphQL وgRPC](https
 
 _ملحوظة: تعرف على المزيد حول [الاستفتاء الطويل (Long Polling) وWebSockets وServer-Sent Events (SSE)](https://karanpratapsingh.com/courses/system-design/long-polling-websockets-server-sent-events)._
 
-### Ride Matching
+### مطابقة الرحلات
 
-We need a way to efficiently store and query nearby drivers. Let's explore different solutions we can incorporate into our design.
+نحتاج إلى وسيلة لتخزين واستعلام السائقين القريبين بكفاءة. دعونا نستكشف حلاً مختلفًا يمكننا دمجه في تصميمنا.
 
-**SQL**
+**قواعد البيانات العلائقية (SQL)**
 
-We already have access to the latitude and longitude of our customers, and with databases like [PostgreSQL](https://www.postgresql.org) and [MySQL](https://www.mysql.com) we can perform a query to find nearby driver locations given a latitude and longitude (X, Y) within a radius (R).
+نمتلك بالفعل الوصول إلى خطوط العرض وخطوط الطول لعملائنا، وباستخدام قواعد البيانات مثل [PostgreSQL](https://www.postgresql.org) و [MySQL](https://www.mysql.com) يمكننا تنفيذ استعلام للعثور على مواقع السائقين القريبين بناءً على خط العرض وخط الطول (X, Y) ضمن نطاق (R).
 
 ```sql
 SELECT * FROM locations WHERE lat BETWEEN X-R AND X+R AND long BETWEEN Y-R AND Y+R
 ```
 
-However, this is not scalable, and performing this query on large datasets will be quite slow.
+ومع ذلك، هذا ليس قابلاً للتوسعة، وسيؤدي تنفيذ هذا الاستعلام على مجموعات بيانات كبيرة إلى بطء كبير.
 
-**Geohashing**
+**Geohashing (الترميز الجغرافي)**
 
-[Geohashing](/courses/sytem-design/geohashing-and-quadtrees#geohashing) is a [geocoding](https://en.wikipedia.org/wiki/Address_geocoding) method used to encode geographic coordinates such as latitude and longitude into short alphanumeric strings. It was created by [Gustavo Niemeyer](https://twitter.com/gniemeyer) in 2008.
+[Geohashing](/courses/sytem-design/geohashing-and-quadtrees#geohashing) هو أسلوب [الترميز الجغرافي](https://en.wikipedia.org/wiki/Address_geocoding) المستخدم لترميز الإحداثيات الجغرافية مثل خطوط العرض وخطوط الطول إلى سلاسل قصيرة أبجدية ورقمية. تم إنشاؤه بواسطة [Gustavo Niemeyer](https://twitter.com/gniemeyer) في عام 2008.
 
-Geohash is a hierarchical spatial index that uses Base-32 alphabet encoding, the first character in a geohash identifies the initial location as one of the 32 cells. This cell will also contain 32 cells. This means that to represent a point, the world is recursively divided into smaller and smaller cells with each additional bit until the desired precision is attained. The precision factor also determines the size of the cell.
+الـ Geohash هو فهرس مكاني تسلسلي يستخدم الترميز الأبجدي بقاعدة 32، حيث يُعرف الحرف الأول في Geohash الموقع الأولي كإحدى الخلايا الـ 32. ستحتوي هذه الخلية أيضًا على 32 خلية. وهذا يعني أنه لتمثيل نقطة، يتم تقسيم العالم بشكل تكراري إلى خلايا أصغر وأصغر مع كل بت إضافي حتى تتحقق الدقة المطلوبة. عامل الدقة يحدد أيضًا حجم الخلية.
 
 ![geohashing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/geohashing.png)
 
-For example, San Francisco with coordinates `37.7564, -122.4016` can be represented in geohash as `9q8yy9mf`.
+على سبيل المثال، يمكن تمثيل سان فرانسيسكو بإحداثيات `37.7564, -122.4016` باستخدام الـ Geohash على أنه `9q8yy9mf`.
 
-Now, using the customer's geohash we can determine the nearest available driver by simply comparing it with the driver's geohash. For better performance, we will index and store the geohash of the driver in memory for faster retrieval.
+الآن، باستخدام Geohash الخاص بالعميل، يمكننا تحديد أقرب سائق متاح عن طريق مقارنته بـ Geohash السائق. من أجل تحقيق أداء أفضل، سنقوم بفهرسة وتخزين Geohash السائق في الذاكرة للحصول على استرجاع أسرع.
 
-**Quadtrees**
+**Quadtrees (أشجار الأرباع)**
 
-A [Quadtree](/courses/sytem-design/geohashing-and-quadtrees#quadtrees) is a tree data structure in which each internal node has exactly four children. They are often used to partition a two-dimensional space by recursively subdividing it into four quadrants or regions. Each child or leaf node stores spatial information. Quadtrees are the two-dimensional analog of [Octrees](https://en.wikipedia.org/wiki/Octree) which are used to partition three-dimensional space.
+[Quadtree](/courses/sytem-design/geohashing-and-quadtrees#quadtrees) هو هيكل بيانات شجري يحتوي كل عقدة داخلية على أربعة أطفال تمامًا. غالبًا ما يتم استخدامها لتقسيم مساحة ثنائية الأبعاد عن طريق تقسيمها تقسيمًا تكراريًا إلى أربعة رباعيات أو مناطق. تخزن كل عقدة أو عقدة ورقية معلومات المكان. تُعتبر أشجار الأرباع هي التماثل الثنائي لـ [أشجار الثمانيات (Octrees)](https://en.wikipedia.org/wiki/Octree) التي تُستخدم لتقسيم مساحة ثلاثية الأبعاد.
 
 ![quadtree](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree.png)
 
-Quadtrees enable us to search points within a two-dimensional range efficiently, where those points are defined as latitude/longitude coordinates or as cartesian (x, y) coordinates.
+تمكن أشجار الأرباع من البحث عن النقاط داخل نطاق ثنائي الأبعاد بكفاءة، حيث تُعرف هذه النقاط كإحداثيات خط العرض/خط الطول أو كإحداثيات خطية (x، y).
 
-We can save further computation by only subdividing a node after a certain threshold.
+يمكننا توفير مزيدًا من الحساب عن طريق تقسيم العقدة فقط بعد مرور عتبة معينة.
 
-![quadtree-subdivision](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree-subdivision.png)
+![quadtree-subdivision](https://raw
 
-[Quadtree](/courses/sytem-design/geohashing-and-quadtrees#quadtrees) seems perfect for our use case, we can update the Quadtree every time we receive a new location update from the driver. To reduce the load on the quadtree servers we can use an in-memory datastore such as [Redis](https://redis.io) to cache the latest updates. And with the application of mapping algorithms such as the [Hilbert curve](https://en.wikipedia.org/wiki/Hilbert_curve), we can perform efficient range queries to find nearby drivers for the customer.
+.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree-subdivision.png)
 
-**What about race conditions?**
+يبدو [Quadtree](/courses/sytem-design/geohashing-and-quadtrees#quadtrees) مثاليًا لحالتنا، يمكننا تحديث الـ Quadtree في كل مرة نتلقى فيها تحديث موقع جديد من السائق. لتقليل العبء على خوادم الـ quadtree يمكننا استخدام مخزن البيانات في الذاكرة مثل [Redis](https://redis.io) لتخزين التحديثات الأحدث. وباستخدام خوارزميات التعيين مثل [منحنى هيلبرت (Hilbert curve)](https://en.wikipedia.org/wiki/Hilbert_curve)، يمكننا تنفيذ استعلامات نطاق فعالة للعثور على السائقين القريبين للعميل.
 
-Race conditions can easily occur when a large number of customers will be requesting rides simultaneously. To avoid this, we can wrap our ride matching logic in a [Mutex](<https://en.wikipedia.org/wiki/Lock_(computer_science)>) to avoid any race conditions. Furthermore, every action should be transactional in nature.
+**ماذا عن ظروف السباق؟**
 
-_For more details, refer to [Transactions](https://karanpratapsingh.com/courses/system-design/transactions) and [Distributed Transactions](https://karanpratapsingh.com/courses/system-design/distributed-transactions)._
+قد تحدث ظروف السباق بسهولة عندما يقوم عدد كبير من العملاء بطلب الرحلات في وقت واحد. لتجنب ذلك، يمكننا لف حسابنا المنطق لمطابقة الرحلات بـ [قفل (Mutex)](<https://en.wikipedia.org/wiki/Lock_(computer_science)>) لتجنب أي ظروف سباق. علاوة على ذلك، يجب أن تكون كل عملية ذات طابع معاملاتي.
 
-**How to find the best drivers nearby?**
+_للمزيد من التفاصيل، راجع [المعاملات (Transactions)](https://karanpratapsingh.com/courses/system-design/transactions) و [المعاملات الموزعة (Distributed Transactions)](https://karanpratapsingh.com/courses/system-design/distributed-transactions)._
 
-Once we have a list of nearby drivers from the Quadtree servers, we can perform some sort of ranking based on parameters like average ratings, relevance, past customer feedback, etc. This will allow us to broadcast notifications to the best available drivers first.
+**كيفية العثور على أفضل السائقين القريبين؟**
 
-**Dealing with high demand**
+بمجرد الحصول على قائمة من السائقين القريبين من خوادم أشجار الأرباع، يمكننا تنفيذ نوع من التصنيف استنادًا إلى معلمات مثل تقييمات المتوسط، والصلة، وتقديم تعليقات العملاء السابقة، وما إلى ذلك. سيتيح لنا ذلك بث إشعارات لأفضل السائقين المتاحين أولاً.
 
-In cases of high demand, we can use the concept of Surge Pricing. Surge pricing is a dynamic pricing method where prices are temporarily increased as a reaction to increased demand and mostly limited supply. This surge price can be added to the base price of the trip.
+**التعامل مع الطلب المرتفع**
 
-_For more details, learn how [surge pricing works](https://www.uber.com/us/en/drive/driver-app/how-surge-works) with Uber._
+في حالات الطلب المرتفع، يمكننا استخدام مفهوم التسعير المرتفع. التسعير المرتفع هو طريقة تسعير ديناميكية حيث يتم زيادة الأسعار مؤقتًا استجابةً لزيادة الطلب ونقص الإمداد. يمكن إضافة تسعير الموجة هذا إلى السعر الأساسي للرحلة.
+
+_للمزيد من التفاصيل، تعرف على كيفية [عمل التسعير المرتفع](https://www.uber.com/us/en/drive/driver-app/how-surge-works) مع Uber._
 
 ### Payments
 
