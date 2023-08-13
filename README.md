@@ -5104,83 +5104,86 @@ comment(videoID: UUID, comment: string): boolean
 
 نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
-## High-level design
+## التصميم على المستوى العالي
 
-Now let us do a high-level design of our system.
+دعونا نقوم بتصميم على المستوى العالي لنظامنا.
 
-### Architecture
+### الهندسة المعمارية
 
-We will be using [microservices architecture](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) since it will make it easier to horizontally scale and decouple our services. Each service will have ownership of its own data model. Let's try to divide our system into some core services.
+سنستخدم [هندسة الخدمات المصغرة](https://karanpratapsingh.com/courses/system-design/monoliths-microservices#microservices) حيث سيسهل علينا توسعة الخدمات أفقيًا وفصلها عن بعضها. ستكون لكل خدمة ملكية لنموذج بياناتها الخاص. دعونا نحاول تقسيم نظامنا إلى بعض الخدمات الأساسية.
 
-**User Service**
+**خدمة المستخدمين**
 
-This service handles user-related concerns such as authentication and user information.
+ستتعامل هذه الخدمة مع قضايا المستخدمين مثل المصادقة ومعلومات المستخدم.
 
-**Stream Service**
+**خدمة البث**
 
-The stream service will handle video streaming-related functionality.
+ستتعامل خدمة البث مع وظائف البث المتعلقة بالفيديو.
 
-**Search Service**
+**خدمة البحث**
 
-The service is responsible for handling search-related functionality. It will be discussed in detail separately.
+تتولى هذه الخدمة مسؤولية البحث. سيتم مناقشةها بالتفصيل بشكل منفصل.
 
-**Media service**
+**خدمة الوسائط**
 
-This service will handle the video uploads and processing. It will be discussed in detail separately.
+ستتعامل هذه الخدمة مع تحميل ومعالجة الفيديوهات. سيتم مناقشتها بالتفصيل بشكل منفصل.
 
-**Analytics Service**
+**خدمة التحليلات**
 
-This service will be used for metrics and analytics use cases.
+ستُستخدم هذه الخدمة لحالات استخدام مقاييس وتحليلات.
 
-**What about inter-service communication and service discovery?**
+**ماذا عن التواصل بين الخدمات واكتشاف الخدمات؟**
 
-Since our architecture is microservices-based, services will be communicating with each other as well. Generally, REST or HTTP performs well but we can further improve the performance using [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) which is more lightweight and efficient.
+نظرًا لأن هندسة النظام تعتمد على الخدمات المصغرة، فإن الخدمات ستتواصل مع بعضها البعض. عمومًا، يعمل REST أو HTTP بشكل جيد ولكن يمكن تحسين الأداء بشكل أفضل باستخدام [gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc#grpc) الذي هو أكثر خفة وفعالية.
 
-[Service discovery](https://karanpratapsingh.com/courses/system-design/service-discovery) is another thing we will have to take into account. We can also use a service mesh that enables managed, observable, and secure communication between individual services.
+[اكتشاف الخدمات](https://karanpratapsingh.com/courses/system-design/service-discovery) هو شيء آخر يجب أن نأخذه في الاعتبار. يمكننا أيضًا استخدام شبكة خدمات تمكّن من التواصل المُدار والمُلاحظ بين الخدمات الفردية.
 
-_Note: Learn more about [REST, GraphQL, gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) and how they compare with each other._
+_ملحوظة: تعرف أكثر على [REST، GraphQL، gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) وكيفية مقارنتها مع بعضها البعض._
 
-### Video processing
+### معالجة الفيديو
 
 ![video-processing-pipeline](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/netflix/video-processing-pipeline.png)
 
-There are so many variables in play when it comes to processing a video. For example, an average data size of two-hour raw 8K footage from a high-end camera can easily be up to 4 TB, thus we need to have some kind of processing to reduce both storage and delivery costs.
+هناك العديد من المتغيرات في العمل عندما يتعلق الأمر بمعالجة فيديو. على سبيل المثال، حجم البيانات المتوسطة لمقطع فيديو غير مضغوط بدقة 8K لمدة ساعتين من كاميرا عالية الجودة يمكن أن يصل بسهولة إلى 4 تيرابايت، لذا يجب أن نقوم ببعض أنواع المعالجة لتقليل تكاليف التخزين والتسليم.
 
-Here's how we can process videos once they're uploaded by the content team (or users in YouTube's case) and are queued for processing in our [message queue](https://karanpratapsingh.com/courses/system-design/message-queues).
+إليك كيف يمكننا معالجة الفيديوهات بمجرد رفعها من قبل فريق المحتوى (أو المستخدمين في حالة يوتيوب) ووضعها في قائمة الانتظار للمعالجة في [طابور الرسائل](https://karanpratapsingh.com/courses/system-design/message-queues).
 
-Let's discuss how this works:
+لنناقش كيفية عمل ذلك:
 
-- **File Chunker**
+- **تجزئة الملفات**
 
 ![file-chunking](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/netflix/file-chunking.png)
 
-This is the first step of our processing pipeline. File chunking is the process of splitting a file into smaller pieces called chunks. It can help us eliminate duplicate copies of repeating data on storage, and reduces the amount of data sent over the network by only selecting changed chunks.
+هذه هي الخطوة الأولى في خط الإنتاج. تجزئة الملفات هي عملية تقسيم الملف إلى قطع أصغر تسمى "قطع". يمكن أن تساعدنا هذه العملية في القضاء على نسخ مكررة من البيانات المتكررة على التخزين، وتقليل كمية البيانات التي يتم إرسالها عبر الشبكة عن طريق اختيار قطع متغيرة فقط.
 
-Usually, a video file can be split into equal size chunks based on timestamps but Netflix instead splits chunks based on scenes. This slight variation becomes a huge factor for a better user experience since whenever the client requests a chunk from the server, there is a lower chance of interruption as a complete scene will be retrieved.
+عادةً، يمكن تقسيم ملف فيديو إلى قطع بحجم متساوي بناءً على الطوابق ال
 
-- **Content Filter**
+زمنية، ولكن Netflix يقوم بتقسيم القطع استنادًا إلى المشاهد. يصبح هذا الاختلاف البسيط عاملاً هامًا لتحسين تجربة المستخدم لأنه في كل مرة يطلب فيها العميل قطعة من الخادم، يكون هناك فرصة أقل لحدوث انقطاع لأنه سيتم استرداد مشهد كامل.
 
-This step checks if the video adheres to the content policy of the platform. This can be pre-approved as in the case of Netflix according to [content rating](https://en.wikipedia.org/wiki/Motion_picture_content_rating_system) of the media or can be strictly enforced like by YouTube.
+- **مُصفّي المحتوى**
 
-This entire process is done by a machine learning model which performs copyright, piracy, and NSFW checks. If issues are found, we can push the task to a [dead-letter queue (DLQ)](https://karanpratapsingh.com/courses/system-design/message-queues#dead-letter-queues) and someone from the moderation team can do further inspection.
+تُحقق هذه الخطوة مما إذا كان الفيديو ملتزمًا بسياسة المحتوى للمنصة. يمكن أن يكون ذلك مُعتمدًا مُسبقًا كما في حالة Netflix وفقًا لتقييم [تصنيف المحتوى](https://en.wikipedia.org/wiki/Motion_picture_content_rating_system) للوسائط أو يمكن أن يتم تطبيقه بصرامة مثل يوتيوب.
 
-- **Transcoder**
+تقوم هذه العملية بالكامل بواسطة نموذج تعلم آلي يقوم بفحص حقوق الطبع والنشر ومكافحة القرصنة والمحتوى غير اللائق. إذا تم العثور على مشكلات، يمكننا دفع المهمة إلى [طابور الرسائل الميتة (DLQ)](https://karanpratapsingh.com/courses/system-design/message-queues#dead-letter-queues) ويمكن لأحد من فريق التدقيق القيام بمزيد من التفتيش.
 
-[Transcoding](https://en.wikipedia.org/wiki/Transcoding) is a process in which the original data is decoded to an intermediate uncompressed format, which is then encoded into the target format. This process uses different [codecs](https://en.wikipedia.org/wiki/Video_codec) to perform bitrate adjustment, image downsampling, or re-encoding the media.
+- **المُحوّل**
 
-This results in a smaller size file and a much more optimized format for the target devices. Standalone solutions such as [FFmpeg](https://ffmpeg.org) or cloud-based solutions like [AWS Elemental MediaConvert](https://aws.amazon.com/mediaconvert) can be used to implement this step of the pipeline.
+[التحويل](https://en.wikipedia.org/wiki/Transcoding) هو عملية يتم فيها فك تشفير البيانات الأصلية إلى تنسيق غير مضغوط وسيط، والذي يتم تشفيره بعد ذلك إلى التنسيق المستهدف. تستخدم هذه العملية [ترميزات](https://en.wikipedia.org/wiki/Video_codec) مختلفة لأداء تعديل معدل البت، وتصغير الصورة، أو إعادة تشفير الوسائط.
 
-- **Quality Conversion**
+يؤدي ذلك إلى حجم ملف أصغر وتنسيق أكثر تحسينًا للأجهزة المستهدفة. يمكن استخدام حلول منفصلة مثل [FFmpeg](https://ffmpeg.org) أو حلول قائمة في السحاب مثل [AWS Elemental MediaConvert](https://aws.amazon.com/mediaconvert) لتنفيذ هذه الخطوة من خط الإنتاج.
 
-This is the last step of the processing pipeline and as the name suggests, this step handles the conversion of the transcoded media from the previous step into different resolutions such as 4K, 1440p, 1080p, 720p, etc.
+- **تحويل الجودة**
 
-It allows us to fetch the desired quality of the video as per the user's request, and once the media file finishes processing, it gets uploaded to a distributed file storage such as [HDFS](https://karanpratapsingh.com/courses/system-design/storage#hdfs), [GlusterFS](https://www.gluster.org), or an [object storage](https://karanpratapsingh.com/courses/system-design/storage#object-storage) such as [Amazon S3](https://aws.amazon.com/s3) for later retrieval during streaming.
+هذه هي الخطوة الأخيرة في خط الإنتاج، وكما يوحي الاسم، تتعامل هذه الخطوة مع تحويل الوسائط المُحوّلة من الخطوة السابقة إلى دقة مختلفة مثل 4K، 1440p، 1080p، 720p، وما إلى ذلك.
 
-_Note: We can add additional steps such as subtitles and thumbnails generation as part of our pipeline._
+إنها تتيح لنا الحصول على الجودة المطلوبة للفيديو وفقًا لطلب المستخدم، وبمجرد الانتهاء من معالجة الملفات الوسائط، سيتم تحميلها إلى تخزين الملفات الموزع مثل [HDFS](https://karanpratapsingh.com/courses/system-design/storage#hdfs) أو [GlusterFS](https://www.gluster.org)، أو [تخزين الكائنات](https://karanpratapsingh.com/courses/system-design/storage#object-storage) مثل [Amazon S3](https://aws.amazon.com/s3) للحصول على الوصول إليها لاحقًا أثناء البث.
 
-**Why are we using a message queue?**
+_ملحوظة: يمكننا إضافة خطوات إضافية مثل إنشاء ترجمات وصور مصغرة كجزء من خط الإنتاج._
 
-Processing videos as a long-running task and using a [message queue](https://karanpratapsingh.com/courses/system-design/message-queues) makes much more sense. It also decouples our video processing pipeline from the upload functionality. We can use something like [Amazon SQS](https://aws.amazon.com/sqs) or [RabbitMQ](https://www.rabbitmq.com) to support this.
+**لماذا نستخدم طابور الرسائل؟**
+
+معالجة الفيديو كمهمة طويلة الأمد واستخدام [طابور الرسائل](https://karanpratapsingh.com/courses/system-design/message-queues) يجعلان الكثير من الدواسر. كما أنه يفصل خط الإنتاج لمعالجة الفيديو عن وظيفة التحميل. يمكننا استخدام شيء مثل [Amazon SQS](https://aws.amazon.com/sqs) أو [RabbitMQ](https://www.rabbitmq.com) لدعم هذا.
+
 
 ### Video streaming
 
