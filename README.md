@@ -4714,112 +4714,116 @@ getNewsfeed(userID: UUID): Tweet[]
 
 _ملاحظة: تعرف على المزيد حول [REST و GraphQL و gRPC](https://karanpratapsingh.com/courses/system-design/rest-graphql-grpc) وكيف تتفاوت هذه التقنيات مع بعضها البعض._
 
-### Newsfeed
+### تغذية الأخبار
 
-When it comes to the newsfeed, it seems easy enough to implement, but there are a lot of things that can make or break this feature. So, let's divide our problem into two parts:
+عندما يتعلق الأمر بتغذية الأخبار، يبدو أن تنفيذها سهل بما فيه الكفاية، ولكن هناك العديد من الأمور التي يمكن أن تجعل هذه الميزة تكون ناجحة أو فاشلة. لنقسم مشكلتنا إلى جزئين:
 
-**Generation**
+**إنشاء التغذية**
 
-Let's assume we want to generate the feed for user A, we will perform the following steps:
+لنفترض أننا نريد إنشاء تغذية للمستخدم A، سنقوم بأداء الخطوات التالية:
 
-1. Retrieve the IDs of all the users and entities (hashtags, topics, etc.) user A follows.
-2. Fetch the relevant tweets for each of the retrieved IDs.
-3. Use a ranking algorithm to rank the tweets based on parameters such as relevance, time, engagement, etc.
-4. Return the ranked tweets data to the client in a paginated manner.
+1. استرداد مُعرفات جميع المستخدمين والكيانات (الهاشتاجات، الموضوعات، إلخ) الذين يتابعهم المستخدم A.
+2. جلب التغريدات ذات الصلة لكل معرّف تم استرداده.
+3. استخدام خوارزمية ترتيب لترتيب التغريدات بناءً على معايير مثل الأهمية، الوقت، التفاعل، وما إلى ذلك.
+4. إرجاع بيانات التغريدات المُرتّبة إلى العميل بطريقة مُصفّحة.
 
-Feed generation is an intensive process and can take quite a lot of time, especially for users following a lot of people. To improve the performance, the feed can be pre-generated and stored in the cache, then we can have a mechanism to periodically update the feed and apply our ranking algorithm to the new tweets.
+إن إنشاء التغذية هو عملية مكثفة وقد تستغرق وقتًا طويلاً، خاصةً بالنسبة للمستخدمين الذين يتابعون الكثير من الأشخاص. لتحسين الأداء، يمكن توليد التغذية مُسبقًا وتخزينها في الذاكرة المخبأة، ثم يمكننا وجود آلية لتحديث التغذية بشكل دوري وتطبيق خوارزمية الترتيب على التغريدات الجديدة.
 
-**Publishing**
+**نشر التغذية**
 
-Publishing is the step where the feed data is pushed according to each specific user. This can be a quite heavy operation, as a user may have millions of friends or followers. To deal with this, we have three different approaches:
+النشر هو الخطوة التي يتم فيها دفع بيانات التغذية وفقًا لكل مستخدم بشكل محدد. يمكن أن يكون هذا عملية ثقيلة للغاية، حيث قد يكون لدى المستخدم ملايين من الأصدقاء أو المتابعين. للتعامل مع هذا، لدينا ثلاثة نماذج مختلفة:
 
-- Pull Model (or Fan-out on load)
+- نموذج الاستحضار (Pull Model) أو الزحف على التحميل (Fan-out on load)
 
-![newsfeed-pull-model](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/twitter/newsfeed-pull-model.png)
+![نموذج-استحضار-التغذية](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/twitter/newsfeed-pull-model.png)
 
-When a user creates a tweet, and a follower reloads their newsfeed, the feed is created and stored in memory. The most recent feed is only loaded when the user requests it. This approach reduces the number of write operations on our database.
+عندما يقوم مستخدم بإنشاء تغريدة، ويقوم أحد المتابعين بإعادة تحميل تغذيتهم، يتم إنشاء التغذية وتخزينها في الذاكرة المؤقتة. يتم تحميل أحدث تغذية فقط عندما يطلبها المستخدم. يقلل هذا النموذج من عدد عمليات الكتابة على قاعدة البيانات.
 
-The downside of this approach is that the users will not be able to view recent feeds unless they "pull" the data from the server, which will increase the number of read operations on the server.
+عيب هذا النموذج هو أن المستخدمين لن يكونوا قادرين على عرض التغذيات الأخيرة ما لم يقوموا بـ "سحب" البيانات من الخادم، مما سيزيد من عدد عمليات القراءة على الخادم.
 
-- Push Model (or Fan-out on write)
+- نموذج الدفع (Push Model) أو الزحف على الكتابة (Fan-out on write)
 
-![newsfeed-push-model](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/twitter/newsfeed-push-model.png)
+![نموذج-الدفع-للتغذية](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/twitter/newsfeed-push-model.png)
 
-In this model, once a user creates a tweet, it is "pushed" to all the follower's feeds immediately. This prevents the system from having to go through a user's entire followers list to check for updates.
+في هذا النموذج، عندما يقوم مستخدم بإنشاء تغريدة، يتم "دفع" التغريدة إلى تغذية جميع المتابعين على الفور. يمنع ذلك النظام من الحاجة إلى الانتقال عبر قائمة متابعي المستخدم للتحقق من التحديثات.
 
-However, the downside of this approach is that it would increase the number of write operations on the database.
+مع ذلك، عيب هذا النموذج هو أنه سيزيد من عدد عمليات الكتابة على قاعدة البيانات.
 
-- Hybrid Model
+- النموذج المختلط (Hybrid Model)
 
-A third approach is a hybrid model between the pull and push model. It combines the beneficial features of the above two models and tries to provide a balanced approach between the two.
+النهج الثالث هو نموذج مختلط بين نموذج الاستحضار ونموذج الدفع. يجمع هذا النموذج بين الميزات المفيدة للنموذجين السابقين ويحاول تقديم نهج متوازن بينهما.
 
-The hybrid model allows only users with a lesser number of followers to use the push model. For users with a higher number of followers such as celebrities, the pull model is used.
+يُسمح للنم
 
-### Ranking Algorithm
+وذج المختلط بالمستخدمين الذين لديهم عدد أقل من المتابعين باستخدام نموذج الدفع. بالنسبة للمستخدمين الذين لديهم عدد أكبر من المتابعين مثل المشاهير، يُستخدم نموذج الاستحضار.
 
-As we discussed, we will need a ranking algorithm to rank each tweet according to its relevance to each specific user.
+### خوارزمية الترتيب
 
-For example, Facebook used to utilize an [EdgeRank](https://en.wikipedia.org/wiki/EdgeRank) algorithm. Here, the rank of each feed item is described by:
+كما ناقشنا، سنحتاج إلى خوارزمية ترتيب لترتيب كل تغريدة وفقًا لأهميتها لكل مستخدم بشكل مُحدد.
+
+على سبيل المثال، كانت فيسبوك تستخدم في السابق خوارزمية [EdgeRank](https://en.wikipedia.org/wiki/EdgeRank). هنا، يتم وصف ترتيب كل عنصر في التغذية بالمعادلة التالية:
 
 $$
-Rank = Affinity \times Weight \times Decay
+الترتيب = الارتباط \times الوزن \times التحلل
 $$
 
-Where,
+حيث:
 
-`Affinity`: is the "closeness" of the user to the creator of the edge. If a user frequently likes, comments, or messages the edge creator, then the value of affinity will be higher, resulting in a higher rank for the post.
+`الارتباط`: هو "القرب" من المستخدم إلى مُنشئ الحافة. إذا كان المستخدم يحب أو يعلق أو يرسل رسائل بشكل متكرر لمُنشئ الحافة، فسيكون قيمة الارتباط أعلى، مما يؤدي إلى ترتيب أعلى للمشاركة.
 
-`Weight`: is the value assigned according to each edge. A comment can have a higher weightage than likes, and thus a post with more comments is more likely to get a higher rank.
+`الوزن`: هو القيمة المُخصصة وفقًا لكل حافة. يمكن أن يكون للتعليق وزنًا أعلى من الإعجابات، وبالتالي فإن المشاركة مع المزيد من التعليقات من المرجح أن تحصل على ترتيب أعلى.
 
-`Decay`: is the measure of the creation of the edge. The older the edge, the lesser will be the value of decay and eventually the rank.
+`التحلل`: هو مقياس إنشاء الحافة. كلما زادت قدم الحافة، قلت قيمة التحلل وبالتالي الترتيب.
 
-Nowadays, algorithms are much more complex and ranking is done using machine learning models which can take thousands of factors into consideration.
+في الوقت الحالي، تكون الخوارزميات أكثر تعقيدًا ويتم تنفيذ الترتيب باستخدام نماذج التعلم الآلي التي يمكن أن تأخذ الآلاف من العوامل في الاعتبار.
 
-### Retweets
+### عمليات إعادة التغريد
 
-Retweets are one of our extended requirements. To implement this feature, we can simply create a new tweet with the user id of the user retweeting the original tweet and then modify the `type` enum and `content` property of the new tweet to link it with the original tweet.
+عمليات إعادة التغريد تعد واحدة من متطلباتنا الممتدة. لتنفيذ هذه الميزة، يمكننا ببساطة إنشاء تغريدة جديدة باستخدام مُعرّف المستخدم للمستخدم الذي أعاد التغريدة من التغريدة الأصلية، ثم نقوم بتعديل النوع (Enum) وخاصية المحتوى (Content) للتغريدة الجديدة لربطها بالتغريدة الأصلية.
 
-For example, the `type` enum property can be of type tweet, similar to text, video, etc and `content` can be the id of the original tweet. Here the first row indicates the original tweet while the second row is how we can represent a retweet.
+على سبيل المثال، يمكن أن يكون نوع (Enum) خاصية التغريدة من نوع "تغريدة"، مشابهًا للنص والفيديو، إلخ ويمكن أن يكون المحتوى هو مُعرّف التغريدة الأصلية. حيث تُمثل الصف الأولى التغريدة الأصلية، بينما الصف الثاني يوضح كيفية تمثيل تغريدة إعادة التغريد.
 
-| id                  | userID              | type  | content                      | createdAt     |
-| ------------------- | ------------------- | ----- | ---------------------------- | ------------- |
-| ad34-291a-45f6-b36c | 7a2c-62c4-4dc8-b1bb | text  | Hey, this is my first tweet… | 1658905644054 |
-| f064-49ad-9aa2-84a6 | 6aa2-2bc9-4331-879f | tweet | ad34-291a-45f6-b36c          | 1658906165427 |
+| المعرّف  | مُعرّف المستخدم | النوع  | المحتوى | تاريخ الإنشاء |
+| --------- | ----------------- | ------ | ------- | -------------- |
+| ad34-291a | 7a2c-62c4         | نص    | مرحبًا، هذه أول تغريدة لي... | 1658905644054 |
+| f064-49ad | 6aa2-2bc9         | تغريدة | ad34-291a                   | 1658906165427 |
 
-This is a very basic implementation. To improve this we can create a separate table itself to store retweets.
+هذا تنفيذ أساسي جداً. لتحسين ذلك، يمكننا إنشاء جدول منفصل لتخزين عمليات إعادة التغريد ذاتها.
 
-### Search
+### البحث
 
-Sometimes traditional DBMS are not performant enough, we need something which allows us to store, search, and analyze huge volumes of data quickly and in near real-time and give results within milliseconds. [Elasticsearch](https://www.elastic.co) can help us with this use case.
+أحيانًا، قواعد البيانات العادية لا تكون كفؤة بما فيه الكفاية، نحتاج إلى شيء يسمح لنا بتخزين وبحث وتحليل كميات ضخمة من البيانات بسرعة وبالقرب من الوقت الفعلي وتقديم النتائج في غضون مللي ثانية. يمكن أن يساعدنا [Elasticsearch](https://www.elastic.co) في هذا الحالة.
 
-[Elasticsearch](https://www.elastic.co) is a distributed, free and open search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured. It is built on top of [Apache Lucene](https://lucene.apache.org).
+[Elasticsearch](https://www.elastic.co) هو محرك بحث وتحليل موزع ومجاني
 
-**How do we identify trending topics?**
+ ومفتوح المصدر لجميع أنواع البيانات، بما في ذلك النصوص والأرقام والمكان والبنية وغير المنظمة. يتم بناؤه على أعلى [Apache Lucene](https://lucene.apache.org).
 
-Trending functionality will be based on top of the search functionality. We can cache the most frequently searched queries, hashtags, and topics in the last `N` seconds and update them every `M` seconds using some sort of batch job mechanism. Our ranking algorithm can also be applied to the trending topics to give them more weight and personalize them for the user.
+**كيف يمكننا تحديد موضوعات الاتجاه؟**
 
-### Notifications
+ستعتمد وظيفة الاتجاه على وظيفة البحث. يمكننا تخزين الاستعلامات والهاشتاجات والمواضيع الأكثر بحثًا بشكل مؤقت في آخر `N` ثانية وتحديثها كل `M` ثانية باستخدام نوع من آلية الوظائف على دفعة. يمكن تطبيق خوارزمية الترتيب أيضًا على موضوعات الاتجاه لمنحها وزنًا أكبر وتخصيصها للمستخدم.
 
-Push notifications are an integral part of any social media platform. We can use a message queue or a message broker such as [Apache Kafka](https://kafka.apache.org) with the notification service to dispatch requests to [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging) or [Apple Push Notification Service (APNS)](https://developer.apple.com/documentation/usernotifications) which will handle the delivery of the push notifications to user devices.
+### الإشعارات
 
-_For more details, refer to the [WhatsApp](https://karanpratapsingh.com/courses/system-design/whatsapp#notifications) system design where we discuss push notifications in detail._
+الإشعارات الفورية هي جزء أساسي من أي منصة وسائل التواصل الاجتماعي. يمكننا استخدام طابور رسائل أو وسيط الرسائل مثل [Apache Kafka](https://kafka.apache.org) مع خدمة الإشعارات لإرسال الطلبات إلى [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging) أو [Apple Push Notification Service (APNS)](https://developer.apple.com/documentation/usernotifications) الذي سيتولى توصيل الإشعارات الفورية إلى أجهزة المستخدم.
 
-## Detailed design
+_لمزيد من التفاصيل، يُرجى الإشارة إلى تصميم نظام [WhatsApp](https://karanpratapsingh.com/courses/system-design/whatsapp#notifications) حيث نناقش الإشعارات الفورية بالتفصيل._
 
-It's time to discuss our design decisions in detail.
+## تصميم مفصل
 
-### Data Partitioning
+حان الوقت لمناقشة قرارات التصميم لدينا بتفصيل.
 
-To scale out our databases we will need to partition our data. Horizontal partitioning (aka [Sharding](https://karanpratapsingh.com/courses/system-design/sharding)) can be a good first step. We can use partitions schemes such as:
+### تقسيم البيانات
 
-- Hash-Based Partitioning
-- List-Based Partitioning
-- Range Based Partitioning
-- Composite Partitioning
+لتوسيع قواعد البيانات لدينا، سنحتاج إلى تقسيم بياناتنا. يمكن أن يكون التقسيم الأفقي (المعروف أيضًا بـ [Sharding](https://karanpratapsingh.com/courses/system-design/sharding)) هو خطوة جيدة أولى. يمكننا استخدام خطط تقسيم مثل:
 
-The above approaches can still cause uneven data and load distribution, we can solve this using [Consistent hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
+- التقسيم القائم على الهاش
+- التقسيم القائم على القائمة
+- التقسيم القائم على النطاق
+- التقسيم المركب
 
-_For more details, refer to [Sharding](https://karanpratapsingh.com/courses/system-design/sharding) and [Consistent Hashing](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
+يمكن أن تسبب النهجات المذكورة أعلاه توزيعًا غير منتظم للبيانات والأحمال، يمكننا حل هذه المشكلة باستخدام [الهاش المستمر](https://karanpratapsingh.com/courses/system-design/consistent-hashing).
+
+_لمزيد من التفاصيل، يُرجى الإشارة إلى [Sharding](https://karanpratapsingh.com/courses/system-design/sharding) و [الهاش المستمر](https://karanpratapsingh.com/courses/system-design/consistent-hashing)._
 
 ### Mutual friends
 
