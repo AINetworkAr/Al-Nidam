@@ -4984,123 +4984,125 @@ $$
 | التخزين (على مدى 10 سنوات)        | ~1825 بيتابايت   |
 | عرض النطاق الترددي                 | ~5.8 غيغابايت/ثانية |
 
-## Data model design
+## تصميم نموذج البيانات
 
-This is the general data model which reflects our requirements.
+هذا هو النموذج العام للبيانات الذي يعكس متطلباتنا.
 
 ![netflix-datamodel](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-V/netflix/netflix-datamodel.png)
 
-We have the following tables:
+لدينا الجداول التالية:
 
 **users**
 
-This table will contain a user's information such as `name`, `email`, `dob`, and other details.
+ستحتوي هذه الجدول على معلومات المستخدم مثل `الاسم`، `البريد الإلكتروني`، `تاريخ الميلاد`، وتفاصيل أخرى.
 
 **videos**
 
-As the name suggests, this table will store videos and their properties such as `title`, `streamURL`, `tags`, etc. We will also store the corresponding `userID`.
+كما يوحي الاسم، ستخزن هذه الجدول الفيديوهات وخصائصها مثل `العنوان`، `عنوان التدفق`، `الوسوم`، إلخ. سنخزن أيضًا `معرّف المستخدم المقابل`.
 
 **tags**
 
-This table will simply store tags associated with a video.
+سيقوم هذا الجدول ببساطة بتخزين الوسوم المرتبطة بفيديو معين.
 
 **views**
 
-This table helps us to store all the views received on a video.
+يساعدنا هذا الجدول على تخزين جميع المشاهدات التي تم تلقيها على الفيديو.
 
 **comments**
 
-This table stores all the comments received on a video (like YouTube).
+سيقوم هذا الجدول بتخزين جميع التعليقات التي تم تلقيها على الفيديو (مثل يوتيوب).
 
-### What kind of database should we use?
+### أي نوع من قواعد البيانات يجب أن نستخدمه؟
 
-While our data model seems quite relational, we don't necessarily need to store everything in a single database, as this can limit our scalability and quickly become a bottleneck.
+على الرغم من أن نموذج البيانات يبدو ذا طابع تعاملي، إلا أنه ليس من الضروري أن نخزن كل شيء في قاعدة بيانات واحدة، حيث يمكن أن يقيّد ذلك قابلية توسعتنا ويصبح بسرعة مصدر اختناق.
 
-We will split the data between different services each having ownership over a particular table. Then we can use a relational database such as [PostgreSQL](https://www.postgresql.org) or a distributed NoSQL database such as [Apache Cassandra](https://cassandra.apache.org/_/index.html) for our use case.
+سنقوم بتقسيم البيانات بين خدمات مختلفة، ولكل خدمة ملكية على جدول معين. بعد ذلك يمكننا استخدام قاعدة بيانات تعاملية مثل [PostgreSQL](https://www.postgresql.org) أو قاعدة بيانات NoSQL موزعة مثل [Apache Cassandra](https://cassandra.apache.org/_/index.html) لحالتنا.
 
-## API design
+## تصميم واجهات البرمجة (API)
 
-Let us do a basic API design for our services:
+لنقم بتصميم واجهات برمجة التطبيق الأساسية لخدماتنا:
 
-### Upload a video
+### رفع فيديو
 
-Given a byte stream, this API enables video to be uploaded to our service.
+بناءً على تيار البايت المقدم، تتيح لنا هذه الواجهة تحميل الفيديو إلى خدمتنا.
 
 ```tsx
 uploadVideo(title: string, description: string, data: Stream<byte>, tags?: string[]): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-Title (`string`): Title of the new video.
+العنوان (`string`): عنوان الفيديو الجديد.
 
-Description (`string`): Description of the new video.
+الوصف (`string`): وصف الفيديو الجديد.
 
-Data (`Byte[]`): Byte stream of the video data.
+البيانات (`Byte[]`): تيار البايت لبيانات الفيديو.
 
-Tags (`string[]`): Tags for the video _(optional)_.
+الوسوم (`string[]`): وسوم الفيديو _(اختياري)_.
 
-**Returns**
+**العودة**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
-### Streaming a video
+### بث فيديو
 
-This API allows our users to stream a video with the preferred codec and resolution.
+تسمح لمستخدمينا ببث الفيديو باستخدام الترميز والدقة المفضلين.
 
 ```tsx
 streamVideo(videoID: UUID, codec: Enum<string>, resolution: Tuple<int>, offset?: int): VideoStream
 ```
 
-**Parameters**
+**المعلمات**
 
-Video ID (`UUID`): ID of the video that needs to be streamed.
+معرّف الفيديو (`UUID`): معرّف الفيديو الذي يجب بثه.
 
-Codec (`Enum<string>`): Required [codec](https://en.wikipedia.org/wiki/Video_codec) of the requested video, such as `h.265`, `h.264`, `VP9`, etc.
+الترميز (`Enum<string>`): [الترميز](https://en.wikipedia.org/wiki/Video_codec) المطلوب للفيديو المطلوب، مثل `h.265`، `h.264`، `VP9`، إلخ.
 
-Resolution (`Tuple<int>`): [Resolution](https://en.wikipedia.org/wiki/Display_resolution) of the requested video.
+الدقة (`Tuple<int>`): [الدقة](https://en.wikipedia.org/wiki/Display_resolution) المطلوبة للفيديو.
 
-Offset (`int`): Offset of the video stream in seconds to stream data from any point in the video _(optional)_.
+الإزاحة (`int`): إزاحة تيار الفيديو بالثواني لبدء تدفق البيانات من أي نقطة في الفيديو _(اختياري)_.
 
-**Returns**
+**العودة**
 
-Stream (`VideoStream`): Data stream of the requested video.
+تيار (`VideoStream`): تيار البيانات للفيديو المطلوب.
 
-### Search for a video
+### البحث عن فيديو
 
-This API will enable our users to search for a video based on its title or tags.
+تمكن مستخدمينا من البحث عن فيديو بناءً على عنوانه أو وسومه.
 
 ```tsx
 searchVideo(query: string, nextPage?: string): Video[]
 ```
 
-**Parameters**
+**المعلمات**
 
-Query (`string`): Search query from the user.
+الاستعلام (`string`): استعلام البحث من قبل المستخدم.
 
-Next Page (`string`): Token for the next page, this can be used for pagination _(optional)_.
+الصفحة التالية (`string`): رمز للصفحة التالية، يمكن استخدامه للترقيم _(اختياري)_.
 
-**Returns**
+**العودة**
 
-Videos (`Video[]`): All the videos available for a particular search query.
+فيديوهات (`Video[]`): جمي
 
-### Add a comment
+ع الفيديوهات المتاحة للاستعلام المحدد.
 
-This API will allow our users to post a comment on a video (like YouTube).
+### إضافة تعليق
+
+تسمح لمستخدمينا بنشر تعليق على الفيديو (مثل يوتيوب).
 
 ```tsx
 comment(videoID: UUID, comment: string): boolean
 ```
 
-**Parameters**
+**المعلمات**
 
-VideoID (`UUID`): ID of the video user wants to comment on.
+معرّف الفيديو (`UUID`): معرّف الفيديو الذي يرغب المستخدم في التعليق عليه.
 
-Comment (`string`): The text content of the comment.
+التعليق (`string`): محتوى النص للتعليق.
 
-**Returns**
+**العودة**
 
-Result (`boolean`): Represents whether the operation was successful or not.
+نتيجة (`boolean`): تمثل ما إذا كانت العملية ناجحة أم لا.
 
 ## High-level design
 
