@@ -4891,96 +4891,98 @@ _لمزيد من التفاصيل، يُرجى الإشارة إلى [التخز
 
 # Netflix
 
-Let's design a [Netflix](https://netflix.com) like video streaming service, similar to services like [Amazon Prime Video](https://www.primevideo.com), [Disney Plus](https://www.disneyplus.com), [Hulu](https://www.hulu.com), [Youtube](https://youtube.com), [Vimeo](https://vimeo.com), etc.
+دعونا نصمم خدمة بث فيديو مشابهة لـ [نيتفليكس](https://netflix.com)، مشابهة لخدمات مثل [أمازون برايم فيديو](https://www.primevideo.com)، [ديزني بلس](https://www.disneyplus.com)، [هولو](https://www.hulu.com)، [يوتيوب](https://youtube.com)، [فيميو](https://vimeo.com)، وغيرها.
 
-## What is Netflix?
+## ما هو نيتفليكس؟
 
-Netflix is a subscription-based streaming service that allows its members to watch TV shows and movies on an internet-connected device. It is available on platforms such as the Web, iOS, Android, TV, etc.
+نيتفليكس هي خدمة بث مبنية على الاشتراك تتيح لأعضائها مشاهدة البرامج التلفزيونية والأفلام على أجهزة متصلة بالإنترنت. تتوفر على منصات مثل الويب، iOS، Android، التلفاز، إلخ.
 
-## Requirements
+## المتطلبات
 
-Our system should meet the following requirements:
+يجب أن يلبي نظامنا المتطلبات التالية:
 
-### Functional requirements
+### المتطلبات الوظيفية
 
-- Users should be able to stream and share videos.
-- The content team (or users in YouTube's case) should be able to upload new videos (movies, tv shows episodes, and other content).
-- Users should be able to search for videos using titles or tags.
-- Users should be able to comment on a video similar to YouTube.
+- يجب أن يتمكن المستخدمون من بث ومشاركة الفيديوهات.
+- يجب أن يكون فريق المحتوى (أو المستخدمون في حالة يوتيوب) قادرًا على رفع فيديوهات جديدة (أفلام، حلقات مسلسلات تلفزيونية، ومحتوى آخر).
+- يجب أن يكون المستخدمون قادرين على البحث عن الفيديوهات باستخدام العناوين أو الوسوم.
+- يجب أن يكون المستخدمون قادرين على التعليق على الفيديو مشابهة لـ يوتيوب.
 
-### Non-Functional requirements
+### المتطلبات غير الوظيفية
 
-- High availability with minimal latency.
-- High reliability, no uploads should be lost.
-- The system should be scalable and efficient.
+- توفير درجة عالية من التوفر مع الحد الأدنى من التأخير.
+- توفير درجة عالية من الموثوقية، لا يجب أن يتم فقد رفع أي فيديو.
+- يجب أن يكون النظام قابلًا للتوسع وفعّالًا.
 
-### Extended requirements
+### المتطلبات الموسعة
 
-- Certain content should be [geo-blocked](https://en.wikipedia.org/wiki/Geo-blocking).
-- Resume video playback from the point user left off.
-- Record metrics and analytics of videos.
+- يجب أن يتم حجب محتوى معين [جغرافيًا](https://en.wikipedia.org/wiki/Geo-blocking).
+- تكملة تشغيل الفيديو من النقطة التي تركها المستخدم.
+- تسجيل مقاييس وتحليلات الفيديوهات.
 
-## Estimation and Constraints
+## التقديرات والقيود
 
-Let's start with the estimation and constraints.
+لنبدأ بالتقديرات والقيود.
 
-_Note: Make sure to check any scale or traffic-related assumptions with your interviewer._
+_ملاحظة: تأكد من التحقق من أي افتراضات تتعلق بالحجم أو حركة المرور مع مقابلتك._
 
-### Traffic
+### حركة المرور
 
-This will be a read-heavy system, let us assume we have 1 billion total users with 200 million daily active users (DAU), and on average each user watches 5 videos a day. This gives us 1 billion videos watched per day.
-
-$$
-200 \space million \times 5 \space videos = 1 \space billion/day
-$$
-
-Assuming a `200:1` read/write ratio, about 5 million videos will be uploaded every day.
+سيكون هذا نظامًا قائمًا على القراءة بشكل رئيسي، دعونا نفترض أن لدينا مليار مستخدم إجمالي مع 200 مليون مستخدم نشط يوميًا (DAU)، وعلى المتوسط ​​يشاهد كل مستخدم 5 فيديوهات في اليوم. هذا يعطينا مليار فيديو شوهد في اليوم.
 
 $$
-\frac{1}{200} \times 1 \space billion = 5 \space million/day
+200 \space مليون \times 5 \space فيديو = 1 \space مليار/اليوم
 $$
 
-**What would be Requests Per Second (RPS) for our system?**
-
-1 billion requests per day translate into 12K requests per second.
+بفرض نسبة قراءة/كتابة `200:1`، سيتم تحميل حوالي 5 ملايين فيديو يوميًا.
 
 $$
-\frac{1 \space billion}{(24 \space hrs \times 3600 \space seconds)} = \sim 12K \space requests/second
+\frac{1}{200} \times 1 \space مليار = 5 \space ملايين/اليوم
 $$
 
-### Storage
+**ما هو عدد الطلبات في الثانية (RPS) لنظامنا؟**
 
-If we assume each video is 100 MB on average, we will require about 500 TB of storage every day.
+مليار طلب في اليوم يترج
 
-$$
-5 \space million \times 100 \space MB = 500 \space TB/day
-$$
-
-And for 10 years, we will require an astounding 1,825 PB of storage.
+م إلى 12 ألف طلب في الثانية.
 
 $$
-500 \space TB \times 365 \space days \times 10 \space years = \sim 1,825 \space PB
+\frac{1 \space مليار}{(24 \space ساعة \times 3600 \space ثانية)} = \sim 12 ألف \space طلب/الثانية
 $$
 
-### Bandwidth
+### التخزين
 
-As our system is handling 500 TB of ingress every day, we will require a minimum bandwidth of around 5.8 GB per second.
+إذا افترضنا أن حجم كل فيديو هو 100 ميجابايت في المتوسط، سنحتاج إلى حوالي 500 تيرابايت من التخزين كل يوم.
 
 $$
-\frac{500 \space TB}{(24 \space hrs \times 3600 \space seconds)} = \sim 5.8 \space GB/second
+5 \space ملايين \times 100 \space ميجابايت = 500 \space تيرابايت/اليوم
 $$
 
-### High-level estimate
+وعلى مدى 10 سنوات، سنحتاج إلى 1825 بيتابايت من التخزين المذهل.
 
-Here is our high-level estimate:
+$$
+500 \space تيرابايت \times 365 \space يوم \times 10 \space سنوات = \sim 1825 \space بيتابايت
+$$
 
-| Type                      | Estimate    |
+### عرض النطاق الترددي
+
+نظرًا لأن نظامنا يتعامل مع 500 تيرابايت من البيانات الواردة كل يوم، سنحتاج إلى عرض نطاق ترددي دقيق يبلغ حوالي 5.8 غيغابايت في الثانية.
+
+$$
+\frac{500 \space تيرابايت}{(24 \space ساعة \times 3600 \space ثانية)} = \sim 5.8 \space غيغابايت/الثانية
+$$
+
+### تقدير عالي المستوى
+
+إليكم تقديرنا عالي المستوى:
+
+| النوع                     | التقدير      |
 | ------------------------- | ----------- |
-| Daily active users (DAU)  | 200 million |
-| Requests per second (RPS) | 12K/s       |
-| Storage (per day)         | ~500 TB     |
-| Storage (10 years)        | ~1,825 PB   |
-| Bandwidth                 | ~5.8 GB/s   |
+| المستخدمون النشطون يوميًا (DAU)  | 200 مليون |
+| طلبات في الثانية (RPS) | 12 ألف/ثانية |
+| التخزين (في اليوم)         | ~500 تيرابايت     |
+| التخزين (على مدى 10 سنوات)        | ~1825 بيتابايت   |
+| عرض النطاق الترددي                 | ~5.8 غيغابايت/ثانية |
 
 ## Data model design
 
