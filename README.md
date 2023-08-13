@@ -4471,103 +4471,105 @@ _حقيقة ممتعة: تقوم واتساب بحذف الوسائط على خ�
 
 هذه الخطوات ستجعل نظامنا أكثر مرونة وقدرة على التحمل.
 
-# Twitter
+# تويتر
 
-Let's design a [Twitter](https://twitter.com) like social media service, similar to services like [Facebook](https://facebook.com), [Instagram](https://instagram.com), etc.
+دعونا نصمم خدمة وسائل التواصل الاجتماعي مشابهة لـ [تويتر](https://twitter.com)، تشبه الخدمات مثل [فيسبوك](https://facebook.com)، [إنستغرام](https://instagram.com)، وما إلى ذلك.
 
-## What is Twitter?
+## ما هو تويتر؟
 
-Twitter is a social media service where users can read or post short messages (up to 280 characters) called tweets. It is available on the web and mobile platforms such as Android and iOS.
+تويتر هو خدمة وسائل التواصل الاجتماعي حيث يمكن للمستخدمين قراءة أو نشر رسائل قصيرة (تصل إلى 280 حرفًا) تُسمى تغريدات. إنه متاح على الويب ومنصات الجوال مثل أندرويد وآي أو إس.
 
-## Requirements
+## المتطلبات
 
-Our system should meet the following requirements:
+يجب أن يفي نظامنا بالمتطلبات التالية:
 
-### Functional requirements
+### المتطلبات الوظيفية
 
-- Should be able to post new tweets (can be text, image, video, etc.).
-- Should be able to follow other users.
-- Should have a newsfeed feature consisting of tweets from the people the user is following.
-- Should be able to search tweets.
+- يجب أن يكون بإمكان المستخدمين نشر تغريدات جديدة (يمكن أن تكون نصًا، صورة، فيديو، وما إلى ذلك).
+- يجب أن يكون بإمكان المستخدمين متابعة مستخدمين آخرين.
+- يجب أن يكون هناك ميزة لتغذية الأخبار تتضمن تغريدات من الأشخاص الذين يتابعهم المستخدم.
+- يجب أن يكون بإمكان المستخدمين البحث عن تغريدات.
 
-### Non-Functional requirements
+### المتطلبات غير الوظيفية
 
-- High availability with minimal latency.
-- The system should be scalable and efficient.
+- توفر عالي مع الحد الأدنى من التأخير.
+- يجب أن يكون النظام قابلًا للتوسعة وفعّالًا.
 
-### Extended requirements
+### المتطلبات الموسعة
 
-- Metrics and analytics.
-- Retweet functionality.
-- Favorite tweets.
+- مقاييس وتحليلات.
+- وظيفة إعادة التغريد.
+- تغريدات المفضلة.
 
-## Estimation and Constraints
+## التقدير والقيود
 
-Let's start with the estimation and constraints.
+لنبدأ بالتقدير والقيود.
 
-_Note: Make sure to check any scale or traffic-related assumptions with your interviewer._
+_ملاحظة: تأكد من التحقق من أي افتراضات تتعلق بالمقياس أو حركة المرور مع مقابلك._
 
-### Traffic
+### حركة المرور
 
-This will be a read-heavy system, let us assume we have 1 billion total users with 200 million daily active users (DAU), and on average each user tweets 5 times a day. This gives us 1 billion tweets per day.
-
-$$
-200 \space million \times 5 \space tweets = 1 \space billion/day
-$$
-
-Tweets can also contain media such as images, or videos. We can assume that 10 percent of tweets are media files shared by the users, which gives us additional 100 million files we would need to store.
+سيكون هذا نظامًا يعتمد بشكل رئيسي على القراءة، دعونا نفترض أن لدينا مليار مستخدم إجمالي مع 200 مليون مستخدم نشط يوميًا (DAU)، ومتوسط كل مستخدم يقوم بنشر 5 تغريدات في اليوم. هذا يمنحنا 1 مليار تغريدة يوميًا.
 
 $$
-10 \space percent \times 1 \space billion = 100 \space million/day
+200 \space مليون \times 5 \space تغريدات = 1 \space مليار/يوم
 $$
 
-**What would be Requests Per Second (RPS) for our system?**
-
-1 billion requests per day translate into 12K requests per second.
+تستطيع التغريدات أيضًا أن تحتوي على وسائط مثل الصور أو الفيديو. يمكننا أن نفترض أن 10 في المئة من التغريدات هي ملفات وسائط تم مشاركتها من قبل المستخدمين، مما يمنحنا 100 مليون ملف إضافي يجب تخزينهم.
 
 $$
-\frac{1 \space billion}{(24 \space hrs \times 3600 \space seconds)} = \sim 12K \space requests/second
+10 \space في المئة \times 1 \space مليار = 100 \space مليون/يوم
 $$
 
-### Storage
+**ما سيكون عدد الطلبات في الثانية الواحدة (RPS) لنظامنا؟**
 
-If we assume each message on average is 100 bytes, we will require about 100 GB of database storage every day.
-
-$$
-1 \space billion \times 100 \space bytes = \sim 100 \space GB/day
-$$
-
-We also know that around 10 percent of our daily messages (100 million) are media files per our requirements. If we assume each file is 50 KB on average, we will require 5 TB of storage every day.
+1 مليار طلب في اليوم يترجم إلى 12 ألف طلب في الثانية.
 
 $$
-100 \space million \times 50 \space KB = 5 \space TB/day
+\frac{1 \space مليار}{(24 \space ساعة \times 3600 \space ثانية)} = \sim 12 \space ألف طلب/ثانية
 $$
 
-And for 10 years, we will require about 19 PB of storage.
+### التخزين
+
+إذا افترضنا أن كل رسالة في المتوسط تأخذ 100 بايت، سنحتاج إلى حوالي 100 غيغابايت من تخزين قاعدة البيانات يوميًا.
 
 $$
-(5 \space TB + 0.1 \space TB) \times 365 \space days \times 10 \space years = \sim 19 \space PB
+1 \space مليار \times 100 \space بايت = \sim 100 \space غيغابايت/يوم
 $$
 
-### Bandwidth
-
-As our system is handling 5.1 TB of ingress every day, we will require a minimum bandwidth of around 60 MB per second.
+نعلم أيضًا أن حوالي 10 في المئة من رسائلنا اليومية (100 مليون) هي ملفات وسائط وفقًا لمتطلباتنا. إذا افترضنا أن كل ملف يبلغ متوسطه 50 كيلوبايت، سنحتاج إلى 5 تيرابايت من التخزين يوميًا.
 
 $$
-\frac{5.1 \space TB}{(24 \space hrs \times 3600 \space seconds)} = \sim 60 \space MB/second
+100 \space مليون \times 50 \space كيلوبايت = 5 \space تيرابايت/
+
+يوم
 $$
 
-### High-level estimate
+وخلال 10 سنوات، سنحتاج إلى حوالي 19 بيتابايت من التخزين.
 
-Here is our high-level estimate:
+$$
+(5 \space تيرابايت + 0.1 \space تيرابايت) \times 365 \space يوم \times 10 \space سنوات = \sim 19 \space بيتابايت
+$$
 
-| Type                      | Estimate    |
+### العرض الترددي
+
+نظرًا لأن نظامنا يتعامل مع 5.1 تيرابايت من البيانات الواردة كل يوم، سنحتاج إلى عرض ترددي دقيق يبلغ حوالي 60 ميجابايت في الثانية.
+
+$$
+\frac{5.1 \space تيرابايت}{(24 \space ساعة \times 3600 \space ثانية)} = \sim 60 \space ميجابايت/ثانية
+$$
+
+### تقدير عام
+
+إليكم تقديرنا العام:
+
+| النوع                     | التقدير     |
 | ------------------------- | ----------- |
-| Daily active users (DAU)  | 100 million |
-| Requests per second (RPS) | 12K/s       |
-| Storage (per day)         | ~5.1 TB     |
-| Storage (10 years)        | ~19 PB      |
-| Bandwidth                 | ~60 MB/s    |
+| مستخدمون نشطون يوميًا (DAU) | 100 مليون |
+| طلبات في الثانية (RPS) | 12K/ثانية       |
+| التخزين (يوميًا)         | ~5.1 تيرابايت     |
+| التخزين (10 سنوات)        | ~19 بيتابايت      |
+| العرض الترددي                 | ~60 ميجابايت/ثانية    |
 
 ## Data model design
 
