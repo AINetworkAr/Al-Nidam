@@ -5707,52 +5707,52 @@ _لمزيد من التفاصيل، راجع [التخزين المؤقت (Cachi
 - نسخ متعددة ونسخ لخوادم التخزين المؤقت.
 - توصيل مرة واحدة وترتيب الرسائل يعدان تحديًا في نظام موزع، يمكننا استخدام وسيط الرسائل المخصص مثل [Apache Kafka](https://kafka.apache.org) أو [NATS](https://nats.io) لجعل نظام الإشعارات أكثر استدامة.
 
-# Next Steps
+# الخطوات التالية
 
-Congratulations, you've finished the course!
+تهانينا، لقد انتهيت من الدورة!
 
-Now that you know the fundamentals of System Design, here are some additional resources:
+الآن بما أنك تعرف أساسيات تصميم الأنظمة، إليك بعض الموارد الإضافية:
 
-- [Distributed Systems](https://www.youtube.com/watch?v=UEAMfLPZZhE&list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB) (by Dr. Martin Kleppmann)
-- [System Design Interview: An Insider's Guide](https://www.amazon.in/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
-- [Microservices](https://microservices.io) (by Chris Richardson)
-- [Serverless computing](https://en.wikipedia.org/wiki/Serverless_computing)
-- [Kubernetes](https://kubernetes.io)
+- [الأنظمة الموزعة](https://www.youtube.com/watch?v=UEAMfLPZZhE&list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB) (من قبل الدكتور مارتن كليبمان)
+- [مقابلة تصميم الأنظمة: دليل الداخليين](https://www.amazon.in/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+- [الخدمات المجزأة](https://microservices.io) (من قبل كريس ريتشاردسون)
+- [الحوسبة الخادمة](https://en.wikipedia.org/wiki/Serverless_computing)
+- [كوبرنيتيز](https://kubernetes.io)
 
-It is also recommended to actively follow engineering blogs of companies putting what we learned in the course into practice at scale:
+من المستحسن أيضًا متابعة مدونات الهندسة للشركات التي تضع ما تعلمناه في الدورة في التطبيق على نطاق واسع:
 
-- [Microsoft Engineering](https://engineering.microsoft.com)
-- [Google Research Blog](http://googleresearch.blogspot.com)
-- [Netflix Tech Blog](http://techblog.netflix.com)
-- [AWS Blog](https://aws.amazon.com/blogs/aws)
-- [Facebook Engineering](https://www.facebook.com/Engineering)
-- [Uber Engineering Blog](http://eng.uber.com)
-- [Airbnb Engineering](http://nerds.airbnb.com)
-- [GitHub Engineering Blog](https://github.blog/category/engineering)
-- [Intel Software Blog](https://software.intel.com/en-us/blogs)
-- [LinkedIn Engineering](http://engineering.linkedin.com/blog)
-- [Paypal Developer Blog](https://medium.com/paypal-engineering)
-- [Twitter Engineering](https://blog.twitter.com/engineering)
+- [هندسة مايكروسوفت](https://engineering.microsoft.com)
+- [مدونة بحث جوجل](http://googleresearch.blogspot.com)
+- [مدونة تكنولوجيا نتفليكس](http://techblog.netflix.com)
+- [مدونة أمازون للويب](https://aws.amazon.com/blogs/aws)
+- [هندسة فيسبوك](https://www.facebook.com/Engineering)
+- [مدونة هندسة أوبر](http://eng.uber.com)
+- [هندسة إيربنب](http://nerds.airbnb.com)
+- [مدونة هندسة جيتهاب](https://github.blog/category/engineering)
+- [مدونة برمجيات إنتل](https://software.intel.com/en-us/blogs)
+- [هندسة لينكد إن](http://engineering.linkedin.com/blog)
+- [مدونة مطوري بايبال](https://medium.com/paypal-engineering)
+- [هندسة تويتر](https://blog.twitter.com/engineering)
 
-Last but not least, volunteer for new projects at your company, and learn from senior engineers and architects to further improve your system design skills.
+وأخيرًا وليس آخراً، قم بالتطوع لمشاريع جديدة في شركتك، وتعلم من المهندسين والمهندسين المعماريين الأكثر خبرة لتحسين مهارات تصميم الأنظمة الخاصة بك بشكل أفضل.
 
-I hope this course was a great learning experience. I would love to hear feedback from you.
+آمل أن تكون هذه الدورة تجربة تعلم رائعة. سأكون سعيدًا بسماع ملاحظاتك.
 
-Wishing you all the best for further learning!
+أتمنى لك كل التوفيق في المزيد من عمليات التعلم!
 
-# References
+# المراجع
 
-Here are the resources that were referenced while creating this course.
+إليك المصادر التي تم الاستشهاد بها أثناء إعداد هذا الدورة.
 
-- [Cloudflare learning center](https://www.cloudflare.com/learning)
-- [IBM Blogs](https://www.ibm.com/blogs)
-- [Fastly Blogs](https://www.fastly.com/blog)
-- [NS1 Blogs](https://ns1.com/blog)
-- [Grokking the System Design Interview](https://www.educative.io/courses/grokking-the-system-design-interview)
-- [System Design Primer](https://github.com/donnemartin/system-design-primer)
-- [AWS Blogs](https://aws.amazon.com/blogs)
-- [Martin Fowler](https://martinfowler.com)
-- [PagerDuty resources](https://www.pagerduty.com/resources)
-- [VMWare Blogs](https://blogs.vmware.com/learning)
+- [مركز تعلم Cloudflare](https://www.cloudflare.com/learning)
+- [مدونات IBM](https://www.ibm.com/blogs)
+- [مدونات Fastly](https://www.fastly.com/blog)
+- [مدونات NS1](https://ns1.com/blog)
+- [تخمين مقابلة تصميم النظام](https://www.educative.io/courses/grokking-the-system-design-interview)
+- [مبدأ تصميم النظام](https://github.com/donnemartin/system-design-primer)
+- [مدونات AWS](https://aws.amazon.com/blogs)
+- [مارتن فاولر](https://martinfowler.com)
+- [موارد PagerDuty](https://www.pagerduty.com/resources)
+- [مدونات VMWare](https://blogs.vmware.com/learning)
 
-_All the diagrams were made using [Excalidraw](https://excalidraw.com) and are available [here](https://github.com/karanpratapsingh/system-design/tree/main/diagrams)._
+جميع الرسوم البيانية تم إنشاؤها باستخدام [Excalidraw](https://excalidraw.com) وهي متاحة [هنا](https://github.com/karanpratapsingh/system-design/tree/main/diagrams).
